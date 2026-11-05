@@ -1,0 +1,31 @@
+# Build outputs
+build/
+*.apk
+*.aab
+
+# Keystore files (never commit secrets!)
+*.keystore
+*.jks
+*.p12
+*.pfx
+
+# Local properties (SDK paths are local)
+local.properties
+
+# Gradle cache and wrapper
+.gradle/
+gradle-wrapper.jar
+
+# IDE files
+*.iml
+/.idea/
+/.target/
+
+# OS temporary files
+*.tmp
+*.temp
+
+# Secrets and API keys (never commit!)
+*.env
+secrets/
+credentials/
