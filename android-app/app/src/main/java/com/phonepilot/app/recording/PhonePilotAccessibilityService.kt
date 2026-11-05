@@ -23,7 +23,7 @@ class PhonePilotAccessibilityService : AccessibilityService() {
         super.onServiceConnected()
         Log.d(TAG, "Accessibility service connected")
         val info = serviceInfo
-        info?.flags = info?.flags or AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS
+        info?.flags = (info?.flags ?: 0) or AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS
         serviceInfo = info
     }
 
@@ -37,7 +37,7 @@ class PhonePilotAccessibilityService : AccessibilityService() {
             else -> "other"
         }
 
-        val sourceText = event.source?.text?.toString().takeIf { it.isNotEmpty() } ?: "[مخفي]"
+        val sourceText = event.source?.text?.toString().takeIf { it?.isNotEmpty() == true } ?: "[مخفي]"
         val eventJson = """{"type":"$eventType","text":"$sourceText","time":${event.eventTime}}"""
         eventsBuffer.add(eventJson)
 

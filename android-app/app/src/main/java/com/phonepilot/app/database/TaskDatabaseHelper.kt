@@ -99,11 +99,4 @@ class TaskDatabaseHelper private constructor(context: Context) :
         return recordings
     }
 
-    companion object {
-        private const val CREATE_TASKS =
-            "CREATE TABLE tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT, created_at INTEGER NOT NULL, status TEXT NOT NULL)"
-
-        private const val CREATE_RECORDINGS =
-            "CREATE TABLE task_recordings (id INTEGER PRIMARY KEY AUTOINCREMENT, task_id INTEGER NOT NULL, iteration_number INTEGER NOT NULL, recorded_at INTEGER NOT NULL, raw_events TEXT NOT NULL, FOREIGN KEY(task_id) REFERENCES tasks(id) ON DELETE CASCADE)"
-    }
 }
