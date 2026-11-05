@@ -1,19 +1,25 @@
-package com.phonepilot.app
+package com.phonepilot.app.ui;
 
-import android.app.Activity
-import android.content.Intent
-import os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends Activity {
 
     private static final String[] TASK_DUMMIES = {"Task 1", "Task 2", "Task 3"};
     private boolean isRecording = false;
+    private List<String> taskList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,26 +74,23 @@ public class MainActivity extends Activity {
     }
 
     private void showTasksList() {
-        // Simple list dialog
-        taskList = new java.util.ArrayList<>();
+        taskList = new ArrayList<>();
         for (String task : TASK_DUMMIES) {
             taskList.add(task);
         }
 
-        // Create list view
-        android.widget.ListView listView = new android.widget.ListView(this);
+        ListView listView = new ListView(this);
 
-        // Custom adapter
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
                 taskList
         ) {
             @Override
-            public android.view.View getView(int position, android.view.View convertView, android.view.ViewGroup parent) {
-                android.view.View view = super.getView(position, convertView, parent);
-                if (view instanceof android.widget.TextView) {
-                    ((android.widget.TextView) view).setTextColor(0xFF6200EE);
+            public View getView(int position, View convertView, android.view.ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                if (view instanceof TextView) {
+                    ((TextView) view).setTextColor(0xFF6200EE);
                 }
                 return view;
             }
@@ -96,13 +99,12 @@ public class MainActivity extends Activity {
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(android.widget.AdapterView<?> parent, android.view.View view, int position, long id) {
+            public void onItemClick(android.widget.AdapterView<?> parent, View view, int position, long id) {
                 String selectedTask = taskList.get(position);
                 Toast.makeText(MainActivity.this, "Selected: " + selectedTask, Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Set content to the list view
         setContentView(listView);
     }
 }

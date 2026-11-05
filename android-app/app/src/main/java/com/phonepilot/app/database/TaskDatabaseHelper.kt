@@ -34,22 +34,24 @@ class TaskDatabaseHelper private constructor(context: Context) :
 
     fun insertTask(name: String, description: String?): Long {
         val db = writableDatabase
-        return db.insert("tasks", null, mapOf(
-            "name" to name,
-            "description" to description,
-            "created_at" to System.currentTimeMillis(),
-            "status" to "idle"
-        ))
+        val values = android.content.ContentValues().apply {
+            put("name", name)
+            put("description", description)
+            put("created_at", System.currentTimeMillis())
+            put("status", "idle")
+        }
+        return db.insert("tasks", null, values)
     }
 
     fun insertRecording(taskId: Long, iterationNumber: Int, rawEvents: String): Long {
         val db = writableDatabase
-        return db.insert("task_recordings", null, mapOf(
-            "task_id" to taskId,
-            "iteration_number" to iterationNumber,
-            "recorded_at" to System.currentTimeMillis(),
-            "raw_events" to rawEvents
-        ))
+        val values = android.content.ContentValues().apply {
+            put("task_id", taskId)
+            put("iteration_number", iterationNumber)
+            put("recorded_at", System.currentTimeMillis())
+            put("raw_events", rawEvents)
+        }
+        return db.insert("task_recordings", null, values)
     }
 
     fun getAllTasks(): List<TaskEntity> {
