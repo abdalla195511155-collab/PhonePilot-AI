@@ -33,13 +33,10 @@ jobs:
         run: |
           sdkmanager --list_installed
 
-      - name: Install Gradle 8.2.2
-        run: |
-          set -eux
-          cd /tmp
-          curl -sL "https://services.gradle.org/distributions/gradle-8.2.2-bin.zip" -o gradle-8.2.2-bin.zip
-          unzip -q gradle-8.2.2-bin.zip -d /opt/gradle
-          echo "/opt/gradle/gradle-8.2.2/bin" >> "$GITHUB_PATH"
+      - name: Setup Gradle 8.2.2
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.2.2'
 
       - name: Verify Gradle
         run: |
