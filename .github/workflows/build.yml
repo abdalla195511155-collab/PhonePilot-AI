@@ -34,9 +34,9 @@ jobs:
           sdkmanager --list_installed
 
       - name: Setup Gradle 8.2.2
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.2.2'
+          gradle-version: 'https://services.gradle.org/distributions/gradle-8.2.2-bin.zip'
 
       - name: Verify Gradle
         run: |
