@@ -13,6 +13,8 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -33,6 +35,12 @@ android {
     buildFeatures {
         compose = false
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -43,6 +51,8 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.coroutines.android)
     testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.lifecycle.runtime.testing)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
 }

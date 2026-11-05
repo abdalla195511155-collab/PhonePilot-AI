@@ -45,6 +45,11 @@ jobs:
         run: |
           gradle --version
 
+      - name: Run Unit Tests
+        run: |
+          cd android-app
+          gradle :app:testDebugUnitTest --no-daemon
+
       - name: Build APK
         run: |
           cd android-app
