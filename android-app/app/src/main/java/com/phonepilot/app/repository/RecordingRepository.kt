@@ -301,7 +301,9 @@ object RecordingRepository {
             }
             is DrainResult.ConsumerFailed,
             is DrainResult.DrainTimedOut,
-            is DrainResult.DrainPartial -> {
+            is DrainResult.DrainPartial,
+            is DrainResult.DrainCancelled,
+            is DrainResult.NotStarted -> {
                 // Drain incomplete — keep state as Recording
                 isStopping = false
                 interruptFailed = true
@@ -446,7 +448,9 @@ object RecordingRepository {
                     }
                     is DrainResult.ConsumerFailed,
                     is DrainResult.DrainTimedOut,
-                    is DrainResult.DrainPartial -> {
+                    is DrainResult.DrainPartial,
+                    is DrainResult.DrainCancelled,
+                    is DrainResult.NotStarted -> {
                         // Drain incomplete — keep state as Recording
                         // Do NOT clear currentRecordingId — session unresolved
                         interruptFailed = true
@@ -482,11 +486,10 @@ object RecordingRepository {
             if (pendingRecovery) return false
             val channel = eventChannel ?: return false
             val result = channel.trySend(event)
+            if (result.isClosed) {
+                return false
+            }
             if (result.isFailure) {
-                val cause = result.exceptionOrNull()
-                if (cause is kotlinx.coroutines.channels.ClosedChannelException) {
-                    return false
-                }
                 incrementDroppedCount()
                 return false
             }

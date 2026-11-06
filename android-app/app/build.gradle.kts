@@ -61,6 +61,8 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.navigation.compose)
+    implementation(libs.compose.material.icons.extended)
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
