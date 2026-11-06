@@ -14,7 +14,7 @@ class TaskDatabaseHelper private constructor(context: Context) :
 
     companion object {
         private const val DATABASE_NAME = "phonepilot.db"
-        private const val DATABASE_VERSION = 2
+        private const val DATABASE_VERSION = 4
 
         private const val CREATE_TASKS =
             "CREATE TABLE tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT, created_at INTEGER NOT NULL, status TEXT NOT NULL)"
@@ -41,8 +41,14 @@ class TaskDatabaseHelper private constructor(context: Context) :
             "is_privacy_masked INTEGER NOT NULL DEFAULT 0, " +
             "FOREIGN KEY(recording_id) REFERENCES task_recordings(id))"
 
+        // Migration columns added in v4
+        private const val ALTER_RECORDINGS_ADD_ACCEPTED_COUNT =
+            "ALTER TABLE task_recordings ADD COLUMN accepted_count INTEGER NOT NULL DEFAULT 0"
+        private const val ALTER_RECORDINGS_ADD_FAILURE_REASON =
+            "ALTER TABLE task_recordings ADD COLUMN failure_reason TEXT"
+
         private const val CREATE_INDEX_EVENTS =
-            "CREATE INDEX idx_events_recording_seq ON events(recording_id, sequence_number)"
+            "CREATE UNIQUE INDEX idx_events_recording_seq ON events(recording_id, sequence_number)"
 
         private const val ALTER_RECORDINGS_ADD_STATE =
             "ALTER TABLE task_recordings ADD COLUMN state TEXT NOT NULL DEFAULT 'COMPLETED'"
@@ -73,17 +79,57 @@ class TaskDatabaseHelper private constructor(context: Context) :
             db.execSQL(CREATE_EVENTS)
             db.execSQL(CREATE_INDEX_EVENTS)
         }
+        if (oldVersion < 3) {
+            // Migration v2 → v3: deduplicate events then create UNIQUE index
+            // Remove duplicate (recording_id, sequence_number) rows, keeping the lowest id
+            db.execSQL(
+                "DELETE FROM events WHERE id NOT IN (" +
+                "SELECT MIN(id) FROM events GROUP BY recording_id, sequence_number" +
+                ")"
+            )
+            // Drop old non-unique index if exists
+            db.execSQL("DROP INDEX IF EXISTS idx_events_recording_seq")
+            db.execSQL(CREATE_INDEX_EVENTS)
+        }
+        if (oldVersion < 4) {
+            // Migration v3 → v4: add accepted_count and failure_reason columns
+            db.execSQL(ALTER_RECORDINGS_ADD_ACCEPTED_COUNT)
+            db.execSQL(ALTER_RECORDINGS_ADD_FAILURE_REASON)
+        }
         db.enableWriteAheadLogging()
     }
 
-    /** تحديث حالة التسجيلات العالقة إلى INTERRUPTED عند بدء التطبيق */
+    /** تحديث حالة التسجيلات العالقة إلى INTERRUPTED_FAILED عند بدء التطبيق.
+     * لا يُفترض نجاح أي جلسة عالقة — العدادات غير متاحة عند إعادة التشغيل.
+     */
     fun markInterruptedRecordings() {
         val db = writableDatabase
         db.beginTransaction()
         try {
             db.update("task_recordings", ContentValues().apply {
-                put("state", "INTERRUPTED")
+                put("state", "INTERRUPTED_FAILED")
+                put("failure_reason", "process_terminated_before_completion")
             }, "state = ?", arrayOf("RECORDING"))
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+        }
+    }
+
+    /**
+     * Mark a specific recording as interrupted with persistence metadata.
+     * Used when recovering from a failed stop/interrupt after process restart.
+     */
+    fun markRecordingInterruptedWithMeta(recordingId: Long, acceptedCount: Int, savedCount: Int) {
+        val db = writableDatabase
+        db.beginTransaction()
+        try {
+            val state = if (savedCount >= acceptedCount) "INTERRUPTED" else "INTERRUPTED_PARTIAL"
+            val values = ContentValues().apply {
+                put("state", state)
+                put("accepted_count", acceptedCount)
+            }
+            db.update("task_recordings", values, "id = ?", arrayOf(recordingId.toString()))
             db.setTransactionSuccessful()
         } finally {
             db.endTransaction()
@@ -123,12 +169,17 @@ class TaskDatabaseHelper private constructor(context: Context) :
         }
     }
 
-    fun interruptRecording(recordingId: Long) {
+    fun interruptRecording(recordingId: Long, acceptedCount: Int = 0, savedCount: Int = 0, failureReason: String? = null) {
         val db = writableDatabase
         db.beginTransaction()
         try {
+            val state = if (failureReason == null && savedCount >= acceptedCount) "INTERRUPTED" else "INTERRUPTED_PARTIAL"
             val values = ContentValues().apply {
-                put("state", "INTERRUPTED")
+                put("state", state)
+                put("accepted_count", acceptedCount)
+                if (failureReason != null) {
+                    put("failure_reason", failureReason)
+                }
             }
             db.update("task_recordings", values, "id = ?", arrayOf(recordingId.toString()))
             db.setTransactionSuccessful()
@@ -137,7 +188,109 @@ class TaskDatabaseHelper private constructor(context: Context) :
         }
     }
 
-    fun insertEvent(recordingId: Long, event: EventEntity) {
+    fun markRecordingFailed(recordingId: Long, acceptedCount: Int, savedCount: Int, failureReason: String) {
+        val db = writableDatabase
+        db.beginTransaction()
+        try {
+            val values = ContentValues().apply {
+                put("state", "INTERRUPTED_FAILED")
+                put("accepted_count", acceptedCount)
+                put("failure_reason", failureReason)
+            }
+            db.update("task_recordings", values, "id = ?", arrayOf(recordingId.toString()))
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+        }
+    }
+
+    fun abandonRecording(recordingId: Long, acceptedCount: Int = 0, savedCount: Int = 0) {
+        val db = writableDatabase
+        db.beginTransaction()
+        try {
+            val values = ContentValues().apply {
+                put("state", "ABANDONED")
+                put("accepted_count", acceptedCount)
+            }
+            db.update("task_recordings", values, "id = ?", arrayOf(recordingId.toString()))
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+        }
+    }
+
+    /**
+     * Checks whether an event with the given recording_id and sequence_number already exists
+     * AND has matching content fields. Returns true only if content matches exactly.
+     * If the row exists but content differs → conflict (not a verified duplicate).
+     */
+    fun eventContentMatches(
+        recordingId: Long,
+        sequenceNumber: Int,
+        eventType: String,
+        packageName: String?,
+        className: String?,
+        viewId: String?,
+        text: String?,
+        contentDescription: String?,
+        bounds: String?,
+        inputText: String?,
+        timestamp: Long
+    ): Boolean {
+        val db = readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT event_type, package_name, class_name, view_id, text, content_description, bounds, input_text, timestamp " +
+            "FROM events WHERE recording_id = ? AND sequence_number = ?",
+            arrayOf(recordingId.toString(), sequenceNumber.toString())
+        )
+        try {
+            if (!cursor.moveToFirst()) return false
+            val existingEventType = cursor.getString(cursor.getColumnIndexOrThrow("event_type"))
+            val existingPackageName = cursor.getString(cursor.getColumnIndexOrThrow("package_name"))
+            val existingClassName = cursor.getString(cursor.getColumnIndexOrThrow("class_name"))
+            val existingViewId = cursor.getString(cursor.getColumnIndexOrThrow("view_id"))
+            val existingText = cursor.getString(cursor.getColumnIndexOrThrow("text"))
+            val existingContentDescription = cursor.getString(cursor.getColumnIndexOrThrow("content_description"))
+            val existingBounds = cursor.getString(cursor.getColumnIndexOrThrow("bounds"))
+            val existingInputText = cursor.getString(cursor.getColumnIndexOrThrow("input_text"))
+            val existingTimestamp = cursor.getLong(cursor.getColumnIndexOrThrow("timestamp"))
+
+            return existingEventType == eventType &&
+                existingPackageName == packageName &&
+                existingClassName == className &&
+                existingViewId == viewId &&
+                existingText == text &&
+                existingContentDescription == contentDescription &&
+                existingBounds == bounds &&
+                existingInputText == inputText &&
+                existingTimestamp == timestamp
+        } finally {
+            cursor.close()
+        }
+    }
+
+    /**
+     * Checks whether a row with the given recording_id and sequence_number exists
+     * (regardless of content). Used for conflict detection.
+     */
+    fun eventRowExists(recordingId: Long, sequenceNumber: Int): Boolean {
+        val db = readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT COUNT(*) FROM events WHERE recording_id = ? AND sequence_number = ?",
+            arrayOf(recordingId.toString(), sequenceNumber.toString())
+        )
+        try {
+            return cursor.moveToFirst() && cursor.getInt(0) > 0
+        } finally {
+            cursor.close()
+        }
+    }
+
+    /**
+     * Insert an event. Uses INSERT OR IGNORE to prevent duplicates on
+     * (recording_id, sequence_number). Returns the row id, or -1 if ignored.
+     */
+    fun insertEvent(recordingId: Long, event: EventEntity): Long {
         val db = writableDatabase
         db.beginTransaction()
         try {
@@ -157,8 +310,9 @@ class TaskDatabaseHelper private constructor(context: Context) :
                 put("after_snapshot", event.afterSnapshot)
                 put("is_privacy_masked", if (event.isPrivacyMasked) 1 else 0)
             }
-            db.insert("events", null, values)
+            val rowId = db.insertWithOnConflict("events", null, values, SQLiteDatabase.CONFLICT_IGNORE)
             db.setTransactionSuccessful()
+            return rowId
         } finally {
             db.endTransaction()
         }

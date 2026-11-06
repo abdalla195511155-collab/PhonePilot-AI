@@ -2,32 +2,41 @@ package com.phonepilot.app.recording
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
+import android.content.ComponentName
+import android.content.pm.PackageManager
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import com.phonepilot.app.models.EventEntity
+import com.phonepilot.app.models.RecordingState
+import com.phonepilot.app.privacy.PrivacyFilter
 import com.phonepilot.app.repository.RecordingRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.SupervisorJob
 import org.json.JSONArray
 import org.json.JSONObject
 
 class PhonePilotAccessibilityService : AccessibilityService() {
 
     private val TAG = "PhonePilotA11y"
-    private val scope = CoroutineScope(Dispatchers.IO + Job())
+
     private val handler = Handler(Looper.getMainLooper())
 
-    /** counter for sequence numbers per recording */
     private var currentSequence = 0
 
-    /** debounce tracking for TYPE_WINDOW_CONTENT_CHANGED */
     private var lastContentChangeTime = 0L
     private val CONTENT_CHANGE_DEBOUNCE_MS = 300L
+
+    private var isServiceConnected = false
+
+    override fun onCreate() {
+        super.onCreate()
+    }
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -39,16 +48,19 @@ class PhonePilotAccessibilityService : AccessibilityService() {
         serviceInfo = info
 
         RecordingRepository.init(this)
+        isServiceConnected = true
         RecordingRepository.serviceConnected()
 
-        // Reset sequence for new session
+        val dbHelper = com.phonepilot.app.database.TaskDatabaseHelper.getInstance(this)
+        dbHelper.markInterruptedRecordings()
+
         currentSequence = 0
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         val eventType = event.eventType
 
-        // Debounce TYPE_WINDOW_CONTENT_CHANGED - skip rapid repeats
+        // Debounce TYPE_WINDOW_CONTENT_CHANGED
         if (eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
             val now = System.currentTimeMillis()
             if (now - lastContentChangeTime < CONTENT_CHANGE_DEBOUNCE_MS) {
@@ -58,18 +70,25 @@ class PhonePilotAccessibilityService : AccessibilityService() {
         }
 
         val recordingState = RecordingRepository.recordingState.value
-        if (recordingState !is com.phonepilot.app.models.RecordingState.Recording) {
+        if (recordingState !is RecordingState.Recording) {
             return
         }
 
-        currentSequence++
-
         val source = event.source
+        val packageName = event.packageName?.toString()
+
+        // Check password BEFORE extracting text/desc
+        val isPasswordEvent = event.isPassword
+        val isPasswordSource = source?.isPassword == true
+        val eventIsPassword = isPasswordEvent || isPasswordSource
+        val nodeSensitive = (source != null && PrivacyFilter.isNodeSensitive(source, packageName)) || eventIsPassword
+
+        // Extract text only if not password/sensitive
+        val rawText = if (nodeSensitive) null else source?.text?.toString()
+        val rawDesc = if (nodeSensitive) null else source?.contentDescription?.toString()
         val viewId = source?.viewIdResourceName
         val className = source?.className?.toString()
-        val packageName = event.packageName?.toString()
-        val text = source?.text?.toString()
-        val contentDesc = source?.contentDescription?.toString()
+
         val bounds = source?.let {
             val r = android.graphics.Rect()
             it.getBoundsInScreen(r)
@@ -81,7 +100,9 @@ class PhonePilotAccessibilityService : AccessibilityService() {
             }.toString()
         } ?: ""
 
+        // Snapshot with masking
         val beforeSnapshot = snapshot(source)
+        val maskedBeforeSnapshot = PrivacyFilter.maskSnapshotJson(beforeSnapshot, packageName)
 
         val eventTypeStr = when (eventType) {
             AccessibilityEvent.TYPE_VIEW_CLICKED -> "click"
@@ -94,43 +115,73 @@ class PhonePilotAccessibilityService : AccessibilityService() {
             else -> "other"
         }
 
-        val inputText = if (eventType == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED) {
+        val rawInputText = if (eventType == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED) {
             event.text?.joinToString("")
         } else null
 
+        // Apply privacy masking
+        val text = if (nodeSensitive) "[MASKED]" else rawText
+        val contentDesc = if (nodeSensitive) "[MASKED]" else rawDesc
+        val inputText = if (nodeSensitive || PrivacyFilter.isSensitiveText(rawInputText)) "[MASKED]" else rawInputText
+
+        // Also mask if package sensitive
+        val pkgSensitive = PrivacyFilter.isSensitivePackage(packageName)
+        val finalText = if (pkgSensitive) "[MASKED]" else text
+        val finalDesc = if (pkgSensitive) "[MASKED]" else contentDesc
+        val finalInput = if (pkgSensitive) "[MASKED]" else inputText
+
+        val seq = RecordingRepository.nextSequence()
+
         val eventEntity = EventEntity(
-            recordingId = recordingState.taskId,
-            sequenceNumber = currentSequence,
+            recordingId = 0, // Will be set by repository from current session
+            sequenceNumber = seq,
             eventType = eventTypeStr,
             packageName = packageName,
             className = className,
             viewId = viewId,
-            text = text,
-            contentDescription = contentDesc,
+            text = finalText,
+            contentDescription = finalDesc,
             bounds = bounds,
-            inputText = inputText,
+            inputText = finalInput,
             timestamp = event.eventTime,
-            beforeSnapshot = beforeSnapshot,
-            afterSnapshot = null
+            beforeSnapshot = maskedBeforeSnapshot,
+            afterSnapshot = null,
+            isPrivacyMasked = nodeSensitive || pkgSensitive ||
+                PrivacyFilter.isSensitiveText(rawText) || PrivacyFilter.isSensitiveText(rawDesc)
         )
 
-        RecordingRepository.addEvent(eventEntity)
+        // Enqueue via repository (handles channel, dropped count)
+        val accepted = RecordingRepository.tryEnqueueEvent(eventEntity)
+        if (!accepted) {
+            Log.w(TAG, "Event not accepted: channel full or session ended. sequence=$currentSequence")
+        }
     }
 
     override fun onInterrupt() {
         Log.d(TAG, "Accessibility service interrupted")
+        isServiceConnected = false
         RecordingRepository.serviceInterrupted()
         currentSequence = 0
     }
 
     override fun onUnbind(intent: android.content.Intent?): Boolean {
         Log.d(TAG, "Accessibility service unbind")
+        isServiceConnected = false
         RecordingRepository.serviceInterrupted()
         currentSequence = 0
         return super.onUnbind(intent)
     }
 
-    /** التقاط شجرة AccessibilityNodeInfo بصيغة JSON مع حد أقصى للعمق والعقد */
+    override fun onDestroy() {
+        super.onDestroy()
+        isServiceConnected = false
+        // Best-effort cleanup: close channel and attempt drain via coroutine.
+        // Note: if the process is killed before the drain completes, pending
+        // events may be lost. This is a fundamental Android limitation.
+        // serviceInterrupted() is idempotent — safe to call after onUnbind.
+        RecordingRepository.serviceInterrupted()
+    }
+
     private fun snapshot(node: AccessibilityNodeInfo?): String {
         if (node == null) return "null"
 
@@ -146,12 +197,16 @@ class PhonePilotAccessibilityService : AccessibilityService() {
             val (n, depth) = stack.removeAt(stack.lastIndex)
             if (depth > MAX_DEPTH) continue
 
+            val isNodePassword = n.isPassword
+            val nodePkg = n.packageName?.toString()
+            val nodeSensitive = PrivacyFilter.isNodeSensitive(n, nodePkg)
+
             val o = JSONObject().apply {
                 put("depth", depth)
                 put("class", n.className?.toString() ?: "")
                 put("viewId", n.viewIdResourceName ?: "")
-                put("text", n.text?.toString() ?: "")
-                put("desc", n.contentDescription?.toString() ?: "")
+                put("text", if (isNodePassword || nodeSensitive) "[MASKED]" else n.text?.toString() ?: "")
+                put("desc", if (isNodePassword || nodeSensitive) "[MASKED]" else n.contentDescription?.toString() ?: "")
             }
             arr.put(o)
             count++
@@ -161,5 +216,22 @@ class PhonePilotAccessibilityService : AccessibilityService() {
             }
         }
         return arr.toString()
+    }
+
+    companion object {
+        fun isServiceEnabled(context: android.content.Context): Boolean {
+            try {
+                val enabledServices = Settings.Secure.getString(
+                    context.contentResolver,
+                    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+                )
+                if (enabledServices == null || enabledServices.isBlank()) return false
+
+                val componentName = ComponentName(context.packageName, "com.phonepilot.app.recording.PhonePilotAccessibilityService")
+                return enabledServices.contains(componentName.flattenToString())
+            } catch (e: Exception) {
+                return false
+            }
+        }
     }
 }

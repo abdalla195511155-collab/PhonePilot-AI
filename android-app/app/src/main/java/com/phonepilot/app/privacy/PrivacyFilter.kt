@@ -1,6 +1,9 @@
 package com.phonepilot.app.privacy
 
+import android.view.accessibility.AccessibilityNodeInfo
 import com.phonepilot.app.models.EventEntity
+import org.json.JSONArray
+import org.json.JSONObject
 
 object PrivacyFilter {
 
@@ -41,18 +44,33 @@ object PrivacyFilter {
         return sensitiveKeywords.any { text.contains(it, ignoreCase = true) }
     }
 
+    /** التحقق من حساسية العقدة عبر isPassword والحزم والكلمات المفتاحية */
+    fun isNodeSensitive(node: AccessibilityNodeInfo, packageName: String?): Boolean {
+        if (node.isPassword) return true
+        if (isSensitivePackage(packageName)) return true
+        val text = node.text?.toString()
+        val desc = node.contentDescription?.toString()
+        return isSensitiveText(text) || isSensitiveText(desc)
+    }
+
     fun maskEventIfNeeded(event: EventEntity): EventEntity {
         var maskedText = event.text
         var maskedContentDesc = event.contentDescription
         var maskedInput = event.inputText
 
-        if (isSensitivePackage(event.packageName) || isSensitiveText(event.text)) {
+        val pkg = event.packageName
+        val pkgSensitive = isSensitivePackage(pkg)
+        val textSensitive = pkgSensitive || isSensitiveText(event.text)
+        val descSensitive = pkgSensitive || isSensitiveText(event.contentDescription)
+        val inputSensitive = pkgSensitive || isSensitiveText(event.inputText)
+
+        if (textSensitive) {
             maskedText = "[MASKED]"
         }
-        if (isSensitiveText(event.contentDescription)) {
+        if (descSensitive) {
             maskedContentDesc = "[MASKED]"
         }
-        if (isSensitiveText(event.inputText)) {
+        if (inputSensitive) {
             maskedInput = "[MASKED]"
         }
 
@@ -65,6 +83,38 @@ object PrivacyFilter {
             )
         } else {
             event
+        }
+    }
+
+    /** تطبيق القناع على نص الشجرة (snapshot) - تُستبدل النصوص الحساسة بـ [MASKED] */
+    fun maskSnapshotJson(snapshotJson: String, packageName: String?): String {
+        if (snapshotJson == "null") return snapshotJson
+        try {
+            val arr = JSONArray(snapshotJson)
+            for (i in 0 until arr.length()) {
+                val obj = arr.getJSONObject(i)
+                val depth = obj.optInt("depth", 0)
+                val className = obj.optString("class", "")
+                val viewId = obj.optString("viewId", "")
+                val text = obj.optString("text", "")
+                val desc = obj.optString("desc", "")
+
+                // التحقق من الحساسية: نص أو وصف يحتوي كلمات حساسة، أو حزمة حساسة
+                val textSensitive = isSensitiveText(text)
+                val descSensitive = isSensitiveText(desc)
+                val pkgSensitive = isSensitivePackage(packageName)
+
+                if (textSensitive || pkgSensitive) {
+                    obj.put("text", "[MASKED]")
+                }
+                if (descSensitive || pkgSensitive) {
+                    obj.put("desc", "[MASKED]")
+                }
+            }
+            return arr.toString()
+        } catch (e: Exception) {
+            // في حالة فشل التحليل، إرجاع مُقنّع بالكامل للأمان
+            return "[MASKED_SNAPSHOT]"
         }
     }
 }
