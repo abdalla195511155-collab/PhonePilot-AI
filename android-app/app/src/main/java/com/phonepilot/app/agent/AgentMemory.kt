@@ -29,7 +29,7 @@ class AgentMemory(
         // تحميل الذاكرة المحفوظة من SQLite عند الإنشاء
         scope.launch {
             val saved = loadFromDb()
-            _memory.update { saved }
+            _memory.value = saved
         }
     }
 
@@ -87,7 +87,7 @@ class AgentMemory(
         )
         // تحديث الذاكرة الفورية للشاشة
         scope.launch {
-            _memory.update { it + entry }
+            _memory.value = _memory.value + entry
         }
         // التخزين الدائم في SQLite
         scope.launch {
@@ -138,7 +138,7 @@ class AgentMemory(
      */
     fun clearTaskMemory(taskId: String) {
         scope.launch {
-            _memory.update { it.filter { it.taskId != taskId } }
+            _memory.value = _memory.value.filter { it.taskId != taskId }
             withContext(Dispatchers.IO) {
                 val db = dbHelper.writableDatabase
                 db.delete("agent_memory", "task_id = ?", arrayOf(taskId))

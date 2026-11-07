@@ -60,7 +60,7 @@ class IntentInterpreter(
                 }
             }
         } catch (e: Exception) {
-            null
+            return null
         }
     }
 
@@ -72,9 +72,13 @@ class IntentInterpreter(
                 intent = json.optString("intent", "unknown"),
                 targetApp = json.optString("target_app", null).takeIf { it.isNotBlank() },
                 targetAction = json.optString("target_action", null).takeIf { it.isNotBlank() },
-                parameters = json.optJSONObject("parameters")?.toMap() ?: emptyMap(),
-                confidence = json.optDouble("confidence", 0.5f).toFloat(),
-                missingInfo = json.optJSONArray("missing_info")?.toList().map { it.toString() } ?: emptyList(),
+                parameters = json.optJSONObject("parameters")?.let { obj ->
+                    obj.keys().asSequence().associateWith { obj.opt(it) }
+                } ?: emptyMap(),
+                confidence = json.optDouble("confidence", 0.5).toFloat(),
+                missingInfo = json.optJSONArray("missing_info")?.let { arr ->
+                    (0 until arr.length()).map { arr.optString(it) }
+                } ?: emptyList(),
                 requiresClarification = json.optBoolean("requires_clarification", false),
             )
         } catch (e: Exception) {

@@ -83,6 +83,7 @@ data class UserCommand(
     val rawText: String,
     val source: String, // "telegram", "android_ui", ...
     val userId: String?,
+    val userApproved: Boolean = false,
     val timestamp: Long = System.currentTimeMillis(),
 )
 

@@ -18,10 +18,10 @@ class CommandRouter(
     private val scope: CoroutineScope,
 ) {
 
-    private val _pendingCommands = MutableStateFlow(mutableMapOf<String, UserCommand>())
+    private val _pendingCommands = MutableStateFlow(mapOf<String, UserCommand>())
     val pendingCommands: StateFlow<Map<String, UserCommand>> = _pendingCommands.asStateFlow()
 
-    private val _executedCommands = MutableStateFlow(mutableSetOf<String>())
+    private val _executedCommands = MutableStateFlow(setOf<String>())
     val executedCommands: StateFlow<Set<String>> = _executedCommands.asStateFlow()
 
     /**
