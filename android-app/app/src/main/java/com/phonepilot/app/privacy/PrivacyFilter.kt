@@ -1,6 +1,7 @@
 package com.phonepilot.app.privacy
 
 import android.view.accessibility.AccessibilityNodeInfo
+import com.phonepilot.app.data.SettingsRepository
 import com.phonepilot.app.models.EventEntity
 import org.json.JSONArray
 import org.json.JSONObject
@@ -35,17 +36,27 @@ object PrivacyFilter {
     )
 
     fun isSensitivePackage(packageName: String?): Boolean {
+        if (!SettingsRepository.isPrivacyFilterEnabled()) return false
         packageName ?: return false
         return sensitivePackages.any { packageName.contains(it, ignoreCase = true) }
     }
 
     fun isSensitiveText(text: String?): Boolean {
+        if (!SettingsRepository.isPrivacyFilterEnabled()) return false
         text ?: return false
         return sensitiveKeywords.any { text.contains(it, ignoreCase = true) }
     }
 
+    /** إخفاء نص بسيط إذا كان حساساً (يُستخدم لعناصر غير EventEntity مثل وصف العروض). */
+    fun maskEventText(text: String?): String {
+        if (text == null) return ""
+        if (!isSensitiveText(text)) return text
+        return "[مخفي]"
+    }
+
     /** التحقق من حساسية العقدة عبر isPassword والحزم والكلمات المفتاحية */
     fun isNodeSensitive(node: AccessibilityNodeInfo, packageName: String?): Boolean {
+        if (!SettingsRepository.isPrivacyFilterEnabled()) return false
         if (node.isPassword) return true
         if (isSensitivePackage(packageName)) return true
         val text = node.text?.toString()
@@ -54,6 +65,7 @@ object PrivacyFilter {
     }
 
     fun maskEventIfNeeded(event: EventEntity): EventEntity {
+        if (!SettingsRepository.isPrivacyFilterEnabled()) return event
         var maskedText = event.text
         var maskedContentDesc = event.contentDescription
         var maskedInput = event.inputText
@@ -88,6 +100,7 @@ object PrivacyFilter {
 
     /** تطبيق القناع على نص الشجرة (snapshot) - تُستبدل النصوص الحساسة بـ [MASKED] */
     fun maskSnapshotJson(snapshotJson: String, packageName: String?): String {
+        if (!SettingsRepository.isPrivacyFilterEnabled()) return snapshotJson
         if (snapshotJson == "null") return snapshotJson
         try {
             val arr = JSONArray(snapshotJson)

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- API keys and encrypted chat history are Keystore-bound and must never be
+     copied to cloud backups or another device. -->
+<full-backup-content>
+    <exclude domain="sharedpref" path="phonepilot_secure_keys.xml" />
+</full-backup-content>

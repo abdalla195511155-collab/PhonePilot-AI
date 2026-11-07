@@ -10,6 +10,8 @@ object AppRoutes {
     const val LogsHistory = "logs_history"
     const val PrivacyPermissions = "privacy_permissions"
     const val AiAssistant = "ai_assistant"
+    const val AgentState = "agent_state"
+    const val AgentApproval = "agent_approval"
 
     val allScreens = listOf(
         Dashboard,
@@ -21,6 +23,8 @@ object AppRoutes {
         LogsHistory,
         PrivacyPermissions,
         AiAssistant,
+        AgentState,
+        AgentApproval,
     )
 
     fun label(route: String): String = when (route) {
@@ -33,6 +37,8 @@ object AppRoutes {
         LogsHistory -> "السجلات والتاريخ"
         PrivacyPermissions -> "الخصوصية والأذونات"
         AiAssistant -> "المساعد الذكي"
+        AgentState -> "حالة الوكيل"
+        AgentApproval -> "موافقات المهارات"
         else -> route
     }
 
@@ -46,6 +52,8 @@ object AppRoutes {
         LogsHistory -> androidx.compose.material.icons.Icons.Default.History
         PrivacyPermissions -> androidx.compose.material.icons.Icons.Default.Shield
         AiAssistant -> androidx.compose.material.icons.Icons.Default.SmartToy
+        AgentState -> androidx.compose.material.icons.Icons.Default.People
+        AgentApproval -> androidx.compose.material.icons.Icons.Default.CheckCircle
         else -> androidx.compose.material.icons.Icons.Default.Home
     }
 }

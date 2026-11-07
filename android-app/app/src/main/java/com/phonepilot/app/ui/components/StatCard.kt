@@ -1,26 +1,22 @@
 package com.phonepilot.app.ui.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.Text
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.compose.material.icons.Icons
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.phonepilot.app.ui.theme.Space
 
 @Composable
@@ -28,28 +24,24 @@ fun StatCard(
     title: String,
     value: String,
     subtitle: String? = null,
-    icon: androidx.compose.ui.graphics.vector.ImageVector? = null,
+    icon: ImageVector? = null,
     onClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     accentColor: Color = MaterialTheme.colorScheme.primary,
 ) {
-    val contentColor = LocalContentColor.current
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = Space.medium),
+            .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = contentColor,
+            contentColor = MaterialTheme.colorScheme.onSurface,
         ),
-        elevation = Space.cardElevation,
+        elevation = CardDefaults.cardElevation(defaultElevation = Space.cardElevation),
         shape = RoundedCornerShape(Space.cardCorner),
-        onClick = onClick,
     ) {
         Column(
-            modifier = Modifier
-                .padding(horizontal = Space.medium, vertical = Space.medium)
-                .width(1f.min(0.9f)),
+            modifier = Modifier.padding(horizontal = Space.medium, vertical = Space.medium),
             verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
         ) {
             Row(
@@ -63,30 +55,30 @@ fun StatCard(
                     Text(
                         text = title,
                         style = MaterialTheme.typography.bodySmall,
-                        color = contentColor.copy(alpha = 0.6f),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                         maxLines = 1,
                     )
                     Text(
                         text = value,
                         style = MaterialTheme.typography.headlineMedium,
-                        color = contentColor,
+                        color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 1,
                     )
                     subtitle?.let {
                         Text(
                             text = it,
                             style = MaterialTheme.typography.labelSmall,
-                            color = contentColor.copy(alpha = 0.5f),
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                             maxLines = 1,
                         )
                     }
                 }
-                icon?.let {
+                if (icon != null) {
                     Icon(
                         imageVector = icon,
                         contentDescription = null,
-                        tint = accentColor,
                         modifier = Modifier.size(Space.iconSize),
+                        tint = accentColor,
                     )
                 }
             }

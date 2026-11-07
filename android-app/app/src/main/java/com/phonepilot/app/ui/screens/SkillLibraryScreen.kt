@@ -1,140 +1,156 @@
 package com.phonepilot.app.ui.screens
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
-import androidx.compose.material3.Text
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.phonepilot.app.components.AppScaffold
-import com.phonepilot.app.components.ScreenHeader
-import com.phonepilot.app.components.PrimaryButton
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.phonepilot.app.data.SkillRepository
+import com.phonepilot.app.models.SkillEntity
+import com.phonepilot.app.models.SkillLifecycleState
+import com.phonepilot.app.ui.components.EmptyState
+import com.phonepilot.app.ui.components.PrimaryButton
+import com.phonepilot.app.ui.components.ScreenHeader
+import com.phonepilot.app.ui.navigation.AppRoutes
 import com.phonepilot.app.ui.theme.Space
-
-data class SkillItem(
-    val id: String,
-    val title: String,
-    val description: String,
-    val level: String,
-    val icon: androidx.compose.ui.graphics.vector.ImageVector,
-)
-
-val SampleSkills = listOf(
-    SkillItem(
-        id = "skill_1",
-        title = "تسجيل اللمس",
-        description = "تعلم تسجيل لمسات الشاشة والتفاعل معها",
-        level = "مبتدئ",
-        icon = androidx.compose.material.icons.Icons.Default.TouchApp,
-    ),
-    SkillItem(
-        id = "skill_2",
-        title = "تسجيل الحركات",
-        description = "تسجيل حركات السحب والإفلات والتنقل بين الشاشات",
-        level = "متوسط",
-        icon = androidx.compose.material.icons.Icons.Default.DragHandle,
-    ),
-    SkillItem(
-        id = "skill_3",
-        title = "تسجيل النصوص",
-        description = "تسجيل الإدخال النصي والتحقق من صحة الحقول",
-        level = "متقدم",
-        icon = androidx.compose.material.icons.Icons.Default.Edit,
-    ),
-    SkillItem(
-        id = "skill_4",
-        title = "التحقق من الأحداث",
-        description = "التحقق من ترتيب الأحداث وصحتها بعد التسجيل",
-        level = "مبتدئ",
-        icon = androidx.compose.material.icons.Icons.Default.CheckCircle,
-    ),
-    SkillItem(
-        id = "skill_5",
-        title = "التنفيذ التلقائي",
-        description = "إعادة تنفيذ المهام المسجلة تلقائياً",
-        level = "متقدم",
-        icon = androidx.compose.material.icons.Icons.Default.Automation,
-    ),
-)
 
 @Composable
 fun SkillLibraryScreen(onNavigateTo: (String) -> Unit) {
+    val skills by SkillRepository.skills.collectAsStateWithLifecycle()
+
     Column(
-        modifier = Modifier.fillMaxSize().padding(horizontal = Space.medium),
-        verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(Space.medium),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = Space.medium),
+        verticalArrangement = Arrangement.spacedBy(Space.medium),
     ) {
         ScreenHeader(
             title = "مكتبة المهارات",
-            subtitle = "تعلم المهارات المختلفة لتسجيل وتنفيذ المهام",
+            subtitle = "المهارات المتعلَّمة من جلسات التسجيل",
         )
 
-        PrimaryButton(
-            text = "استكشاف مهارة جديدة",
-            onClick = { onNavigateTo("agent_control") },
-        )
+        when {
+            skills.isEmpty() -> {
+                EmptyState(
+                    title = "لا توجد مهارات متعلّمة",
+                    description = "أنشئ مهمة وسجّل عروضاً متعددة في استديو التدريب لبدء استخراج المهارات",
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
 
-        androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(Space.medium))
-
-        Text(
-            text = "المهارات المتاحة",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            items(items = SampleSkills, key = { it.id }) { skill ->
-                Card(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = Space.xSmall),
-                    colors = androidx.compose.material3.CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                    ),
-                    elevation = 1.dp,
+            else -> {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(Space.xSmall),
                 ) {
-                    androidx.compose.foundation.layout.Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onNavigateTo("training_studio") }
-                            .padding(horizontal = Space.medium, vertical = Space.small),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        androidx.compose.material3.Icon(
-                            imageVector = skill.icon,
-                            contentDescription = null,
-                            modifier = Modifier.size(32.dp),
-                            tint = MaterialTheme.colorScheme.primary,
-                        )
-                        androidx.compose.foundation.layout.Spacer(modifier = Modifier.width(Space.medium))
-                        androidx.compose.foundation.layout.Column(
-                            modifier = Modifier.weight(1f),
-                        ) {
-                            Text(
-                                text = skill.title,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                            Text(
-                                text = skill.description,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 2,
-                            )
-                        }
-                        Text(
-                            text = skill.level,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.primary,
+                    items(items = skills, key = { it.id }) { skill ->
+                        SkillCard(
+                            skill = skill,
+                            onPromoteToReview = {
+                                // promote to review - يتطلب State holder للتحديث
+                            },
+                            onArchive = {
+                                // archive - يتطلب State holder للتحديث
+                            },
                         )
                     }
+                }
+            }
+        }
+
+        PrimaryButton(
+            text = "بدء تسجيل مهمة",
+            onClick = { onNavigateTo(AppRoutes.TrainingStudio) },
+        )
+    }
+}
+
+@Composable
+private fun SkillCard(
+    skill: SkillEntity,
+    onPromoteToReview: () -> Unit,
+    onArchive: () -> Unit,
+) {
+    val state = skill.lifecycleState
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = Space.medium, vertical = Space.small),
+            verticalArrangement = Arrangement.spacedBy(Space.xxSmall),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = skill.title,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Text(
+                        text = "المستوى: ${skill.level}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                    Text(
+                        text = "الحالة: ${state.name}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = when (state) {
+                            SkillLifecycleState.READY -> MaterialTheme.colorScheme.primary
+                            SkillLifecycleState.FAILED -> MaterialTheme.colorScheme.error
+                            SkillLifecycleState.NEEDS_REVIEW -> MaterialTheme.colorScheme.secondary
+                            else -> MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                    )
+                }
+            }
+            Text(
+                text = skill.description,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 2,
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                when (state) {
+                    SkillLifecycleState.NEEDS_REVIEW -> {
+                        TextButton(
+                            onClick = { onPromoteToReview() },
+                        ) {
+                            Text(text = "إرسال للمراجعة")
+                        }
+                    }
+                    SkillLifecycleState.FAILED -> {
+                        TextButton(
+                            onClick = { onArchive() },
+                        ) {
+                            Text(text = "أرشفة")
+                        }
+                    }
+                    else -> Unit
                 }
             }
         }

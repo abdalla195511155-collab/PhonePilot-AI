@@ -1,166 +1,171 @@
 package com.phonepilot.app.ui.screens
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.phonepilot.app.components.ScreenHeader
-import com.phonepilot.app.components.PrimaryButton
-import com.phonepilot.app.components.SecondaryButton
-import com.phonepilot.app.repository.RecordingRepository
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.phonepilot.app.models.RecordingState
+import com.phonepilot.app.ui.agent.AgentControlStateHolder
+import com.phonepilot.app.ui.components.PrimaryButton
+import com.phonepilot.app.ui.components.ScreenHeader
+import com.phonepilot.app.ui.components.SecondaryButton
+import com.phonepilot.app.ui.navigation.AppRoutes
 import com.phonepilot.app.ui.theme.Space
-import kotlinx.coroutines.launch
 
 @Composable
 fun AgentControlScreen(onNavigateTo: (String) -> Unit) {
     val scope = rememberCoroutineScope()
-    val state = RecordingRepository.recordingState.value
-    val isMonitoringEnabled = remember { mutableStateOf(true) }
-    val isAutoRecoveryEnabled = remember { mutableStateOf(true) }
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val stateHolder = remember { AgentControlStateHolder(context, scope) }
+    val uiState by stateHolder.uiState.collectAsStateWithLifecycle()
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(horizontal = Space.medium),
-        verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(Space.medium),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = Space.medium),
+        verticalArrangement = Arrangement.spacedBy(Space.medium),
     ) {
         ScreenHeader(
             title = "تحكم الوكيل",
-            subtitle = "مراقبة وتحكم في سلوك وكيل التسجيل",
-        )
-
-        Card(
-            modifier = Modifier.fillMaxWidth().padding(vertical = Space.small),
-            colors = androidx.compose.material3.CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-            ),
-            elevation = 1.dp,
-        ) {
-            androidx.compose.foundation.layout.Column(
-                modifier = Modifier.padding(horizontal = Space.medium, vertical = Space.medium),
-            ) {
-                Text(
-                    text = "إعدادات سلوك الوكيل",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-                androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(Space.small))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-                ) {
-                    Switch(
-                        checked = isMonitoringEnabled.value,
-                        onCheckedChange = { isMonitoringEnabled.value = it },
-                        colors = androidx.compose.material3.SwitchDefaults.colors(
-                            checkedColor = MaterialTheme.colorScheme.primary,
-                        ),
-                    )
-                    Text(
-                        text = "تفعيل المراقبة المستمرة",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                }
-                androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(Space.small))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-                ) {
-                    Switch(
-                        checked = isAutoRecoveryEnabled.value,
-                        onCheckedChange = { isAutoRecoveryEnabled.value = it },
-                        colors = androidx.compose.material3.SwitchDefaults.colors(
-                            checkedColor = MaterialTheme.colorScheme.primary,
-                        ),
-                    )
-                    Text(
-                        text = "التعافي التلقائي من الانقطاع",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                }
-            }
-        }
-
-        Text(
-            text = "حالة التسجيل الحالية",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface,
+            subtitle = "التحكم في التسجيل الفعلي ومراقبة حالة الخدمة",
         )
 
         Card(
             modifier = Modifier.fillMaxWidth(),
-            colors = androidx.compose.material3.CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-            ),
-            elevation = 2.dp,
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         ) {
-            androidx.compose.foundation.layout.Column(
+            Column(
                 modifier = Modifier.padding(horizontal = Space.medium, vertical = Space.medium),
+                verticalArrangement = Arrangement.spacedBy(Space.xSmall),
             ) {
                 Text(
-                    text = when (state) {
-                        is RecordingState.Idle -> "الوكيل متوقف"
+                    text = "حالة الوكيل",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Text(
+                    text = when (uiState.recordingState) {
+                        RecordingState.Idle -> "الوكيل متوقف"
                         is RecordingState.Recording -> "الوكيل يسجل الأحداث حالياً"
-                        is RecordingState.Interrupted -> "تم قطع التسجيل - يمكن الاستئناف"
-                        is RecordingState.Completed -> "تم اكتمال التسجيل"
-                        is RecordingState.Stopping -> "يتم إيقاف التسجيل..."
-                        is RecordingState.Error -> "حدث خطأ في الوكيل"
+                        RecordingState.Interrupted -> "تم قطع التسجيل — توجد جلسة تحتاج مراجعة"
+                        RecordingState.Completed -> "تم اكتمال التسجيل"
                     },
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
+                Text(
+                    text = "المقبولة ${uiState.acceptedCount} • المحفوظة ${uiState.savedCount} • الفاشلة ${uiState.failedCount}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
 
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        ) {
+            Column(
+                modifier = Modifier.padding(horizontal = Space.medium, vertical = Space.medium),
+                verticalArrangement = Arrangement.spacedBy(Space.xSmall),
+            ) {
+                Text(
+                    text = "معلومات التشغيل",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                StatusRow(
+                    label = "المهمة النشطة",
+                    value = uiState.activeTask?.name ?: "غير محددة — اختر مهمة من استديو التدريب",
+                )
+                StatusRow(
+                    label = "خدمة الوصولية",
+                    value = if (uiState.serviceEnabled) "مفعّلة" else "غير مفعّلة",
+                )
+                StatusRow(
+                    label = "الاتصال بالخدمة",
+                    value = if (uiState.serviceConnected) "متصلة" else "غير متصلة",
+                )
+                StatusRow(
+                    label = "استرداد معلّق",
+                    value = if (uiState.hasPendingRecovery) "نعم" else "لا",
+                )
+            }
+        }
+
+        uiState.message?.let { message ->
+            Text(
+                text = message,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
+
         PrimaryButton(
-            text = when (state) {
-                is RecordingState.Idle -> "بدء التحكم بالتسجيل"
-                is RecordingState.Recording -> "إيقاف التحكم بالتسجيل"
-                is RecordingState.Interrupted -> "استئناف التسجيل"
-                is RecordingState.Completed -> "بدء تسجيل جديد"
-                is RecordingState.Stopping -> "جارٍ الإيقاف..."
-                is RecordingState.Error -> "إعادة التشغيل"
-            },
+            text = if (uiState.isRecording) "إيقاف التسجيل" else "بدء التسجيل",
+            loading = uiState.isBusy,
+            enabled = !uiState.isBusy,
             onClick = {
-                when (state) {
-                    is RecordingState.Idle -> {
-                        RecordingRepository.startRecording(taskId = 1L, iterationNumber = 1)
-                    }
-                    is RecordingState.Recording -> {
-                        scope.launch { RecordingRepository.stopRecording() }
-                    }
-                    is RecordingState.Interrupted -> {
-                        RecordingRepository.startRecording(taskId = 1L, iterationNumber = 1)
-                    }
-                    is RecordingState.Completed -> {
-                        RecordingRepository.startRecording(taskId = 1L, iterationNumber = 1)
-                    }
-                    is RecordingState.Stopping -> { }
-                    is RecordingState.Error -> {
-                        RecordingRepository.startRecording(taskId = 1L, iterationNumber = 1)
-                    }
-                }
+                if (uiState.isRecording) stateHolder.stopRecording() else stateHolder.startRecording()
             },
-            enabled = state !is RecordingState.Stopping,
         )
+
+        if (uiState.hasPendingRecovery) {
+            SecondaryButton(
+                text = "استعادة الجلسة",
+                enabled = !uiState.isBusy,
+                onClick = { stateHolder.recoverSession() },
+            )
+        }
+
+        if (uiState.hasInterruptFailure) {
+            SecondaryButton(
+                text = "إنهاء الجلسة المتعثرة",
+                enabled = !uiState.isBusy,
+                onClick = { stateHolder.abandonSession() },
+            )
+        }
 
         SecondaryButton(
             text = "التنقل إلى المكتبة",
-            onClick = { onNavigateTo("skill_library") },
+            onClick = { onNavigateTo(AppRoutes.SkillLibrary) },
+        )
+    }
+}
+
+@Composable
+private fun StatusRow(label: String, value: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(start = Space.small),
         )
     }
 }

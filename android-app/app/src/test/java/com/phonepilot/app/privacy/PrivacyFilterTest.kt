@@ -135,4 +135,22 @@ class PrivacyFilterTest {
         assertEquals("[MASKED]", masked.contentDescription)
         assertTrue(masked.isPrivacyMasked)
     }
+
+    @Test
+    fun `maskEventText returns empty string for null`() {
+        assertEquals("", PrivacyFilter.maskEventText(null))
+    }
+
+    @Test
+    fun `maskEventText returns unchanged text for normal text`() {
+        assertEquals("مرحبا بالعالم", PrivacyFilter.maskEventText("مرحبا بالعالم"))
+        assertEquals("إعدادات Wi-Fi", PrivacyFilter.maskEventText("إعدادات Wi-Fi"))
+    }
+
+    @Test
+    fun `maskEventText masks sensitive text`() {
+        assertEquals("[مخفي]", PrivacyFilter.maskEventText("كلمة مرور"))
+        assertEquals("[مخفي]", PrivacyFilter.maskEventText("password"))
+        assertEquals("[مخفي]", PrivacyFilter.maskEventText("تحويل"))
+    }
 }

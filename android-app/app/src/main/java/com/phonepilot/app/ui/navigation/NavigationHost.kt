@@ -2,16 +2,19 @@ package com.phonepilot.app.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberSaveable
-import androidx.navigation.NavHost
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavType
-import androidx.navigation.compose.NavHostController
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.compose.ui.platform.LocalContext
+import com.phonepilot.app.database.TaskDatabaseHelper
 import com.phonepilot.app.ui.screens.AiAssistantScreen
 import com.phonepilot.app.ui.screens.AiModelsApiSettingsScreen
+import com.phonepilot.app.ui.screens.AgentApprovalScreen
 import com.phonepilot.app.ui.screens.AgentControlScreen
+import com.phonepilot.app.ui.screens.AgentStateScreen
 import com.phonepilot.app.ui.screens.DashboardScreen
 import com.phonepilot.app.ui.screens.ExecutionMonitorScreen
 import com.phonepilot.app.ui.screens.LogsHistoryScreen
@@ -37,9 +40,14 @@ fun AppNavigation(
         }
         composable(
             route = AppRoutes.TrainingStudio,
-            arguments = listOf(navArgument("taskId") { type = NavType.LongType }),
-        ) {
-            val taskId = navController.currentBackStackEntryAsState()?.arguments?.getLong("taskId") ?: 0L
+            arguments = listOf(
+                navArgument("taskId") {
+                    type = NavType.LongType
+                    defaultValue = 0L
+                },
+            ),
+        ) { backStackEntry ->
+            val taskId = backStackEntry.arguments?.getLong("taskId") ?: 0L
             TrainingStudioScreen(taskId = taskId, onNavigateTo = { route ->
                 navController.navigate(route)
                 onRouteChange?.invoke(route)
@@ -86,6 +94,36 @@ fun AppNavigation(
                 navController.navigate(route)
                 onRouteChange?.invoke(route)
             })
+        }
+        composable(route = AppRoutes.AgentState) {
+            AgentStateScreen(
+                orchestrator = AgentOrchestrator(
+                    context = LocalContext.current,
+                    taskDatabaseHelper = TaskDatabaseHelper.getInstance(LocalContext.current.applicationContext),
+                    accessibilityService = null,
+                    scope = rememberCoroutineScope(),
+                ),
+                onNavigateTo = { route ->
+                    navController.navigate(route)
+                    onRouteChange?.invoke(route)
+                },
+            )
+        }
+        composable(route = AppRoutes.AgentApproval) {
+            AgentApprovalScreen(
+                onApprove = { skillId ->
+                    // TODO: استدعاء recordSkillApproval في SkillRepository
+                    onRouteChange?.invoke(AppRoutes.SkillLibrary)
+                },
+                onReject = { skillId ->
+                    // TODO: استدعاء recordSkillApproval مع REJECTED
+                    onRouteChange?.invoke(AppRoutes.SkillLibrary)
+                },
+                onNavigateTo = { route ->
+                    navController.navigate(route)
+                    onRouteChange?.invoke(route)
+                },
+            )
         }
     }
 }

@@ -1,13 +1,17 @@
 package com.phonepilot.app.ui.theme
 
+import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.LocalContext
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
-import android.view.WindowInsetsController
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.graphics.ColorUtils
 
 data class UiThemeState(
     val isDark: Boolean = false,
@@ -30,8 +34,8 @@ fun PhonePilotTheme(
     content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
-        dynamicColor && darkTheme -> DarkDynamicColorScheme
-        dynamicColor -> LightDynamicColorScheme
+        dynamicColor && darkTheme -> PhonePilotDynamicDarkColorScheme()
+        dynamicColor -> PhonePilotDynamicLightColorScheme()
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
@@ -68,10 +72,12 @@ fun ThemeSwitcher(onThemeChange: (Boolean) -> Unit) {
 fun StatusBarColor(color: Color = MaterialTheme.colorScheme.background) {
     val context = LocalContext.current
     val activity = context as? android.app.Activity ?: return
-    val controller = activity.window.insetsController
-    if (controller != null) {
-        controller.isAppearanceLightStatusBars = color.computeLuminance() > 0.5f
+    val isLight = ColorUtils.calculateLuminance(color.toArgb()) > 0.5
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        activity.window.insetsController?.isAppearanceLightStatusBars = isLight
     }
+    @Suppress("DEPRECATION")
     activity.window.statusBarColor = color.toArgb()
+    @Suppress("DEPRECATION")
     activity.window.navigationBarColor = color.toArgb()
 }

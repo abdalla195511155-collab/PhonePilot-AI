@@ -48,6 +48,7 @@ class PhonePilotAccessibilityService : AccessibilityService() {
         serviceInfo = info
 
         RecordingRepository.init(this)
+        com.phonepilot.app.data.SettingsRepository.init(this)
         isServiceConnected = true
         RecordingRepository.serviceConnected()
 

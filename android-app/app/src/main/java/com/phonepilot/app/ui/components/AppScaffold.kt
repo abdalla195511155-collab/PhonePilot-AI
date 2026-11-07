@@ -1,19 +1,21 @@
 package com.phonepilot.app.ui.components
 
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.phonepilot.app.ui.theme.Space
 
 @Composable
 fun AppScaffold(
@@ -25,7 +27,7 @@ fun AppScaffold(
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        containerColor = androidx.compose.material3.MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             if (title != null) {
                 PhonePilotTopAppBar(title = title, onNavigateUp = onNavigateUp)
@@ -33,9 +35,8 @@ fun AppScaffold(
         },
         floatingActionButton = floatingActionButton,
     ) { paddingValues ->
-        content(
-            paddingValues + WindowInsets.safeDrawing.padding(WindowInsetsSides.all)
-        )
+        // Scaffold already applies the system-bar insets through its default contentWindowInsets.
+        content(paddingValues)
     }
 }
 
@@ -45,22 +46,29 @@ private fun PhonePilotTopAppBar(
     onNavigateUp: (() -> Unit)?,
 ) {
     TopAppBar(
+        title = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        },
         modifier = Modifier.fillMaxWidth(),
-        title = { Text(text = title, style = androidx.compose.material3.MaterialTheme.typography.headlineSmall) },
-        colors = TopAppBarDefaults.mediumTopAppBarColors(
-            containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
-            contentColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
-        ),
-        elevation = 0.dp,
         navigationIcon = {
-            onNavigateUp?.let {
-                androidx.compose.material3.IconButton(onClick = it) {
-                    androidx.compose.material3.Icon(
-                        imageVector = androidx.compose.material.icons.Icons.Default.ArrowBack,
-                        contentDescription = null,
+            if (onNavigateUp != null) {
+                IconButton(onClick = onNavigateUp) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "رجوع",
+                        tint = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             }
         },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+        ),
     )
 }

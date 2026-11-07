@@ -6,6 +6,9 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.phonepilot.app.models.EventEntity
+import com.phonepilot.app.models.SkillEntity
+import com.phonepilot.app.models.SkillLifecycleState
+import com.phonepilot.app.models.SkillVersionEntity
 import com.phonepilot.app.models.TaskEntity
 import com.phonepilot.app.models.TaskRecordingEntity
 
@@ -14,7 +17,7 @@ class TaskDatabaseHelper private constructor(context: Context) :
 
     companion object {
         private const val DATABASE_NAME = "phonepilot.db"
-        private const val DATABASE_VERSION = 4
+        private const val DATABASE_VERSION = 9
 
         private const val CREATE_TASKS =
             "CREATE TABLE tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT, created_at INTEGER NOT NULL, status TEXT NOT NULL)"
@@ -40,6 +43,122 @@ class TaskDatabaseHelper private constructor(context: Context) :
             "after_snapshot TEXT, " +
             "is_privacy_masked INTEGER NOT NULL DEFAULT 0, " +
             "FOREIGN KEY(recording_id) REFERENCES task_recordings(id))"
+
+        private const val CREATE_SKILLS =
+            "CREATE TABLE skills (" +
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "task_id INTEGER NOT NULL, " +
+            "title TEXT NOT NULL, " +
+            "description TEXT, " +
+            "level TEXT NOT NULL, " +
+            "source_recording_id INTEGER, " +
+            "created_at INTEGER NOT NULL, " +
+            "lifecycle_state TEXT NOT NULL DEFAULT 'DRAFT', " +
+            "confidence_score REAL DEFAULT 0.0, " +
+            "validation_reasons TEXT, " +
+            "version INTEGER NOT NULL DEFAULT 1, " +
+            "approval_state TEXT NOT NULL DEFAULT 'PENDING', " +
+            "approved_at INTEGER, " +
+            "approved_by_user INTEGER NOT NULL DEFAULT 0, " +
+            "FOREIGN KEY(task_id) REFERENCES tasks(id), " +
+            "FOREIGN KEY(source_recording_id) REFERENCES task_recordings(id))"
+
+        /** إنشاء جدول المهارات بالحد الأدنى من الأعمدة للترحيل v4 → v5.
+         * الأعمدة المتبقية (الحالة، الثقة، الإصدار، الموافقة) تُضاف في ترحيلات v5→v6 و v6→v7
+         * لتجنب خطأ "عمود مكرر" عند الترقية المباشرة من إصدارات قديمة. */
+        private const val CREATE_SKILLS_V4_TO_V5 =
+            "CREATE TABLE skills (" +
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "task_id INTEGER NOT NULL, " +
+            "title TEXT NOT NULL, " +
+            "description TEXT, " +
+            "level TEXT NOT NULL, " +
+            "source_recording_id INTEGER, " +
+            "created_at INTEGER NOT NULL, " +
+            "FOREIGN KEY(task_id) REFERENCES tasks(id), " +
+            "FOREIGN KEY(source_recording_id) REFERENCES task_recordings(id))"
+
+        private const val CREATE_SKILL_VERSIONS =
+            "CREATE TABLE skill_versions (" +
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "skill_id TEXT NOT NULL, " +
+            "version_number INTEGER NOT NULL, " +
+            "title TEXT NOT NULL, " +
+            "description TEXT, " +
+            "level TEXT, " +
+            "lifecycle_state TEXT NOT NULL, " +
+            "source_recording_id INTEGER, " +
+            "created_at INTEGER NOT NULL, " +
+            "FOREIGN KEY(skill_id) REFERENCES skills(id))"
+
+        private const val CREATE_EXECUTIONS =
+            "CREATE TABLE executions (" +
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "skill_id TEXT NOT NULL, " +
+            "skill_version INTEGER NOT NULL, " +
+            "task_id INTEGER, " +
+            "state TEXT NOT NULL, " +
+            "started_at INTEGER NOT NULL, " +
+            "completed_at INTEGER, " +
+            "total_steps INTEGER NOT NULL DEFAULT 0, " +
+            "completed_steps INTEGER NOT NULL DEFAULT 0, " +
+            "failed_steps INTEGER NOT NULL DEFAULT 0, " +
+            "skipped_steps INTEGER NOT NULL DEFAULT 0, " +
+            "failure_reason TEXT, " +
+            "recovery_attempts INTEGER NOT NULL DEFAULT 0, " +
+            "FOREIGN KEY(skill_id) REFERENCES skills(id))"
+
+        private const val CREATE_STEP_RESULTS =
+            "CREATE TABLE step_results (" +
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "execution_id INTEGER NOT NULL, " +
+            "step_number INTEGER NOT NULL, " +
+            "step_description TEXT NOT NULL, " +
+            "success INTEGER NOT NULL DEFAULT 0, " +
+            "verified INTEGER NOT NULL DEFAULT 0, " +
+            "element_resolved INTEGER NOT NULL DEFAULT 0, " +
+            "element_id TEXT, " +
+            "action_taken TEXT, " +
+            "failure_reason TEXT, " +
+            "recovery_attempted INTEGER NOT NULL DEFAULT 0, " +
+            "recovery_succeeded INTEGER NOT NULL DEFAULT 0, " +
+            "timestamp INTEGER NOT NULL, " +
+            "screen_before TEXT, " +
+            "screen_after TEXT, " +
+            "FOREIGN KEY(execution_id) REFERENCES executions(id))"
+
+        private const val CREATE_AGENT_MEMORY =
+            "CREATE TABLE agent_memory (" +
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "task_id TEXT NOT NULL, " +
+            "intent TEXT NOT NULL, " +
+            "skill_id TEXT, " +
+            "execution_state TEXT NOT NULL, " +
+            "completed_at INTEGER, " +
+            "success INTEGER NOT NULL DEFAULT 0, " +
+            "notes TEXT, " +
+            "created_at INTEGER NOT NULL)"
+
+        private const val ALTER_SKILLS_ADD_LIFECYCLE =
+            "ALTER TABLE skills ADD COLUMN lifecycle_state TEXT NOT NULL DEFAULT 'DRAFT'"
+
+        private const val ALTER_SKILLS_ADD_CONFIDENCE =
+            "ALTER TABLE skills ADD COLUMN confidence_score REAL DEFAULT 0.0"
+
+        private const val ALTER_SKILLS_ADD_VALIDATION_REASONS =
+            "ALTER TABLE skills ADD COLUMN validation_reasons TEXT"
+
+        private const val ALTER_SKILLS_ADD_VERSION =
+            "ALTER TABLE skills ADD COLUMN version INTEGER NOT NULL DEFAULT 1"
+
+        private const val ALTER_SKILLS_ADD_APPROVAL_STATE =
+            "ALTER TABLE skills ADD COLUMN approval_state TEXT NOT NULL DEFAULT 'PENDING'"
+
+        private const val ALTER_SKILLS_ADD_APPROVED_AT =
+            "ALTER TABLE skills ADD COLUMN approved_at INTEGER"
+
+        private const val ALTER_SKILLS_ADD_APPROVED_BY_USER =
+            "ALTER TABLE skills ADD COLUMN approved_by_user INTEGER NOT NULL DEFAULT 0"
 
         // Migration columns added in v4
         private const val ALTER_RECORDINGS_ADD_ACCEPTED_COUNT =
@@ -69,6 +188,12 @@ class TaskDatabaseHelper private constructor(context: Context) :
         db.execSQL(ALTER_RECORDINGS_ADD_STATE)
         db.execSQL(CREATE_EVENTS)
         db.execSQL(CREATE_INDEX_EVENTS)
+        // جداول المراحل 5 و 6 و 7 تُنشَز بالكامل عند التثبيت الجديد (الإصدار 9)
+        db.execSQL(CREATE_SKILLS)
+        db.execSQL(CREATE_SKILL_VERSIONS)
+        db.execSQL(CREATE_EXECUTIONS)
+        db.execSQL(CREATE_STEP_RESULTS)
+        db.execSQL(CREATE_AGENT_MEMORY)
         db.enableWriteAheadLogging()
     }
 
@@ -95,6 +220,35 @@ class TaskDatabaseHelper private constructor(context: Context) :
             // Migration v3 → v4: add accepted_count and failure_reason columns
             db.execSQL(ALTER_RECORDINGS_ADD_ACCEPTED_COUNT)
             db.execSQL(ALTER_RECORDINGS_ADD_FAILURE_REASON)
+        }
+        if (oldVersion < 5) {
+            // Migration v4 → v5: add skills table with base columns only (Phase 5).
+            // الأعمدة الإضافية تُضاف في v5→v6 و v6→v7 لتجنب التكرار.
+            db.execSQL(CREATE_SKILLS_V4_TO_V5)
+        }
+        if (oldVersion < 6) {
+            // Migration v5 → v6: add lifecycle state, confidence, validation reasons, version columns
+            // and skill_versions table for skill versioning (Phase 5 completion)
+            db.execSQL(ALTER_SKILLS_ADD_LIFECYCLE)
+            db.execSQL(ALTER_SKILLS_ADD_CONFIDENCE)
+            db.execSQL(ALTER_SKILLS_ADD_VALIDATION_REASONS)
+            db.execSQL(ALTER_SKILLS_ADD_VERSION)
+            db.execSQL(CREATE_SKILL_VERSIONS)
+        }
+        if (oldVersion < 7) {
+            // Migration v6 → v7: add user approval fields to skills table (Phase 5 approval gate)
+            db.execSQL(ALTER_SKILLS_ADD_APPROVAL_STATE)
+            db.execSQL(ALTER_SKILLS_ADD_APPROVED_AT)
+            db.execSQL(ALTER_SKILLS_ADD_APPROVED_BY_USER)
+        }
+        if (oldVersion < 8) {
+            // Migration v7 → v8: add executions and step_results tables (Phase 6 Intelligent Execution)
+            db.execSQL(CREATE_EXECUTIONS)
+            db.execSQL(CREATE_STEP_RESULTS)
+        }
+        if (oldVersion < 9) {
+            // Migration v8 → v9: add agent_memory table (Phase 7 Agent Orchestration)
+            db.execSQL(CREATE_AGENT_MEMORY)
         }
         db.enableWriteAheadLogging()
     }
@@ -318,6 +472,16 @@ class TaskDatabaseHelper private constructor(context: Context) :
         }
     }
 
+    fun insertTask(name: String, description: String? = null): Long {
+        val values = ContentValues().apply {
+            put("name", name)
+            put("description", description)
+            put("created_at", System.currentTimeMillis())
+            put("status", "ACTIVE")
+        }
+        return writableDatabase.insert("tasks", null, values)
+    }
+
     fun getAllTasks(): List<TaskEntity> {
         val db = readableDatabase
         val cursor = db.rawQuery("SELECT * FROM tasks ORDER BY created_at DESC", null)
@@ -341,6 +505,33 @@ class TaskDatabaseHelper private constructor(context: Context) :
     fun getAllRecordings(): List<TaskRecordingEntity> {
         val db = readableDatabase
         val cursor = db.rawQuery("SELECT * FROM task_recordings ORDER BY recorded_at DESC", null)
+        val recordings = mutableListOf<TaskRecordingEntity>()
+        try {
+            while (cursor.moveToNext()) {
+                recordings.add(TaskRecordingEntity(
+                    id = cursor.getLong(cursor.getColumnIndexOrThrow("id")),
+                    taskId = cursor.getLong(cursor.getColumnIndexOrThrow("task_id")),
+                    iterationNumber = cursor.getInt(cursor.getColumnIndexOrThrow("iteration_number")),
+                    recordedAt = cursor.getLong(cursor.getColumnIndexOrThrow("recorded_at")),
+                    rawEvents = cursor.getString(cursor.getColumnIndexOrThrow("raw_events"))
+                ))
+            }
+        } finally {
+            cursor.close()
+        }
+        return recordings
+    }
+
+    /**
+     * يعيد التسجيلات المكتملة لمهمة معينة مرتبة حسب رقم التكرار، قابلة للمقارنة في محرك التعلم.
+     * Phase 5: التعلم من تكرارات متعددة للمهمة نفسها.
+     */
+    fun getRecordingsForTask(taskId: Long): List<TaskRecordingEntity> {
+        val db = readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT * FROM task_recordings WHERE task_id = ? AND state = 'COMPLETED' ORDER BY iteration_number ASC, recorded_at ASC",
+            arrayOf(taskId.toString())
+        )
         val recordings = mutableListOf<TaskRecordingEntity>()
         try {
             while (cursor.moveToNext()) {
@@ -389,6 +580,238 @@ class TaskDatabaseHelper private constructor(context: Context) :
             cursor.close()
         }
         return events
+    }
+
+    /** إدراج مهارة متعلّمة جديدة (Phase 5) مع حالة دورة الحياة الافتراضية DRAFT. يعيد معرف الصف أو -1 عند الفشل. */
+    fun insertSkill(taskId: Long, title: String, description: String?, level: String, sourceRecordingId: Long?): Long {
+        return insertSkillWithState(taskId, title, description, level, sourceRecordingId, SkillLifecycleState.DRAFT)
+    }
+
+    /** إدراج مهارة بحالة دورة حياة محددة (Phase 5). */
+    fun insertSkillWithState(taskId: Long, title: String, description: String?, level: String, sourceRecordingId: Long?, state: SkillLifecycleState): Long {
+        val db = writableDatabase
+        db.beginTransaction()
+        try {
+            val values = ContentValues().apply {
+                put("task_id", taskId)
+                put("title", title)
+                put("description", description)
+                put("level", level)
+                put("source_recording_id", sourceRecordingId)
+                put("lifecycle_state", state.name)
+                put("confidence_score", 0.0)
+                put("version", 1)
+                put("approval_state", "PENDING")
+                put("approved_by_user", 0)
+                put("created_at", System.currentTimeMillis())
+            }
+            val id = db.insert("skills", null, values)
+            db.setTransactionSuccessful()
+            return id
+        } finally {
+            db.endTransaction()
+        }
+    }
+
+    /** تسجيل قرار موافقة المستخدم على مهارة (Phase 5).
+     * يحفظ حالة الموافقة (APPROVED/REJECTED)، توقيت القرار، وهل القرار من المستخدم أم لا.
+     * يعيد عدد الصفوف المحدثة. */
+    fun recordSkillApproval(
+        id: Long,
+        approvalState: String,
+        approvedAt: Long?,
+        approvedByUser: Boolean,
+    ): Int {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put("approval_state", approvalState)
+            approvedAt?.let { values.put("approved_at", it) }
+            values.put("approved_by_user", if (approvedByUser) 1 else 0)
+        }
+        return db.update("skills", values, "id = ?", arrayOf(id.toString()))
+    }
+
+    /** إرجاع حالة الموافقة لمهارة معينة (Phase 5). */
+    fun getSkillApprovalState(id: Long): String? {
+        val db = readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT approval_state FROM skills WHERE id = ?",
+            arrayOf(id.toString())
+        )
+        try {
+            if (!cursor.moveToFirst()) return null
+            return cursor.getString(cursor.getColumnIndexOrThrow("approval_state"))
+        } finally {
+            cursor.close()
+        }
+    }
+
+    /** التحقق من أن مهارة ما موافقة من المستخدم وجاهزة للاعتماد (Phase 5). */
+    fun isSkillApprovedByUser(id: Long): Boolean {
+        val db = readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT approval_state, approved_by_user FROM skills WHERE id = ?",
+            arrayOf(id.toString())
+        )
+        try {
+            if (!cursor.moveToFirst()) return false
+            val state = cursor.getString(cursor.getColumnIndexOrThrow("approval_state"))
+            val byUser = cursor.getInt(cursor.getColumnIndexOrThrow("approved_by_user")) == 1
+            return state == "APPROVED" && byUser
+        } finally {
+            cursor.close()
+        }
+    }
+
+    /** تحديث حالة دورة الحياة والثقة وأسباب التحقق لمهارة (Phase 5). يعيد عدد الصفوف المحدثة. */
+    fun updateSkillState(
+        id: Long,
+        lifecycleState: SkillLifecycleState? = null,
+        confidenceScore: Double? = null,
+        validationReasons: List<String>? = null,
+    ): Int {
+        val db = writableDatabase
+        val values = ContentValues()
+        lifecycleState?.let { values.put("lifecycle_state", it.name) }
+        confidenceScore?.let { values.put("confidence_score", it) }
+        validationReasons?.let { values.put("validation_reasons", validationReasons.joinToString(";")) }
+        if (values.isEmpty()) return 0
+        return db.update("skills", values, "id = ?", arrayOf(id.toString()))
+    }
+
+    /** إدراج إصدار جديد لمهارة (Phase 5). يعيد معرف الصف أو -1 عند الفشل. */
+    fun insertSkillVersion(
+        skillId: String,
+        versionNumber: Int,
+        title: String,
+        description: String?,
+        level: String?,
+        lifecycleState: SkillLifecycleState,
+        sourceRecordingId: Long?,
+    ): Long {
+        val db = writableDatabase
+        db.beginTransaction()
+        try {
+            val values = ContentValues().apply {
+                put("skill_id", skillId)
+                put("version_number", versionNumber)
+                put("title", title)
+                put("description", description)
+                put("level", level)
+                put("lifecycle_state", lifecycleState.name)
+                put("source_recording_id", sourceRecordingId)
+                put("created_at", System.currentTimeMillis())
+            }
+            val id = db.insert("skill_versions", null, values)
+            db.setTransactionSuccessful()
+            return id
+        } finally {
+            db.endTransaction()
+        }
+    }
+
+    /** جميع إصدارات مهارة معينة مرتبة حسب الإصدار تنازلياً (Phase 5). */
+    fun getSkillVersions(skillId: String): List<SkillVersionEntity> {
+        val db = readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT * FROM skill_versions WHERE skill_id = ? ORDER BY version_number DESC",
+            arrayOf(skillId)
+        )
+        val versions = mutableListOf<SkillVersionEntity>()
+        try {
+            while (cursor.moveToNext()) {
+                versions.add(readSkillVersion(cursor))
+            }
+        } finally {
+            cursor.close()
+        }
+        return versions
+    }
+
+    /** إرجاع إصدار مهارة برقم محدد (Phase 5). */
+    fun getSkillVersionByNumber(skillId: String, versionNumber: Int): SkillVersionEntity? {
+        val db = readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT * FROM skill_versions WHERE skill_id = ? AND version_number = ?",
+            arrayOf(skillId, versionNumber.toString())
+        )
+        try {
+            if (!cursor.moveToFirst()) return null
+            return readSkillVersion(cursor)
+        } finally {
+            cursor.close()
+        }
+    }
+
+    /** تحديث رقم الإصدار في جدول المهارة principale (Phase 5). */
+    fun bumpSkillVersion(id: Long, newVersion: Int): Int {
+        return writableDatabase.update("skills", ContentValues().apply { put("version", newVersion) }, "id = ?", arrayOf(id.toString()))
+    }
+
+    /** كل المهارات المتعلّمة مرتبة حسب وقت الإنشاء تنازلياً (Phase 5). */
+    fun getAllSkills(): List<SkillEntity> {
+        val db = readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM skills ORDER BY created_at DESC", null)
+        val skills = mutableListOf<SkillEntity>()
+        try {
+            while (cursor.moveToNext()) {
+                skills.add(readSkill(cursor))
+            }
+        } finally {
+            cursor.close()
+        }
+        return skills
+    }
+
+    /** مهارات مهمة معينة (Phase 5). */
+    fun getSkillsForTask(taskId: Long): List<SkillEntity> {
+        val db = readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT * FROM skills WHERE task_id = ? ORDER BY created_at DESC",
+            arrayOf(taskId.toString())
+        )
+        val skills = mutableListOf<SkillEntity>()
+        try {
+            while (cursor.moveToNext()) {
+                skills.add(readSkill(cursor))
+            }
+        } finally {
+            cursor.close()
+        }
+        return skills
+    }
+
+    /** حذف مهارة بمعرفها (Phase 5). يعيد عدد الصفوف المحذوفة. */
+    fun deleteSkill(id: Long): Int {
+        return writableDatabase.delete("skills", "id = ?", arrayOf(id.toString()))
+    }
+
+    private fun readSkill(cursor: android.database.Cursor): SkillEntity {
+        return SkillEntity(
+            id = cursor.getLong(cursor.getColumnIndexOrThrow("id")).toString(),
+            title = cursor.getString(cursor.getColumnIndexOrThrow("title")),
+            description = cursor.getString(cursor.getColumnIndexOrThrow("description")),
+            level = cursor.getString(cursor.getColumnIndexOrThrow("level")),
+            sourceRecordingId = if (cursor.isNull(cursor.getColumnIndexOrThrow("source_recording_id"))) null else cursor.getLong(cursor.getColumnIndexOrThrow("source_recording_id")),
+            lifecycleState = SkillLifecycleState.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("lifecycle_state"))),
+            approvalState = cursor.getString(cursor.getColumnIndexOrThrow("approval_state")),
+            approvedAt = if (cursor.isNull(cursor.getColumnIndexOrThrow("approved_at"))) null else cursor.getLong(cursor.getColumnIndexOrThrow("approved_at")),
+            approvedByUser = cursor.getInt(cursor.getColumnIndexOrThrow("approved_by_user")) == 1,
+        )
+    }
+
+    private fun readSkillVersion(cursor: android.database.Cursor): SkillVersionEntity {
+        return SkillVersionEntity(
+            id = cursor.getLong(cursor.getColumnIndexOrThrow("id")),
+            skillId = cursor.getString(cursor.getColumnIndexOrThrow("skill_id")),
+            versionNumber = cursor.getInt(cursor.getColumnIndexOrThrow("version_number")),
+            title = cursor.getString(cursor.getColumnIndexOrThrow("title")),
+            description = cursor.getString(cursor.getColumnIndexOrThrow("description")),
+            level = cursor.getString(cursor.getColumnIndexOrThrow("level")),
+            lifecycleState = SkillLifecycleState.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("lifecycle_state"))),
+            sourceRecordingId = if (cursor.isNull(cursor.getColumnIndexOrThrow("source_recording_id"))) null else cursor.getLong(cursor.getColumnIndexOrThrow("source_recording_id")),
+            createdAt = cursor.getLong(cursor.getColumnIndexOrThrow("created_at")),
+        )
     }
 
     val db: SQLiteDatabase

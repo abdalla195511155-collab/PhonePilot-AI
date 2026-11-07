@@ -1,10 +1,14 @@
 package com.phonepilot.app.ui.theme
 
-import androidx.compose.material3.Color
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
+import android.os.Build
+import androidx.compose.ui.graphics.ColorScheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 
 private val darkPrimary = Color(0xFFBB86FC)
 private val darkSecondary = Color(0xFF03DAC6)
@@ -60,5 +64,26 @@ val LightColorScheme = lightColorScheme(
     inversePrimary = Color(0xFFBB86FC),
 )
 
-val DarkDynamicColorScheme = dynamicDarkColorScheme()
-val LightDynamicColorScheme = dynamicLightColorScheme()
+/**
+ * Dynamic (Material You) schemes need an Android 12+ Context, so they are exposed as
+ * composables that fall back to the static PhonePilot palettes on older devices.
+ */
+@Composable
+fun PhonePilotDynamicDarkColorScheme(): ColorScheme {
+    val context = LocalContext.current
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        dynamicDarkColorScheme(context)
+    } else {
+        DarkColorScheme
+    }
+}
+
+@Composable
+fun PhonePilotDynamicLightColorScheme(): ColorScheme {
+    val context = LocalContext.current
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        dynamicLightColorScheme(context)
+    } else {
+        LightColorScheme
+    }
+}

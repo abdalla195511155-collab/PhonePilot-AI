@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -36,7 +37,7 @@ fun AppNavigationBar(
             .height(72.dp)
             .padding(bottom = Space.medium),
         color = androidx.compose.material3.MaterialTheme.colorScheme.surface,
-        elevation = 4.dp,
+        shadowElevation = 4.dp,
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),

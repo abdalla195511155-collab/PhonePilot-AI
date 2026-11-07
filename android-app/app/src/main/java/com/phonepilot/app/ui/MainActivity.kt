@@ -10,12 +10,16 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.phonepilot.app.database.TaskDatabaseHelper
+import com.phonepilot.app.data.SkillRepository
+import com.phonepilot.app.data.SettingsRepository
+import com.phonepilot.app.data.ai.AiProviderRepository
 import com.phonepilot.app.recording.PhonePilotAccessibilityService
 import com.phonepilot.app.repository.RecordingRepository
 import com.phonepilot.app.ui.navigation.AppNavigation
@@ -30,6 +34,13 @@ class MainActivity : ComponentActivity() {
 
         // Preserve existing recording recovery behavior
         TaskDatabaseHelper.getInstance(this).markInterruptedRecordings()
+        // The repository must be usable from the UI even before the accessibility
+        // service connects; init() only wires the database helper.
+        RecordingRepository.init(applicationContext)
+        SettingsRepository.init(applicationContext)
+        SkillRepository.init(applicationContext)
+        AiProviderRepository.init(applicationContext)
+        UsageStore.init(applicationContext)
 
         setContent {
             PhonePilotTheme(
