@@ -62,7 +62,7 @@ fun AgentControlScreen(onNavigateTo: (String) -> Unit) {
                     text = when (uiState.recordingState) {
                         RecordingState.Idle -> "الوكيل متوقف"
                         is RecordingState.Recording -> "الوكيل يسجل الأحداث حالياً"
-                        RecordingState.Interrupted -> "تم قطع التسجيل — توجد جلسة تحتاج مراجعة"
+                        is RecordingState.Interrupted -> "تم قطع التسجيل — توجد جلسة تحتاج مراجعة"
                         RecordingState.Completed -> "تم اكتمال التسجيل"
                     },
                     style = MaterialTheme.typography.bodyMedium,

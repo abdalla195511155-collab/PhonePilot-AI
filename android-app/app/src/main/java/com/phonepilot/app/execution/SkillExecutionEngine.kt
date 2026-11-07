@@ -7,6 +7,8 @@ import com.phonepilot.app.models.ExecutionState
 import com.phonepilot.app.models.SkillEntity
 import com.phonepilot.app.models.SkillValidationResult
 import com.phonepilot.app.models.StepExecutionResult
+import com.phonepilot.app.vision.AccessibilityTreeAnalyzer
+import com.phonepilot.app.vision.UiElementRecognizer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

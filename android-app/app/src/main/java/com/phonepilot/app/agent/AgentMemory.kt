@@ -1,7 +1,6 @@
 package com.phonepilot.app.agent
 
 import com.phonepilot.app.database.TaskDatabaseHelper
-import com.phonepilot.app.models.AgentMemoryEntry
 import com.phonepilot.app.models.ExecutionState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

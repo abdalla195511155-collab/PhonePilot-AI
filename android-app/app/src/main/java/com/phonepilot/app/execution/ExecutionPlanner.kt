@@ -18,7 +18,7 @@ class ExecutionPlanner {
      */
     fun planExecution(skill: SkillEntity, validationResult: SkillValidationResult?): ExecutionPlan? {
         // التحقق من أن المهارة READY ومعتمدة
-        if (skill.lifecycleState != "READY") return null
+        if (skill.lifecycleState != SkillLifecycleState.READY) return null
         if (skill.approvalState != "APPROVED") return null
         if (!skill.approvedByUser) return null
 

@@ -237,7 +237,7 @@ private fun RecordingCard(recording: TaskRecordingEntity) {
 private fun recordingStateLabel(state: RecordingState): String = when (state) {
     RecordingState.Idle -> "متوقف"
     is RecordingState.Recording -> "جارٍ"
-    RecordingState.Interrupted -> "مقطوع"
+    is RecordingState.Interrupted -> "مقطوع"
     RecordingState.Completed -> "مكتمل"
 }
 
@@ -245,7 +245,7 @@ private fun recordingStateLabel(state: RecordingState): String = when (state) {
 private fun recordingStateColor(state: RecordingState) = when (state) {
     RecordingState.Idle -> MaterialTheme.colorScheme.onSurfaceVariant
     is RecordingState.Recording -> MaterialTheme.colorScheme.primary
-    RecordingState.Interrupted -> MaterialTheme.colorScheme.error
+    is RecordingState.Interrupted -> MaterialTheme.colorScheme.error
     RecordingState.Completed -> MaterialTheme.colorScheme.tertiary
 }
 

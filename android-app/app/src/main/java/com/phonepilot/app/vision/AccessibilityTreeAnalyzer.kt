@@ -14,6 +14,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.math.min
 
 /**
  * Analyzes the accessibility tree and extracts structured UI elements.
@@ -122,9 +123,8 @@ class AccessibilityTreeAnalyzer(
         }
 
         // Skip very small nodes (likely decorative)
-        if (node.getBoundsInScreen(rect)) {
-            if (rect.width() < 4 && rect.height() < 4) return false
-        }
+        val hasBounds = node.getBoundsInScreen(rect)
+        if (hasBounds && rect.width() < 4 && rect.height() < 4) return false
 
         return true
     }
@@ -277,12 +277,13 @@ class AccessibilityTreeAnalyzer(
             }
 
             if (bestParent != null) {
-                val parentId = bestParent.elementId
-                val childIds = bestParent.childrenIds + element.elementId
-                val index = elements.indexOf(bestParent)
+                val foundParent = bestParent
+                val parentId = foundParent.elementId
+                val childIds = foundParent.childrenIds + element.elementId
+                val index = elements.indexOf(foundParent)
                 if (index >= 0) {
                     // Update parent's children list
-                    val updatedParent = bestParent.copy(childrenIds = childIds)
+                    val updatedParent = foundParent.copy(childrenIds = childIds)
                     elements[index] = updatedParent
                 }
                 // Update child's parent reference

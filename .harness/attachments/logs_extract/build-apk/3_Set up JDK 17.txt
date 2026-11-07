@@ -1,0 +1,32 @@
+﻿2026-11-07T17:07:30.3461210Z ##[group]Run actions/setup-java@v4
+2026-11-07T17:07:30.3462669Z with:
+2026-11-07T17:07:30.3463635Z   distribution: temurin
+2026-11-07T17:07:30.3464465Z   java-version: 17
+2026-11-07T17:07:30.3465306Z   cache: gradle
+2026-11-07T17:07:30.3466727Z   java-package: jdk
+2026-11-07T17:07:30.3468240Z   check-latest: false
+2026-11-07T17:07:30.3469583Z   server-id: github
+2026-11-07T17:07:30.3470954Z   server-username: GITHUB_ACTOR
+2026-11-07T17:07:30.3472390Z   server-password: GITHUB_TOKEN
+2026-11-07T17:07:30.3473803Z   overwrite-settings: true
+2026-11-07T17:07:30.3475095Z   job-status: success
+2026-11-07T17:07:30.3478855Z   token: ***
+2026-11-07T17:07:30.3479659Z ##[endgroup]
+2026-11-07T17:07:30.5927829Z ##[warning]setup-java v4 is deprecated and will no longer receive updates. Please migrate to actions/setup-java@v5.
+2026-11-07T17:07:30.5937099Z ##[group]Installed distributions
+2026-11-07T17:07:30.5970063Z (node:2168) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-07T17:07:30.5972493Z Resolved Java 17.0.21+9 from tool-cache
+2026-11-07T17:07:30.5974934Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-07T17:07:30.5980543Z Setting Java 17.0.21+9 as the default
+2026-11-07T17:07:30.5982895Z Creating toolchains.xml for JDK version 17 from temurin
+2026-11-07T17:07:30.6058603Z Writing to /home/runner/.m2/toolchains.xml
+2026-11-07T17:07:30.6060270Z 
+2026-11-07T17:07:30.6061684Z Java configuration:
+2026-11-07T17:07:30.6063745Z   Distribution: temurin
+2026-11-07T17:07:30.6066132Z   Version: 17.0.21+9
+2026-11-07T17:07:30.6068144Z   Path: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-07T17:07:30.6069899Z 
+2026-11-07T17:07:30.6071703Z ##[endgroup]
+2026-11-07T17:07:30.6087940Z Creating settings.xml with server-id: github
+2026-11-07T17:07:30.6211307Z Writing to /home/runner/.m2/settings.xml
+2026-11-07T17:07:30.8167325Z gradle cache is not found

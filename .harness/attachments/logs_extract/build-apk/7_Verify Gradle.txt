@@ -1,0 +1,34 @@
+﻿2026-11-07T17:07:48.3883149Z ##[group]Run gradle --version
+2026-11-07T17:07:48.3883697Z [36;1mgradle --version[0m
+2026-11-07T17:07:48.3957240Z shell: /usr/bin/bash -e {0}
+2026-11-07T17:07:48.3957685Z env:
+2026-11-07T17:07:48.3958208Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-07T17:07:48.3959112Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-07T17:07:48.3959831Z   ANDROID_HOME: /usr/local/lib/android/sdk
+2026-11-07T17:07:48.3960374Z   ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+2026-11-07T17:07:48.3960866Z ##[endgroup]
+2026-11-07T17:07:49.1173276Z 
+2026-11-07T17:07:49.1221417Z Welcome to Gradle 8.2.1!
+2026-11-07T17:07:49.1236100Z 
+2026-11-07T17:07:49.1240188Z Here are the highlights of this release:
+2026-11-07T17:07:49.1241691Z  - Kotlin DSL: new reference documentation, assignment syntax by default
+2026-11-07T17:07:49.1242876Z  - Kotlin DSL is now the default with Gradle init
+2026-11-07T17:07:49.1244096Z  - Improved suggestions to resolve errors in console output
+2026-11-07T17:07:49.1245434Z  - Reduced sync memory consumption
+2026-11-07T17:07:49.1246136Z 
+2026-11-07T17:07:49.1246872Z For more details see https://docs.gradle.org/8.2.1/release-notes.html
+2026-11-07T17:07:49.1247886Z 
+2026-11-07T17:07:49.1247994Z 
+2026-11-07T17:07:49.1248472Z ------------------------------------------------------------
+2026-11-07T17:07:49.1249234Z Gradle 8.2.1
+2026-11-07T17:07:49.1250172Z ------------------------------------------------------------
+2026-11-07T17:07:49.1250778Z 
+2026-11-07T17:07:49.1251258Z Build time:   2023-07-10 12:12:35 UTC
+2026-11-07T17:07:49.1252132Z Revision:     a38ec64d3c4612da9083cc506a1ccb212afeecaa
+2026-11-07T17:07:49.1252860Z 
+2026-11-07T17:07:49.1253216Z Kotlin:       1.8.20
+2026-11-07T17:07:49.1253927Z Groovy:       3.0.17
+2026-11-07T17:07:49.1254971Z Ant:          Apache Ant(TM) version 1.10.13 compiled on January 4 2023
+2026-11-07T17:07:49.1256200Z JVM:          17.0.21 (Eclipse Adoptium 17.0.21+9)
+2026-11-07T17:07:49.1257055Z OS:           Linux 7.0.0-1019-azure amd64
+2026-11-07T17:07:49.1257699Z 

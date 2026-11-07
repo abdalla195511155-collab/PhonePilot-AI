@@ -1,0 +1,737 @@
+﻿2026-11-07T17:07:49.1488669Z ##[group]Run cd android-app
+2026-11-07T17:07:49.1489205Z [36;1mcd android-app[0m
+2026-11-07T17:07:49.1489970Z [36;1mgradle :app:testDebugUnitTest --no-daemon[0m
+2026-11-07T17:07:49.1561898Z shell: /usr/bin/bash -e {0}
+2026-11-07T17:07:49.1562326Z env:
+2026-11-07T17:07:49.1562860Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-07T17:07:49.1563768Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-07T17:07:49.1564493Z   ANDROID_HOME: /usr/local/lib/android/sdk
+2026-11-07T17:07:49.1565029Z   ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+2026-11-07T17:07:49.1565736Z ##[endgroup]
+2026-11-07T17:07:50.0634636Z To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.2.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+2026-11-07T17:07:51.6608309Z Daemon will be stopped at the end of the build 
+2026-11-07T17:09:20.9637992Z Warning: SDK processing. This version only understands SDK XML versions up to 3 but an SDK XML file of version 4 was encountered. This can happen if you use versions of Android Studio and the command-line tools that were released at different times.
+2026-11-07T17:09:21.6640640Z > Task :app:checkKotlinGradlePluginConfigurationErrors
+2026-11-07T17:09:21.6663142Z > Task :app:preBuild UP-TO-DATE
+2026-11-07T17:09:21.6668560Z > Task :app:preDebugBuild UP-TO-DATE
+2026-11-07T17:09:41.8656822Z > Task :app:generateDebugResValues
+2026-11-07T17:09:42.1621484Z > Task :app:checkDebugAarMetadata
+2026-11-07T17:09:42.1636830Z > Task :app:mapDebugSourceSetPaths
+2026-11-07T17:09:42.1637975Z > Task :app:generateDebugResources
+2026-11-07T17:09:44.5646710Z > Task :app:packageDebugResources
+2026-11-07T17:09:46.7618447Z > Task :app:parseDebugLocalResources
+2026-11-07T17:09:46.7637624Z > Task :app:createDebugCompatibleScreenManifests
+2026-11-07T17:09:46.7656510Z > Task :app:extractDeepLinksDebug
+2026-11-07T17:09:46.8612024Z > Task :app:mergeDebugResources
+2026-11-07T17:09:47.3648323Z 
+2026-11-07T17:09:47.3676756Z > Task :app:processDebugMainManifest
+2026-11-07T17:09:47.3687341Z package="com.phonepilot.app" found in source AndroidManifest.xml: /home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/AndroidManifest.xml.
+2026-11-07T17:09:47.3707034Z Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+2026-11-07T17:09:47.3709503Z Recommendation: remove package="com.phonepilot.app" from the source AndroidManifest.xml: /home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/AndroidManifest.xml.
+2026-11-07T17:09:47.5608704Z 
+2026-11-07T17:09:47.5609625Z > Task :app:processDebugManifest
+2026-11-07T17:09:47.5610499Z > Task :app:processDebugManifestForPackage
+2026-11-07T17:09:47.5614028Z > Task :app:javaPreCompileDebug
+2026-11-07T17:09:49.1636829Z > Task :app:preDebugUnitTestBuild UP-TO-DATE
+2026-11-07T17:09:49.1663218Z > Task :app:javaPreCompileDebugUnitTest
+2026-11-07T17:09:49.2616804Z > Task :app:mergeDebugShaders
+2026-11-07T17:09:49.2647562Z > Task :app:compileDebugShaders NO-SOURCE
+2026-11-07T17:09:49.2669982Z > Task :app:generateDebugAssets UP-TO-DATE
+2026-11-07T17:09:49.6623023Z > Task :app:mergeDebugAssets
+2026-11-07T17:09:50.0622115Z warn: removing resource com.phonepilot.app:string/agent_control without required default value.
+2026-11-07T17:09:50.0647104Z warn: removing resource com.phonepilot.app:string/ai_assistant without required default value.
+2026-11-07T17:09:50.0666848Z warn: removing resource com.phonepilot.app:string/ai_models_api_settings without required default value.
+2026-11-07T17:09:50.0669002Z warn: removing resource com.phonepilot.app:string/arabic without required default value.
+2026-11-07T17:09:50.0686683Z warn: removing resource com.phonepilot.app:string/cancel without required default value.
+2026-11-07T17:09:50.0692245Z warn: removing resource com.phonepilot.app:string/dark_mode without required default value.
+2026-11-07T17:09:50.0716699Z warn: removing resource com.phonepilot.app:string/dashboard without required default value.
+2026-11-07T17:09:50.0736590Z warn: removing resource com.phonepilot.app:string/english without required default value.
+2026-11-07T17:09:50.0747325Z warn: removing resource com.phonepilot.app:string/error without required default value.
+2026-11-07T17:09:50.0766625Z warn: removing resource com.phonepilot.app:string/execution_monitor without required default value.
+2026-11-07T17:09:50.0786510Z warn: removing resource com.phonepilot.app:string/language without required default value.
+2026-11-07T17:09:50.0788214Z warn: removing resource com.phonepilot.app:string/loading without required default value.
+2026-11-07T17:09:50.0806671Z warn: removing resource com.phonepilot.app:string/logs_history without required default value.
+2026-11-07T17:09:50.0820460Z warn: removing resource com.phonepilot.app:string/no_logs without required default value.
+2026-11-07T17:09:50.0821838Z warn: removing resource com.phonepilot.app:string/no_recordings without required default value.
+2026-11-07T17:09:50.0823108Z warn: removing resource com.phonepilot.app:string/no_skills without required default value.
+2026-11-07T17:09:50.0824364Z warn: removing resource com.phonepilot.app:string/privacy_permissions without required default value.
+2026-11-07T17:09:50.0825805Z warn: removing resource com.phonepilot.app:string/retry without required default value.
+2026-11-07T17:09:50.0826996Z warn: removing resource com.phonepilot.app:string/save without required default value.
+2026-11-07T17:09:50.0828206Z warn: removing resource com.phonepilot.app:string/skill_library without required default value.
+2026-11-07T17:09:50.0829413Z warn: removing resource com.phonepilot.app:string/training_studio without required default value.
+2026-11-07T17:09:50.0830091Z 
+2026-11-07T17:09:50.3611315Z > Task :app:processDebugResources
+2026-11-07T17:10:03.4636879Z > Task :app:packageDebugUnitTestForUnitTest
+2026-11-07T17:10:03.4656505Z > Task :app:generateDebugUnitTestConfig
+2026-11-07T17:10:20.3616852Z > Task :app:compileDebugKotlin
+2026-11-07T17:10:37.4858273Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/AgentMemory.kt:4:34 Unresolved reference: AgentMemoryEntry
+2026-11-07T17:10:37.4867731Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/AgentMemory.kt:33:21 Unresolved reference: update
+2026-11-07T17:10:37.4890233Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/AgentMemory.kt:91:21 Unresolved reference: update
+2026-11-07T17:10:37.5138019Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/AgentMemory.kt:91:30 Unresolved reference: it
+2026-11-07T17:10:37.5171062Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/AgentMemory.kt:142:21 Unresolved reference: update
+2026-11-07T17:10:37.5388140Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/AgentMemory.kt:142:30 Unresolved reference: it
+2026-11-07T17:10:37.5391622Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/AgentMemory.kt:142:42 Unresolved reference: it
+2026-11-07T17:10:37.5612748Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/AgentOrchestrator.kt:135:25 Operator '==' cannot be applied to 'SkillLifecycleState' and 'String'
+2026-11-07T17:10:37.5627337Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/AgentOrchestrator.kt:139:35 Type mismatch: inferred type is Float but Double was expected
+2026-11-07T17:10:37.5938634Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/AgentOrchestrator.kt:233:51 Cannot find a parameter with this name: userApproved
+2026-11-07T17:10:37.5942449Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/AgentRepository.kt:4:34 Unresolved reference: AgentMemoryEntry
+2026-11-07T17:10:37.6118027Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/CommandRouter.kt:39:30 Unresolved reference: update
+2026-11-07T17:10:37.6150239Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/CommandRouter.kt:39:39 Unresolved reference: it
+2026-11-07T17:10:37.6222317Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/CommandRouter.kt:48:26 Unresolved reference: update
+2026-11-07T17:10:37.6247557Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/CommandRouter.kt:48:35 Unresolved reference: it
+2026-11-07T17:10:37.6318797Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/CommandRouter.kt:49:27 Unresolved reference: update
+2026-11-07T17:10:37.6366771Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/CommandRouter.kt:49:36 Unresolved reference: it
+2026-11-07T17:10:37.6369242Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/CommandRouter.kt:58:30 Unresolved reference: update
+2026-11-07T17:10:37.6371721Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/CommandRouter.kt:58:39 Unresolved reference: it
+2026-11-07T17:10:37.6374494Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/IntentInterpreter.kt:65:5 A 'return' expression required in a function with a block body ('{...}')
+2026-11-07T17:10:37.6377929Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/IntentInterpreter.kt:75:64 Unresolved reference. None of the following candidates is applicable because of receiver type mismatch: 
+2026-11-07T17:10:37.6386347Z public fun <K, V> Array<out Pair<TypeVariable(K), TypeVariable(V)>>.toMap(): Map<TypeVariable(K), TypeVariable(V)> defined in kotlin.collections
+2026-11-07T17:10:37.6388317Z public fun <K, V, M : MutableMap<in TypeVariable(K), in TypeVariable(V)>> Array<out Pair<TypeVariable(K), TypeVariable(V)>>.toMap(destination: TypeVariable(M)): TypeVariable(M) defined in kotlin.collections
+2026-11-07T17:10:37.6390101Z public fun <K, V> Iterable<Pair<TypeVariable(K), TypeVariable(V)>>.toMap(): Map<TypeVariable(K), TypeVariable(V)> defined in kotlin.collections
+2026-11-07T17:10:37.6391995Z public fun <K, V, M : MutableMap<in TypeVariable(K), in TypeVariable(V)>> Iterable<Pair<TypeVariable(K), TypeVariable(V)>>.toMap(destination: TypeVariable(M)): TypeVariable(M) defined in kotlin.collections
+2026-11-07T17:10:37.6393945Z public fun <K, V> Map<out TypeVariable(K), TypeVariable(V)>.toMap(): Map<TypeVariable(K), TypeVariable(V)> defined in kotlin.collections
+2026-11-07T17:10:37.6402245Z public fun <K, V, M : MutableMap<in TypeVariable(K), in TypeVariable(V)>> Map<out TypeVariable(K), TypeVariable(V)>.toMap(destination: TypeVariable(M)): TypeVariable(M) defined in kotlin.collections
+2026-11-07T17:10:37.6404502Z public fun <K, V> Sequence<Pair<TypeVariable(K), TypeVariable(V)>>.toMap(): Map<TypeVariable(K), TypeVariable(V)> defined in kotlin.collections
+2026-11-07T17:10:37.6406950Z public fun <K, V, M : MutableMap<in TypeVariable(K), in TypeVariable(V)>> Sequence<Pair<TypeVariable(K), TypeVariable(V)>>.toMap(destination: TypeVariable(M)): TypeVariable(M) defined in kotlin.collections
+2026-11-07T17:10:37.6409716Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/IntentInterpreter.kt:76:59 The floating-point literal does not conform to the expected type Double
+2026-11-07T17:10:37.6413429Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/IntentInterpreter.kt:77:66 Unresolved reference. None of the following candidates is applicable because of receiver type mismatch: 
+2026-11-07T17:10:37.6416211Z public inline fun <T> Enumeration<TypeVariable(T)>.toList(): List<TypeVariable(T)> defined in kotlin.collections
+2026-11-07T17:10:37.6417604Z public fun <T> Array<out TypeVariable(T)>.toList(): List<TypeVariable(T)> defined in kotlin.collections
+2026-11-07T17:10:37.6418748Z public fun BooleanArray.toList(): List<Boolean> defined in kotlin.collections
+2026-11-07T17:10:37.6419646Z public fun ByteArray.toList(): List<Byte> defined in kotlin.collections
+2026-11-07T17:10:37.6420494Z public fun CharArray.toList(): List<Char> defined in kotlin.collections
+2026-11-07T17:10:37.6421415Z public fun CharSequence.toList(): List<Char> defined in kotlin.text
+2026-11-07T17:10:37.6422392Z public fun DoubleArray.toList(): List<Double> defined in kotlin.collections
+2026-11-07T17:10:37.6423354Z public fun FloatArray.toList(): List<Float> defined in kotlin.collections
+2026-11-07T17:10:37.6424239Z public fun IntArray.toList(): List<Int> defined in kotlin.collections
+2026-11-07T17:10:37.6425173Z public fun LongArray.toList(): List<Long> defined in kotlin.collections
+2026-11-07T17:10:37.6426629Z public fun <T> Pair<TypeVariable(T), TypeVariable(T)>.toList(): List<TypeVariable(T)> defined in kotlin
+2026-11-07T17:10:37.6427835Z public fun ShortArray.toList(): List<Short> defined in kotlin.collections
+2026-11-07T17:10:37.6429232Z public fun <T> Triple<TypeVariable(T), TypeVariable(T), TypeVariable(T)>.toList(): List<TypeVariable(T)> defined in kotlin
+2026-11-07T17:10:37.6430750Z public fun <T> Iterable<TypeVariable(T)>.toList(): List<TypeVariable(T)> defined in kotlin.collections
+2026-11-07T17:10:37.6432429Z public fun <K, V> Map<out TypeVariable(K), TypeVariable(V)>.toList(): List<Pair<TypeVariable(K), TypeVariable(V)>> defined in kotlin.collections
+2026-11-07T17:10:37.6434056Z public fun <T> Sequence<TypeVariable(T)>.toList(): List<TypeVariable(T)> defined in kotlin.sequences
+2026-11-07T17:10:37.6456430Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/IntentInterpreter.kt:77:81 Unresolved reference: it
+2026-11-07T17:10:37.6458882Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/SkillSelector.kt:15:7 Redeclaration: SkillSelector
+2026-11-07T17:10:37.6461513Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/SkillSelector.kt:27:23 Operator '==' cannot be applied to 'SkillLifecycleState' and 'String'
+2026-11-07T17:10:37.6464438Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/SkillSelector.kt:71:16 Operator '==' cannot be applied to 'SkillLifecycleState' and 'String'
+2026-11-07T17:10:37.6483285Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/TaskPlanner.kt:86:17 Operator '==' cannot be applied to 'SkillLifecycleState' and 'String'
+2026-11-07T17:10:37.6486130Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/TaskPlanner.kt:106:7 Redeclaration: SkillSelector
+2026-11-07T17:10:37.6488866Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/TaskPlanner.kt:118:23 Operator '==' cannot be applied to 'SkillLifecycleState' and 'String'
+2026-11-07T17:10:37.6491937Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/agent/TaskPlanner.kt:156:16 Operator '==' cannot be applied to 'SkillLifecycleState' and 'String'
+2026-11-07T17:10:37.6495473Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/AiSkillExtractor.kt:83:88 Type mismatch: inferred type is (IndexedValue<String>, Any?) -> CharSequence but ((TypeVariable(T)) -> CharSequence)? was expected
+2026-11-07T17:10:37.6519467Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/AiSkillExtractor.kt:83:90 Expected one parameter of type IndexedValue<String>
+2026-11-07T17:10:37.6522377Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/AiSkillExtractor.kt:83:97 Cannot infer a type for this parameter. Please specify it explicitly.
+2026-11-07T17:10:37.6525838Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/AiSkillExtractor.kt:84:28 Unresolved reference. None of the following candidates is applicable because of receiver type mismatch: 
+2026-11-07T17:10:37.6528114Z public inline operator fun BigDecimal.plus(other: BigDecimal): BigDecimal defined in kotlin
+2026-11-07T17:10:37.6529454Z public inline operator fun BigInteger.plus(other: BigInteger): BigInteger defined in kotlin
+2026-11-07T17:10:37.6531035Z public operator fun <T> Array<TypeVariable(T)>.plus(element: TypeVariable(T)): Array<TypeVariable(T)> defined in kotlin.collections
+2026-11-07T17:10:37.6532929Z public operator fun <T> Array<TypeVariable(T)>.plus(elements: Array<out TypeVariable(T)>): Array<TypeVariable(T)> defined in kotlin.collections
+2026-11-07T17:10:37.6534889Z public operator fun <T> Array<TypeVariable(T)>.plus(elements: Collection<TypeVariable(T)>): Array<TypeVariable(T)> defined in kotlin.collections
+2026-11-07T17:10:37.6552963Z public operator fun BooleanArray.plus(element: Boolean): BooleanArray defined in kotlin.collections
+2026-11-07T17:10:37.6554454Z public operator fun BooleanArray.plus(elements: BooleanArray): BooleanArray defined in kotlin.collections
+2026-11-07T17:10:37.6556187Z public operator fun BooleanArray.plus(elements: Collection<Boolean>): BooleanArray defined in kotlin.collections
+2026-11-07T17:10:37.6557575Z public operator fun ByteArray.plus(element: Byte): ByteArray defined in kotlin.collections
+2026-11-07T17:10:37.6558891Z public operator fun ByteArray.plus(elements: ByteArray): ByteArray defined in kotlin.collections
+2026-11-07T17:10:37.6560253Z public operator fun ByteArray.plus(elements: Collection<Byte>): ByteArray defined in kotlin.collections
+2026-11-07T17:10:37.6561484Z public inline operator fun Char.plus(other: String): String defined in kotlin.text
+2026-11-07T17:10:37.6562675Z public operator fun CharArray.plus(element: Char): CharArray defined in kotlin.collections
+2026-11-07T17:10:37.6563960Z public operator fun CharArray.plus(elements: CharArray): CharArray defined in kotlin.collections
+2026-11-07T17:10:37.6565363Z public operator fun CharArray.plus(elements: Collection<Char>): CharArray defined in kotlin.collections
+2026-11-07T17:10:37.6566900Z public operator fun DoubleArray.plus(element: Double): DoubleArray defined in kotlin.collections
+2026-11-07T17:10:37.6568296Z public operator fun DoubleArray.plus(elements: DoubleArray): DoubleArray defined in kotlin.collections
+2026-11-07T17:10:37.6569799Z public operator fun DoubleArray.plus(elements: Collection<Double>): DoubleArray defined in kotlin.collections
+2026-11-07T17:10:37.6571202Z public operator fun FloatArray.plus(element: Float): FloatArray defined in kotlin.collections
+2026-11-07T17:10:37.6572545Z public operator fun FloatArray.plus(elements: FloatArray): FloatArray defined in kotlin.collections
+2026-11-07T17:10:37.6574009Z public operator fun FloatArray.plus(elements: Collection<Float>): FloatArray defined in kotlin.collections
+2026-11-07T17:10:37.6575355Z public operator fun IntArray.plus(element: Int): IntArray defined in kotlin.collections
+2026-11-07T17:10:37.6597063Z public operator fun IntArray.plus(elements: IntArray): IntArray defined in kotlin.collections
+2026-11-07T17:10:37.6598430Z public operator fun IntArray.plus(elements: Collection<Int>): IntArray defined in kotlin.collections
+2026-11-07T17:10:37.6600215Z public operator fun LongArray.plus(element: Long): LongArray defined in kotlin.collections
+2026-11-07T17:10:37.6601713Z public operator fun LongArray.plus(elements: LongArray): LongArray defined in kotlin.collections
+2026-11-07T17:10:37.6603087Z public operator fun LongArray.plus(elements: Collection<Long>): LongArray defined in kotlin.collections
+2026-11-07T17:10:37.6604552Z public operator fun ShortArray.plus(element: Short): ShortArray defined in kotlin.collections
+2026-11-07T17:10:37.6605964Z public operator fun ShortArray.plus(elements: ShortArray): ShortArray defined in kotlin.collections
+2026-11-07T17:10:37.6607322Z public operator fun ShortArray.plus(elements: Collection<Short>): ShortArray defined in kotlin.collections
+2026-11-07T17:10:37.6608522Z public operator fun String?.plus(other: Any?): String defined in kotlin
+2026-11-07T17:10:37.6609738Z public inline operator fun UByteArray.plus(element: UByte): UByteArray defined in kotlin.collections
+2026-11-07T17:10:37.6611173Z public inline operator fun UByteArray.plus(elements: UByteArray): UByteArray defined in kotlin.collections
+2026-11-07T17:10:37.6612654Z public operator fun UByteArray.plus(elements: Collection<UByte>): UByteArray defined in kotlin.collections
+2026-11-07T17:10:37.6614056Z public inline operator fun UIntArray.plus(element: UInt): UIntArray defined in kotlin.collections
+2026-11-07T17:10:37.6615438Z public inline operator fun UIntArray.plus(elements: UIntArray): UIntArray defined in kotlin.collections
+2026-11-07T17:10:37.6645248Z public operator fun UIntArray.plus(elements: Collection<UInt>): UIntArray defined in kotlin.collections
+2026-11-07T17:10:37.6647005Z public inline operator fun ULongArray.plus(element: ULong): ULongArray defined in kotlin.collections
+2026-11-07T17:10:37.6648494Z public inline operator fun ULongArray.plus(elements: ULongArray): ULongArray defined in kotlin.collections
+2026-11-07T17:10:37.6649994Z public operator fun ULongArray.plus(elements: Collection<ULong>): ULongArray defined in kotlin.collections
+2026-11-07T17:10:37.6651509Z public inline operator fun UShortArray.plus(element: UShort): UShortArray defined in kotlin.collections
+2026-11-07T17:10:37.6652995Z public inline operator fun UShortArray.plus(elements: UShortArray): UShortArray defined in kotlin.collections
+2026-11-07T17:10:37.6654542Z public operator fun UShortArray.plus(elements: Collection<UShort>): UShortArray defined in kotlin.collections
+2026-11-07T17:10:37.6656435Z public operator fun <T> Collection<TypeVariable(T)>.plus(element: TypeVariable(T)): List<TypeVariable(T)> defined in kotlin.collections
+2026-11-07T17:10:37.6658303Z public operator fun <T> Collection<TypeVariable(T)>.plus(elements: Array<out TypeVariable(T)>): List<TypeVariable(T)> defined in kotlin.collections
+2026-11-07T17:10:37.6660184Z public operator fun <T> Collection<TypeVariable(T)>.plus(elements: Iterable<TypeVariable(T)>): List<TypeVariable(T)> defined in kotlin.collections
+2026-11-07T17:10:37.6662110Z public operator fun <T> Collection<TypeVariable(T)>.plus(elements: Sequence<TypeVariable(T)>): List<TypeVariable(T)> defined in kotlin.collections
+2026-11-07T17:10:37.6664026Z public operator fun <T> Iterable<TypeVariable(T)>.plus(element: TypeVariable(T)): List<TypeVariable(T)> defined in kotlin.collections
+2026-11-07T17:10:37.6683333Z public operator fun <T> Iterable<TypeVariable(T)>.plus(elements: Array<out TypeVariable(T)>): List<TypeVariable(T)> defined in kotlin.collections
+2026-11-07T17:10:37.6685328Z public operator fun <T> Iterable<TypeVariable(T)>.plus(elements: Iterable<TypeVariable(T)>): List<TypeVariable(T)> defined in kotlin.collections
+2026-11-07T17:10:37.6687519Z public operator fun <T> Iterable<TypeVariable(T)>.plus(elements: Sequence<TypeVariable(T)>): List<TypeVariable(T)> defined in kotlin.collections
+2026-11-07T17:10:37.6689850Z public operator fun <K, V> Map<out TypeVariable(K), TypeVariable(V)>.plus(pairs: Array<out Pair<TypeVariable(K), TypeVariable(V)>>): Map<TypeVariable(K), TypeVariable(V)> defined in kotlin.collections
+2026-11-07T17:10:37.6692372Z public operator fun <K, V> Map<out TypeVariable(K), TypeVariable(V)>.plus(pair: Pair<TypeVariable(K), TypeVariable(V)>): Map<TypeVariable(K), TypeVariable(V)> defined in kotlin.collections
+2026-11-07T17:10:37.6695253Z public operator fun <K, V> Map<out TypeVariable(K), TypeVariable(V)>.plus(pairs: Iterable<Pair<TypeVariable(K), TypeVariable(V)>>): Map<TypeVariable(K), TypeVariable(V)> defined in kotlin.collections
+2026-11-07T17:10:37.6698080Z public operator fun <K, V> Map<out TypeVariable(K), TypeVariable(V)>.plus(map: Map<out TypeVariable(K), TypeVariable(V)>): Map<TypeVariable(K), TypeVariable(V)> defined in kotlin.collections
+2026-11-07T17:10:37.6700708Z public operator fun <K, V> Map<out TypeVariable(K), TypeVariable(V)>.plus(pairs: Sequence<Pair<TypeVariable(K), TypeVariable(V)>>): Map<TypeVariable(K), TypeVariable(V)> defined in kotlin.collections
+2026-11-07T17:10:37.6702852Z public operator fun <T> Set<TypeVariable(T)>.plus(element: TypeVariable(T)): Set<TypeVariable(T)> defined in kotlin.collections
+2026-11-07T17:10:37.6704679Z public operator fun <T> Set<TypeVariable(T)>.plus(elements: Array<out TypeVariable(T)>): Set<TypeVariable(T)> defined in kotlin.collections
+2026-11-07T17:10:37.6726942Z public operator fun <T> Set<TypeVariable(T)>.plus(elements: Iterable<TypeVariable(T)>): Set<TypeVariable(T)> defined in kotlin.collections
+2026-11-07T17:10:37.6728847Z public operator fun <T> Set<TypeVariable(T)>.plus(elements: Sequence<TypeVariable(T)>): Set<TypeVariable(T)> defined in kotlin.collections
+2026-11-07T17:10:37.6730712Z public operator fun <T> Sequence<TypeVariable(T)>.plus(element: TypeVariable(T)): Sequence<TypeVariable(T)> defined in kotlin.sequences
+2026-11-07T17:10:37.6732656Z public operator fun <T> Sequence<TypeVariable(T)>.plus(elements: Array<out TypeVariable(T)>): Sequence<TypeVariable(T)> defined in kotlin.sequences
+2026-11-07T17:10:37.6734639Z public operator fun <T> Sequence<TypeVariable(T)>.plus(elements: Iterable<TypeVariable(T)>): Sequence<TypeVariable(T)> defined in kotlin.sequences
+2026-11-07T17:10:37.6736766Z public operator fun <T> Sequence<TypeVariable(T)>.plus(elements: Sequence<TypeVariable(T)>): Sequence<TypeVariable(T)> defined in kotlin.sequences
+2026-11-07T17:10:37.6757360Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/AiSkillExtractor.kt:124:39 Unresolved reference: AiExtractedStep
+2026-11-07T17:10:37.6760057Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/AiSkillExtractor.kt:127:27 Unresolved reference: AiExtractedStep
+2026-11-07T17:10:37.6762734Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/AiSkillExtractor.kt:139:44 Unresolved reference: AiExtractedException
+2026-11-07T17:10:37.6765438Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/AiSkillExtractor.kt:143:36 Unresolved reference: AiExtractedException
+2026-11-07T17:10:37.6808740Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/AiSkillExtractor.kt:176:17 Unresolved reference: AiExtractedStep
+2026-11-07T17:10:37.6811487Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/AiSkillExtractor.kt:186:27 Unresolved reference: target
+2026-11-07T17:10:37.6814479Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/AiSkillExtractor.kt:189:21 Type mismatch: inferred type is List<Unit> but List<AiExtractedStep> was expected
+2026-11-07T17:10:37.6818062Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/LearningEngine.kt:23:13 Const 'val' are only allowed on top level, in named objects, or in companion objects
+2026-11-07T17:10:37.6821228Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/LearningEngine.kt:26:13 Const 'val' are only allowed on top level, in named objects, or in companion objects
+2026-11-07T17:10:37.6824639Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/LearningEngine.kt:29:13 Const 'val' are only allowed on top level, in named objects, or in companion objects
+2026-11-07T17:10:37.6884776Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/LearningEngine.kt:85:57 Type mismatch: inferred type is List<String?> but List<String> was expected
+2026-11-07T17:10:37.6888722Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/LearningEngine.kt:235:22 Unresolved reference. None of the following candidates is applicable because of receiver type mismatch: 
+2026-11-07T17:10:37.6891658Z public fun <T : Comparable<TypeVariable(T)>> TypeVariable(T).coerceIn(minimumValue: TypeVariable(T)?, maximumValue: TypeVariable(T)?): TypeVariable(T) defined in kotlin.ranges
+2026-11-07T17:10:37.6894037Z public fun <T : Comparable<TypeVariable(T)>> TypeVariable(T).coerceIn(range: ClosedFloatingPointRange<TypeVariable(T)>): TypeVariable(T) defined in kotlin.ranges
+2026-11-07T17:10:37.6896326Z public fun <T : Comparable<TypeVariable(T)>> TypeVariable(T).coerceIn(range: ClosedRange<TypeVariable(T)>): TypeVariable(T) defined in kotlin.ranges
+2026-11-07T17:10:37.6897951Z public fun Byte.coerceIn(minimumValue: Byte, maximumValue: Byte): Byte defined in kotlin.ranges
+2026-11-07T17:10:37.6899311Z public fun Double.coerceIn(minimumValue: Double, maximumValue: Double): Double defined in kotlin.ranges
+2026-11-07T17:10:37.6900662Z public fun Float.coerceIn(minimumValue: Float, maximumValue: Float): Float defined in kotlin.ranges
+2026-11-07T17:10:37.6901920Z public fun Int.coerceIn(minimumValue: Int, maximumValue: Int): Int defined in kotlin.ranges
+2026-11-07T17:10:37.6903052Z public fun Int.coerceIn(range: ClosedRange<Int>): Int defined in kotlin.ranges
+2026-11-07T17:10:37.6904256Z public fun Long.coerceIn(minimumValue: Long, maximumValue: Long): Long defined in kotlin.ranges
+2026-11-07T17:10:37.6905462Z public fun Long.coerceIn(range: ClosedRange<Long>): Long defined in kotlin.ranges
+2026-11-07T17:10:37.6927520Z public fun Short.coerceIn(minimumValue: Short, maximumValue: Short): Short defined in kotlin.ranges
+2026-11-07T17:10:37.6928987Z public fun UByte.coerceIn(minimumValue: UByte, maximumValue: UByte): UByte defined in kotlin.ranges
+2026-11-07T17:10:37.6930356Z public fun UInt.coerceIn(minimumValue: UInt, maximumValue: UInt): UInt defined in kotlin.ranges
+2026-11-07T17:10:37.6931575Z public fun UInt.coerceIn(range: ClosedRange<UInt>): UInt defined in kotlin.ranges
+2026-11-07T17:10:37.6932847Z public fun ULong.coerceIn(minimumValue: ULong, maximumValue: ULong): ULong defined in kotlin.ranges
+2026-11-07T17:10:37.6934095Z public fun ULong.coerceIn(range: ClosedRange<ULong>): ULong defined in kotlin.ranges
+2026-11-07T17:10:37.6935422Z public fun UShort.coerceIn(minimumValue: UShort, maximumValue: UShort): UShort defined in kotlin.ranges
+2026-11-07T17:10:37.6937988Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/SkillValidator.kt:18:13 Const 'val' are only allowed on top level, in named objects, or in companion objects
+2026-11-07T17:10:37.6940881Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/UsageStore.kt:68:76 Unresolved reference: secondsث
+2026-11-07T17:10:37.6944059Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/chat/ChatAdapters.kt:146:28 Smart cast to 'OpenAiCompatibleAdapter.Choice' is impossible, because 'response.choices.firstOrNull()' is a complex expression
+2026-11-07T17:10:37.6988280Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/chat/ChatAdapters.kt:278:29 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type AnthropicMessagesAdapter.AnthropicResponse?
+2026-11-07T17:10:37.6992866Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/data/ai/chat/ChatAdapters.kt:281:36 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type AnthropicMessagesAdapter.AnthropicResponse?
+2026-11-07T17:10:37.6996267Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/execution/ElementResolver.kt:7:34 Unresolved reference: VisionModels
+2026-11-07T17:10:37.6998885Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/execution/ElementResolver.kt:8:34 Unresolved reference: VisionModels
+2026-11-07T17:10:37.7001377Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/execution/ElementResolver.kt:9:34 Unresolved reference: VisionModels
+2026-11-07T17:10:37.7004413Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/execution/ElementResolver.kt:67:48 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type String?
+2026-11-07T17:10:37.7028122Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/execution/ElementResolver.kt:85:34 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type String?
+2026-11-07T17:10:37.7031613Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/execution/ElementResolver.kt:86:25 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type String?
+2026-11-07T17:10:37.7035045Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/execution/ElementResolver.kt:87:39 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type String?
+2026-11-07T17:10:37.7038259Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/execution/ElementResolver.kt:88:37 Unresolved reference: SemanticRole
+2026-11-07T17:10:37.7040843Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/execution/ElementResolver.kt:103:17 Unresolved reference: ElementSource
+2026-11-07T17:10:37.7043457Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/execution/ElementResolver.kt:103:33 Unresolved reference: ElementSource
+2026-11-07T17:10:37.7066566Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/execution/ExecutionPlanner.kt:21:13 Operator '!=' cannot be applied to 'SkillLifecycleState' and 'String'
+2026-11-07T17:10:37.7069652Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/execution/SkillExecutionEngine.kt:36:33 Unresolved reference: AccessibilityTreeAnalyzer
+2026-11-07T17:10:37.7072583Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/execution/SkillExecutionEngine.kt:37:29 Unresolved reference: UiElementRecognizer
+2026-11-07T17:10:37.7075738Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/execution/StepExecutor.kt:26:13 Const 'val' are only allowed on top level, in named objects, or in companion objects
+2026-11-07T17:10:37.7079138Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/execution/StepExecutor.kt:161:30 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type String?
+2026-11-07T17:10:37.7082045Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/execution/StepExecutor.kt:185:28 Unresolved reference: viewId
+2026-11-07T17:10:37.7085263Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/execution/StepExecutor.kt:279:13 Const 'val' are only allowed on top level, in named objects, or in companion objects
+2026-11-07T17:10:37.7109292Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/execution/StepExecutor.kt:312:37 Unresolved reference: result
+2026-11-07T17:10:37.7112306Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/telegram/TelegramBotChannel.kt:54:13 Const 'val' are only allowed on top level, in named objects, or in companion objects
+2026-11-07T17:10:37.7115734Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/telegram/TelegramBotChannel.kt:55:13 Const 'val' are only allowed on top level, in named objects, or in companion objects
+2026-11-07T17:10:37.7118662Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/telegram/TelegramBotChannel.kt:172:19 Unresolved reference: runBlocking
+2026-11-07T17:10:37.7121866Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/telegram/TelegramBotChannel.kt:173:30 Suspend function 'processCommand' should be called only from a coroutine or another suspend function
+2026-11-07T17:10:37.7124965Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/telegram/TelegramBotChannel.kt:187:42 Const 'val' initializer should be a constant value
+2026-11-07T17:10:37.7147767Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/MainActivity.kt:43:9 Unresolved reference: UsageStore
+2026-11-07T17:10:37.7150566Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/components/AppScaffold.kt:36:32 Type mismatch: inferred type is (() -> Unit)? but () -> Unit was expected
+2026-11-07T17:10:37.7153906Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/components/AppScaffold.kt:48:5 This material API is experimental and is likely to change or to be removed in the future.
+2026-11-07T17:10:37.7157400Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/components/AppScaffold.kt:68:18 This material API is experimental and is likely to change or to be removed in the future.
+2026-11-07T17:10:37.7160213Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/components/AppScaffold.kt:68:36 This material API is experimental and is likely to change or to be removed in the future.
+2026-11-07T17:10:37.7162587Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/components/EmptyState.kt:20:75 Unresolved reference: Inbox
+2026-11-07T17:10:37.7164651Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/components/ErrorState.kt:36:45 Unresolved reference: Error
+2026-11-07T17:10:37.7187381Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/navigation/NavigationHost.kt:100:32 Unresolved reference: AgentOrchestrator
+2026-11-07T17:10:37.7190364Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/navigation/Routes.kt:46:68 Unresolved reference: Dashboard
+2026-11-07T17:10:37.7192888Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/navigation/Routes.kt:47:73 Unresolved reference: School
+2026-11-07T17:10:37.7195399Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/navigation/Routes.kt:48:71 Unresolved reference: LibraryAdd
+2026-11-07T17:10:37.7197890Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/navigation/Routes.kt:49:71 Unresolved reference: Tune
+2026-11-07T17:10:37.7200061Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/navigation/Routes.kt:50:75 Unresolved reference: MonitorHeart
+2026-11-07T17:10:37.7202023Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/navigation/Routes.kt:51:78 Unresolved reference: Settings
+2026-11-07T17:10:37.7203952Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/navigation/Routes.kt:52:70 Unresolved reference: History
+2026-11-07T17:10:37.7226246Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/navigation/Routes.kt:53:77 Unresolved reference: Shield
+2026-11-07T17:10:37.7228801Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/navigation/Routes.kt:54:70 Unresolved reference: SmartToy
+2026-11-07T17:10:37.7231303Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/navigation/Routes.kt:55:69 Unresolved reference: People
+2026-11-07T17:10:37.7233808Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/navigation/Routes.kt:56:72 Unresolved reference: CheckCircle
+2026-11-07T17:10:37.7236417Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/navigation/Routes.kt:57:63 Unresolved reference: Home
+2026-11-07T17:10:37.7239529Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentApprovalScreen.kt:43:9 Operator '==' cannot be applied to 'SkillLifecycleState' and 'String'
+2026-11-07T17:10:37.7242583Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentApprovalScreen.kt:44:14 Operator '==' cannot be applied to 'SkillLifecycleState' and 'String'
+2026-11-07T17:10:37.7268144Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentApprovalScreen.kt:147:30 Type mismatch: inferred type is CardColors but ButtonColors was expected
+2026-11-07T17:10:37.7271710Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentControlScreen.kt:62:28 'when' expression must be exhaustive, add necessary 'is Interrupted' branch or 'else' branch instead
+2026-11-07T17:10:37.7275310Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentControlScreen.kt:65:40 Classifier 'Interrupted' does not have a companion object, and thus must be initialized here
+2026-11-07T17:10:37.7279166Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:39:18 Type 'TypeVariable(T)' has no method 'getValue(Nothing?, KProperty<*>)' and thus it cannot serve as a delegate
+2026-11-07T17:10:37.7282407Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:39:29 Unresolved reference: mutableStateOf
+2026-11-07T17:10:37.7305989Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:40:25 Type 'TypeVariable(T)' has no method 'getValue(Nothing?, KProperty<*>)' and thus it cannot serve as a delegate
+2026-11-07T17:10:37.7309738Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:40:36 Unresolved reference: mutableStateOf
+2026-11-07T17:10:37.7312503Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:71:59 Unresolved reference: FontWeight
+2026-11-07T17:10:37.7316462Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:101:21 Overload resolution ambiguity: 
+2026-11-07T17:10:37.7319792Z public inline fun <T> LazyListScope.items(items: Array<TypeVariable(T)>, noinline key: ((item: TypeVariable(T)) -> Any)? = ..., noinline contentType: (item: TypeVariable(T)) -> Any? = ..., crossinline itemContent: LazyItemScope.(item: TypeVariable(T)) -> Unit): Unit defined in androidx.compose.foundation.lazy
+2026-11-07T17:10:37.7323499Z public inline fun <T> LazyListScope.items(items: List<TypeVariable(T)>, noinline key: ((item: TypeVariable(T)) -> Any)? = ..., noinline contentType: (item: TypeVariable(T)) -> Any? = ..., crossinline itemContent: LazyItemScope.(item: TypeVariable(T)) -> Unit): Unit defined in androidx.compose.foundation.lazy
+2026-11-07T17:10:37.7346726Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:101:57 Unresolved reference: it
+2026-11-07T17:10:37.7349614Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:101:72 Cannot infer a type for this parameter. Please specify it explicitly.
+2026-11-07T17:10:37.7352832Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:102:25 @Composable invocations can only happen from the context of a @Composable function
+2026-11-07T17:10:37.7355980Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:117:62 Unresolved reference: AgentMemoryEntry
+2026-11-07T17:10:37.7359348Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:141:25 Comparison of incompatible enums '[Error type: Error property type]' and 'ExecutionState' is always unsuccessful
+2026-11-07T17:10:37.7363056Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:142:25 Comparison of incompatible enums '[Error type: Error property type]' and 'ExecutionState' is always unsuccessful
+2026-11-07T17:10:37.7375243Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:152:32 Cannot infer a type for this parameter. Please specify it explicitly.
+2026-11-07T17:10:37.7378118Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:153:17 @Composable invocations can only happen from the context of a @Composable function
+2026-11-07T17:10:37.7381216Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:155:43 @Composable invocations can only happen from the context of a @Composable function
+2026-11-07T17:10:37.7383836Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:156:43 @Composable invocations can only happen from the context of a @Composable function
+2026-11-07T17:10:37.7386646Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:176:13 Functions which invoke @Composable functions must be marked with the @Composable annotation
+2026-11-07T17:10:37.7389309Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:177:47 @Composable invocations can only happen from the context of a @Composable function
+2026-11-07T17:10:37.7391916Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:178:52 @Composable invocations can only happen from the context of a @Composable function
+2026-11-07T17:10:37.7395048Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:179:52 @Composable invocations can only happen from the context of a @Composable function
+2026-11-07T17:10:37.7428935Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:180:49 @Composable invocations can only happen from the context of a @Composable function
+2026-11-07T17:10:37.7432337Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AgentStateScreen.kt:181:27 @Composable invocations can only happen from the context of a @Composable function
+2026-11-07T17:10:37.7435316Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AiAssistantScreen.kt:358:37 Unresolved reference: clickable
+2026-11-07T17:10:37.7437901Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AiAssistantScreen.kt:361:27 Unresolved reference: it
+2026-11-07T17:10:37.7440436Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AiModelsApiSettingsScreen.kt:290:17 Unresolved reference: Switch
+2026-11-07T17:10:37.7443297Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/AiModelsApiSettingsScreen.kt:292:57 Unresolved reference: it
+2026-11-07T17:10:37.7466577Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/DashboardScreen.kt:237:66 'when' expression must be exhaustive, add necessary 'is Interrupted' branch or 'else' branch instead
+2026-11-07T17:10:37.7470154Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/DashboardScreen.kt:240:20 Classifier 'Interrupted' does not have a companion object, and thus must be initialized here
+2026-11-07T17:10:37.7473787Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/DashboardScreen.kt:245:58 'when' expression must be exhaustive, add necessary 'is Interrupted' branch or 'else' branch instead
+2026-11-07T17:10:37.7477305Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/DashboardScreen.kt:248:20 Classifier 'Interrupted' does not have a companion object, and thus must be initialized here
+2026-11-07T17:10:37.7480335Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/ExecutionMonitorScreen.kt:172:36 Unresolved reference: ExecutionSummary
+2026-11-07T17:10:37.7483422Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/ExecutionMonitorScreen.kt:218:39 Cannot infer a type for this parameter. Please specify it explicitly.
+2026-11-07T17:10:37.7497210Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/ExecutionMonitorScreen.kt:219:17 @Composable invocations can only happen from the context of a @Composable function
+2026-11-07T17:10:37.7500511Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/ExecutionMonitorScreen.kt:221:43 @Composable invocations can only happen from the context of a @Composable function
+2026-11-07T17:10:37.7503771Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/ExecutionMonitorScreen.kt:222:43 @Composable invocations can only happen from the context of a @Composable function
+2026-11-07T17:10:37.7507054Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/ExecutionMonitorScreen.kt:231:36 Unresolved reference: RecordingSummary
+2026-11-07T17:10:37.7528324Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/ExecutionMonitorScreen.kt:259:28 None of the following functions can be called with the arguments supplied: 
+2026-11-07T17:10:37.7531241Z private fun recordingStateLabel(state: [Error type: Unresolved type for RecordingState]): String defined in com.phonepilot.app.ui.screens in file ExecutionMonitorScreen.kt
+2026-11-07T17:10:37.7533407Z private fun recordingStateLabel(state: RecordingState): String defined in com.phonepilot.app.ui.screens in file DashboardScreen.kt
+2026-11-07T17:10:37.7547833Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/ExecutionMonitorScreen.kt:259:79 Unresolved reference: RecordingState
+2026-11-07T17:10:37.7550694Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/ExecutionMonitorScreen.kt:259:102 Unresolved reference: it
+2026-11-07T17:10:37.7553486Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/ExecutionMonitorScreen.kt:259:111 Unresolved reference: RecordingState
+2026-11-07T17:10:37.7567315Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/ExecutionMonitorScreen.kt:278:66 'when' expression must be exhaustive, add necessary 'PENDING', 'VERIFYING', 'NEEDS_USER_ACTION' branches or 'else' branch instead
+2026-11-07T17:10:37.7570758Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/ExecutionMonitorScreen.kt:288:40 Unresolved reference: RecordingState
+2026-11-07T17:10:37.7574062Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/ExecutionMonitorScreen.kt:288:66 'when' expression must be exhaustive, add necessary 'else' branch
+2026-11-07T17:10:37.7577313Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/ExecutionMonitorScreen.kt:289:5 Unresolved reference: RecordingState
+2026-11-07T17:10:37.7580149Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/ExecutionMonitorScreen.kt:290:8 Unresolved reference: RecordingState
+2026-11-07T17:10:37.7582962Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/ExecutionMonitorScreen.kt:291:5 Unresolved reference: RecordingState
+2026-11-07T17:10:37.7607534Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/ExecutionMonitorScreen.kt:292:5 Unresolved reference: RecordingState
+2026-11-07T17:10:37.7610408Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/PrivacyPermissionsScreen.kt:85:85 Unresolved reference: Shield
+2026-11-07T17:10:37.7636628Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/screens/PrivacyPermissionsScreen.kt:140:29 Cannot find a parameter with this name: checkedColor
+2026-11-07T17:10:37.7639416Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/theme/Color.kt:4:37 Unresolved reference: ColorScheme
+2026-11-07T17:10:37.7641699Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/theme/Color.kt:72:41 Unresolved reference: ColorScheme
+2026-11-07T17:10:37.7644091Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/theme/Color.kt:82:42 Unresolved reference: ColorScheme
+2026-11-07T17:10:37.7646892Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/theme/PhonePilotTheme.kt:63:13 Cannot find a parameter with this name: uncheckedColor
+2026-11-07T17:10:37.7650309Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/theme/PhonePilotTheme.kt:64:13 Cannot find a parameter with this name: checkedColor
+2026-11-07T17:10:37.7653122Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/theme/PhonePilotTheme.kt:65:13 Cannot find a parameter with this name: uncheckedThumbColor
+2026-11-07T17:10:37.7656129Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/theme/PhonePilotTheme.kt:66:13 Cannot find a parameter with this name: checkedThumbColor
+2026-11-07T17:10:37.7659033Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/theme/PhonePilotTheme.kt:77:43 Unresolved reference: isAppearanceLightStatusBars
+2026-11-07T17:10:37.7662090Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:67:76 Unexpected tokens (use ';' to separate expressions on the same line)
+2026-11-07T17:10:37.7665006Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:13:27 Unresolved reference: MutableStateFlow
+2026-11-07T17:10:37.7688085Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:54:28 Unresolved reference: MutableStateFlow
+2026-11-07T17:10:37.7690771Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:61:35 Unresolved reference: it
+2026-11-07T17:10:37.7693342Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:67:62 Unresolved reference: collect
+2026-11-07T17:10:37.7696035Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:67:72 Unresolved reference: ctx
+2026-11-07T17:10:37.7698767Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:68:35 Cannot infer a type for this parameter. Please specify it explicitly.
+2026-11-07T17:10:37.7701456Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:70:40 Unresolved reference: ctx
+2026-11-07T17:10:37.7703812Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:71:41 Unresolved reference: ctx
+2026-11-07T17:10:37.7726529Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:81:39 Unresolved reference: it
+2026-11-07T17:10:37.7729097Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:92:27 Unresolved reference: it
+2026-11-07T17:10:37.7731543Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:100:27 Unresolved reference: it
+2026-11-07T17:10:37.7733982Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:114:31 Unresolved reference: it
+2026-11-07T17:10:37.7737138Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:123:35 Cannot infer a type for this parameter. Please specify it explicitly.
+2026-11-07T17:10:37.7756659Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:135:35 Unresolved reference: it
+2026-11-07T17:10:37.7759741Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:149:31 Unresolved reference: it
+2026-11-07T17:10:37.7762844Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:156:35 Cannot infer a type for this parameter. Please specify it explicitly.
+2026-11-07T17:10:37.7765899Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:168:35 Unresolved reference: it
+2026-11-07T17:10:37.7768500Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:178:31 Unresolved reference: it
+2026-11-07T17:10:37.7771402Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:181:35 Cannot infer a type for this parameter. Please specify it explicitly.
+2026-11-07T17:10:37.7774189Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:192:35 Unresolved reference: it
+2026-11-07T17:10:37.7797050Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:201:27 Unresolved reference: it
+2026-11-07T17:10:37.7799699Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:201:53 Unresolved reference: it
+2026-11-07T17:10:37.7802331Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:208:27 Unresolved reference: it
+2026-11-07T17:10:37.7804920Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:208:63 Unresolved reference: it
+2026-11-07T17:10:37.7807737Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:215:27 Unresolved reference: it
+2026-11-07T17:10:37.7810324Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:215:55 Unresolved reference: it
+2026-11-07T17:10:37.7835800Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:222:27 Unresolved reference: it
+2026-11-07T17:10:37.7838405Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:229:27 Unresolved reference: it
+2026-11-07T17:10:37.7840812Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:237:27 Unresolved reference: it
+2026-11-07T17:10:37.7843479Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/ui/vision/VisionEngineState.kt:241:15 Unresolved reference: cancel
+2026-11-07T17:10:37.7846793Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/AccessibilityTreeAnalyzer.kt:125:13 Type mismatch: inferred type is Unit but Boolean was expected
+2026-11-07T17:10:37.7850241Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/AccessibilityTreeAnalyzer.kt:202:16 Unresolved reference. None of the following candidates is applicable because of receiver type mismatch: 
+2026-11-07T17:10:37.7852822Z public fun <T : Comparable<TypeVariable(T)>> Array<out TypeVariable(T)>.min(): TypeVariable(T) defined in kotlin.collections
+2026-11-07T17:10:37.7854074Z public fun Array<out Double>.min(): Double defined in kotlin.collections
+2026-11-07T17:10:37.7855372Z public fun Array<out Float>.min(): Float defined in kotlin.collections
+2026-11-07T17:10:37.7877060Z public fun ByteArray.min(): Byte defined in kotlin.collections
+2026-11-07T17:10:37.7877991Z public fun CharArray.min(): Char defined in kotlin.collections
+2026-11-07T17:10:37.7878878Z public fun CharSequence.min(): Char defined in kotlin.text
+2026-11-07T17:10:37.7879809Z public fun DoubleArray.min(): Double defined in kotlin.collections
+2026-11-07T17:10:37.7880746Z public fun FloatArray.min(): Float defined in kotlin.collections
+2026-11-07T17:10:37.7881662Z public fun IntArray.min(): Int defined in kotlin.collections
+2026-11-07T17:10:37.7882558Z public fun LongArray.min(): Long defined in kotlin.collections
+2026-11-07T17:10:37.7883474Z public fun ShortArray.min(): Short defined in kotlin.collections
+2026-11-07T17:10:37.7884377Z public fun UByteArray.min(): UByte defined in kotlin.collections
+2026-11-07T17:10:37.7885249Z public fun UIntArray.min(): UInt defined in kotlin.collections
+2026-11-07T17:10:37.7886373Z public fun ULongArray.min(): ULong defined in kotlin.collections
+2026-11-07T17:10:37.7887698Z public fun UShortArray.min(): UShort defined in kotlin.collections
+2026-11-07T17:10:37.7889117Z public fun <T : Comparable<TypeVariable(T)>> Iterable<TypeVariable(T)>.min(): TypeVariable(T) defined in kotlin.collections
+2026-11-07T17:10:37.7890438Z public fun Iterable<Double>.min(): Double defined in kotlin.collections
+2026-11-07T17:10:37.7891442Z public fun Iterable<Float>.min(): Float defined in kotlin.collections
+2026-11-07T17:10:37.7892849Z public fun <T : Comparable<TypeVariable(T)>> Sequence<TypeVariable(T)>.min(): TypeVariable(T) defined in kotlin.sequences
+2026-11-07T17:10:37.7894128Z public fun Sequence<Double>.min(): Double defined in kotlin.sequences
+2026-11-07T17:10:37.7895105Z public fun Sequence<Float>.min(): Float defined in kotlin.sequences
+2026-11-07T17:10:37.7897964Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/AccessibilityTreeAnalyzer.kt:280:32 Smart cast to 'UiElement' is impossible, because 'bestParent' is a local variable that is captured by a changing closure
+2026-11-07T17:10:37.7938880Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/AccessibilityTreeAnalyzer.kt:281:32 Smart cast to 'UiElement' is impossible, because 'bestParent' is a local variable that is captured by a changing closure
+2026-11-07T17:10:37.7942832Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/AccessibilityTreeAnalyzer.kt:285:41 Smart cast to 'UiElement' is impossible, because 'bestParent' is a local variable that is captured by a changing closure
+2026-11-07T17:10:37.7966891Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/AccessibilityTreeAnalyzer.kt:286:21 Unresolved reference. None of the following candidates is applicable because of receiver type mismatch: 
+2026-11-07T17:10:37.7969722Z public inline operator fun kotlin.text.StringBuilder /* = java.lang.StringBuilder */.set(index: Int, value: Char): Unit defined in kotlin.text
+2026-11-07T17:10:37.7972241Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/AccessibilityTreeAnalyzer.kt:286:29 No set method providing array access
+2026-11-07T17:10:37.7975705Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/AccessibilityTreeAnalyzer.kt:291:21 Unresolved reference. None of the following candidates is applicable because of receiver type mismatch: 
+2026-11-07T17:10:37.7978544Z public inline operator fun kotlin.text.StringBuilder /* = java.lang.StringBuilder */.set(index: Int, value: Char): Unit defined in kotlin.text
+2026-11-07T17:10:37.7981151Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/AccessibilityTreeAnalyzer.kt:291:29 No set method providing array access
+2026-11-07T17:10:37.7984951Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/AccessibilityTreeAnalyzer.kt:316:21 Unresolved reference. None of the following candidates is applicable because of receiver type mismatch: 
+2026-11-07T17:10:37.8028056Z public inline operator fun kotlin.text.StringBuilder /* = java.lang.StringBuilder */.set(index: Int, value: Char): Unit defined in kotlin.text
+2026-11-07T17:10:37.8030622Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/AccessibilityTreeAnalyzer.kt:316:29 No set method providing array access
+2026-11-07T17:10:37.8034042Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/AccessibilityTreeAnalyzer.kt:322:21 Unresolved reference. None of the following candidates is applicable because of receiver type mismatch: 
+2026-11-07T17:10:37.8036950Z public inline operator fun kotlin.text.StringBuilder /* = java.lang.StringBuilder */.set(index: Int, value: Char): Unit defined in kotlin.text
+2026-11-07T17:10:37.8039501Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/AccessibilityTreeAnalyzer.kt:322:29 No set method providing array access
+2026-11-07T17:10:37.8042272Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/AccessibilityTreeAnalyzer.kt:373:15 Unresolved reference: cancel
+2026-11-07T17:10:37.8044790Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:10:19 Unresolved reference: mlkit
+2026-11-07T17:10:37.8087543Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:11:19 Unresolved reference: mlkit
+2026-11-07T17:10:37.8089916Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:12:19 Unresolved reference: mlkit
+2026-11-07T17:10:37.8092300Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:13:19 Unresolved reference: mlkit
+2026-11-07T17:10:37.8094616Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:14:19 Unresolved reference: mlkit
+2026-11-07T17:10:37.8097072Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:15:19 Unresolved reference: mlkit
+2026-11-07T17:10:37.8099266Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:16:19 Unresolved reference: mlkit
+2026-11-07T17:10:37.8101408Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:17:19 Unresolved reference: mlkit
+2026-11-07T17:10:37.8103604Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:37:37 Unresolved reference: InputImage
+2026-11-07T17:10:37.8146403Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:76:29 Unresolved reference: TextRecognizer
+2026-11-07T17:10:37.8148736Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:96:55 Unresolved reference: toLowercase
+2026-11-07T17:10:37.8150983Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:102:27 Unresolved reference: TextRecognizerOptions
+2026-11-07T17:10:37.8153242Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:103:26 Unresolved reference: TextRecognition
+2026-11-07T17:10:37.8156100Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:114:62 Type mismatch: inferred type is Unit but OcrResult was expected
+2026-11-07T17:10:37.8169202Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:114:90 Type mismatch: inferred type is Unit but OcrResult was expected
+2026-11-07T17:10:37.8171928Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:115:26 Unresolved reference: InputImage
+2026-11-07T17:10:37.8174419Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:116:9 Overload resolution ambiguity: 
+2026-11-07T17:10:37.8201518Z public open suspend fun process(inputImage: [Error type: Unresolved type for InputImage]): OcrResult defined in com.phonepilot.app.vision.MlKitOcrEngine
+2026-11-07T17:10:37.8203304Z public open suspend fun process(image: Bitmap): OcrResult defined in com.phonepilot.app.vision.MlKitOcrEngine
+2026-11-07T17:10:37.8205348Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:119:46 Unresolved reference: InputImage
+2026-11-07T17:10:37.8208065Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:123:13 'return' is not allowed here
+2026-11-07T17:10:37.8210490Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:132:60 Unresolved reference: toLowercase
+2026-11-07T17:10:37.8212888Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:137:9 'return' is not allowed here
+2026-11-07T17:10:37.8215255Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:164:30 Unresolved reference: mlkit
+2026-11-07T17:10:37.8238030Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:165:21 Unresolved reference: InputImage
+2026-11-07T17:10:37.8240718Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:182:76 Unresolved reference: it
+2026-11-07T17:10:37.8242963Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:194:29 Overload resolution ambiguity: 
+2026-11-07T17:10:37.8244614Z public open fun append(p0: StringBuffer!): StringBuilder! defined in java.lang.StringBuilder
+2026-11-07T17:10:37.8245866Z public open fun append(p0: Any!): StringBuilder! defined in java.lang.StringBuilder
+2026-11-07T17:10:37.8247075Z public open fun append(p0: Boolean): StringBuilder! defined in java.lang.StringBuilder
+2026-11-07T17:10:37.8248210Z public open fun append(p0: Char): StringBuilder! defined in java.lang.StringBuilder
+2026-11-07T17:10:37.8249402Z public open fun append(p0: CharArray!): StringBuilder! defined in java.lang.StringBuilder
+2026-11-07T17:10:37.8250687Z public open fun append(p0: CharSequence!): StringBuilder! defined in java.lang.StringBuilder
+2026-11-07T17:10:37.8251930Z public open fun append(p0: Double): StringBuilder! defined in java.lang.StringBuilder
+2026-11-07T17:10:37.8253093Z public open fun append(p0: Float): StringBuilder! defined in java.lang.StringBuilder
+2026-11-07T17:10:37.8254211Z public open fun append(p0: Int): StringBuilder! defined in java.lang.StringBuilder
+2026-11-07T17:10:37.8255332Z public open fun append(p0: Long): StringBuilder! defined in java.lang.StringBuilder
+2026-11-07T17:10:37.8306365Z public open fun append(p0: String!): StringBuilder! defined in java.lang.StringBuilder
+2026-11-07T17:10:37.8308765Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:206:5 A 'return' expression required in a function with a block body ('{...}')
+2026-11-07T17:10:37.8311825Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:216:15 Unresolved reference: cancel
+2026-11-07T17:10:37.8313994Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:245:13 'return' is not allowed here
+2026-11-07T17:10:37.8335817Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:252:9 'return' is not allowed here
+2026-11-07T17:10:37.8338414Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:259:46 Unresolved reference: InputImage
+2026-11-07T17:10:37.8340910Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/OcrEngine.kt:260:16 Overload resolution ambiguity: 
+2026-11-07T17:10:37.8343290Z public open suspend fun process(inputImage: [Error type: Unresolved type for InputImage]): OcrResult defined in com.phonepilot.app.vision.TesseractOcrEngine
+2026-11-07T17:10:37.8345163Z public open suspend fun process(image: Bitmap): OcrResult defined in com.phonepilot.app.vision.TesseractOcrEngine
+2026-11-07T17:10:37.8387494Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenCaptureManager.kt:31:27 Unresolved reference: await
+2026-11-07T17:10:37.8389894Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenCaptureManager.kt:38:14 Redeclaration: ScreenCaptureResult
+2026-11-07T17:10:37.8392426Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenCaptureManager.kt:51:6 Cannot access 'Serializable': it is internal in 'kotlin.io'
+2026-11-07T17:10:37.8394967Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenCaptureManager.kt:51:6 This class does not have a constructor
+2026-11-07T17:10:37.8397515Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenCaptureManager.kt:148:52 No value passed for parameter 'p0'
+2026-11-07T17:10:37.8399925Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenCaptureManager.kt:148:52 No value passed for parameter 'p1'
+2026-11-07T17:10:37.8402296Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenCaptureManager.kt:148:52 No value passed for parameter 'p2'
+2026-11-07T17:10:37.8404835Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenCaptureManager.kt:158:53 Type mismatch: inferred type is Unit but InputStream! was expected
+2026-11-07T17:10:37.8437648Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenCaptureManager.kt:159:24 Unresolved reference: close
+2026-11-07T17:10:37.8440065Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenCaptureManager.kt:284:28 Unresolved reference: suspendCancellableCoroutine
+2026-11-07T17:10:37.8442615Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenCaptureManager.kt:284:58 Cannot infer a type for this parameter. Please specify it explicitly.
+2026-11-07T17:10:37.8445226Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenCaptureManager.kt:369:9 Unresolved reference: defer
+2026-11-07T17:10:37.8448015Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenCaptureManager.kt:380:24 Unresolved reference: error
+2026-11-07T17:10:37.8451151Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenCaptureManager.kt:385:88 Unresolved reference: errorMessage
+2026-11-07T17:10:37.8453731Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenCaptureManager.kt:394:66 Unresolved reference: errorMessage
+2026-11-07T17:10:37.8496713Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenCaptureManager.kt:525:15 Unresolved reference: cancel
+2026-11-07T17:10:37.8499444Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenStateDetector.kt:144:64 Unresolved reference: label
+2026-11-07T17:10:37.8502669Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenStateDetector.kt:231:23 Unresolved reference. None of the following candidates is applicable because of receiver type mismatch: 
+2026-11-07T17:10:37.8505208Z public fun <T : Comparable<TypeVariable(T)>> Array<out TypeVariable(T)>.min(): TypeVariable(T) defined in kotlin.collections
+2026-11-07T17:10:37.8506639Z public fun Array<out Double>.min(): Double defined in kotlin.collections
+2026-11-07T17:10:37.8507638Z public fun Array<out Float>.min(): Float defined in kotlin.collections
+2026-11-07T17:10:37.8508566Z public fun ByteArray.min(): Byte defined in kotlin.collections
+2026-11-07T17:10:37.8509421Z public fun CharArray.min(): Char defined in kotlin.collections
+2026-11-07T17:10:37.8510248Z public fun CharSequence.min(): Char defined in kotlin.text
+2026-11-07T17:10:37.8511092Z public fun DoubleArray.min(): Double defined in kotlin.collections
+2026-11-07T17:10:37.8511973Z public fun FloatArray.min(): Float defined in kotlin.collections
+2026-11-07T17:10:37.8512835Z public fun IntArray.min(): Int defined in kotlin.collections
+2026-11-07T17:10:37.8513678Z public fun LongArray.min(): Long defined in kotlin.collections
+2026-11-07T17:10:37.8514550Z public fun ShortArray.min(): Short defined in kotlin.collections
+2026-11-07T17:10:37.8515425Z public fun UByteArray.min(): UByte defined in kotlin.collections
+2026-11-07T17:10:37.8566829Z public fun UIntArray.min(): UInt defined in kotlin.collections
+2026-11-07T17:10:37.8567761Z public fun ULongArray.min(): ULong defined in kotlin.collections
+2026-11-07T17:10:37.8568691Z public fun UShortArray.min(): UShort defined in kotlin.collections
+2026-11-07T17:10:37.8570044Z public fun <T : Comparable<TypeVariable(T)>> Iterable<TypeVariable(T)>.min(): TypeVariable(T) defined in kotlin.collections
+2026-11-07T17:10:37.8571336Z public fun Iterable<Double>.min(): Double defined in kotlin.collections
+2026-11-07T17:10:37.8572362Z public fun Iterable<Float>.min(): Float defined in kotlin.collections
+2026-11-07T17:10:37.8573770Z public fun <T : Comparable<TypeVariable(T)>> Sequence<TypeVariable(T)>.min(): TypeVariable(T) defined in kotlin.sequences
+2026-11-07T17:10:37.8575082Z public fun Sequence<Double>.min(): Double defined in kotlin.sequences
+2026-11-07T17:10:37.8576184Z public fun Sequence<Float>.min(): Float defined in kotlin.sequences
+2026-11-07T17:10:37.8578742Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenStateDetector.kt:235:23 Unresolved reference. None of the following candidates is applicable because of receiver type mismatch: 
+2026-11-07T17:10:37.8581242Z public fun <T : Comparable<TypeVariable(T)>> Array<out TypeVariable(T)>.min(): TypeVariable(T) defined in kotlin.collections
+2026-11-07T17:10:37.8582505Z public fun Array<out Double>.min(): Double defined in kotlin.collections
+2026-11-07T17:10:37.8583521Z public fun Array<out Float>.min(): Float defined in kotlin.collections
+2026-11-07T17:10:37.8584419Z public fun ByteArray.min(): Byte defined in kotlin.collections
+2026-11-07T17:10:37.8639317Z public fun CharArray.min(): Char defined in kotlin.collections
+2026-11-07T17:10:37.8677179Z public fun CharSequence.min(): Char defined in kotlin.text
+2026-11-07T17:10:37.8678075Z public fun DoubleArray.min(): Double defined in kotlin.collections
+2026-11-07T17:10:37.8678980Z public fun FloatArray.min(): Float defined in kotlin.collections
+2026-11-07T17:10:37.8679841Z public fun IntArray.min(): Int defined in kotlin.collections
+2026-11-07T17:10:37.8680714Z public fun LongArray.min(): Long defined in kotlin.collections
+2026-11-07T17:10:37.8681597Z public fun ShortArray.min(): Short defined in kotlin.collections
+2026-11-07T17:10:37.8682475Z public fun UByteArray.min(): UByte defined in kotlin.collections
+2026-11-07T17:10:37.8683391Z public fun UIntArray.min(): UInt defined in kotlin.collections
+2026-11-07T17:10:37.8684250Z public fun ULongArray.min(): ULong defined in kotlin.collections
+2026-11-07T17:10:37.8685137Z public fun UShortArray.min(): UShort defined in kotlin.collections
+2026-11-07T17:10:37.8686615Z public fun <T : Comparable<TypeVariable(T)>> Iterable<TypeVariable(T)>.min(): TypeVariable(T) defined in kotlin.collections
+2026-11-07T17:10:37.8687851Z public fun Iterable<Double>.min(): Double defined in kotlin.collections
+2026-11-07T17:10:37.8688767Z public fun Iterable<Float>.min(): Float defined in kotlin.collections
+2026-11-07T17:10:37.8690061Z public fun <T : Comparable<TypeVariable(T)>> Sequence<TypeVariable(T)>.min(): TypeVariable(T) defined in kotlin.sequences
+2026-11-07T17:10:37.8691237Z public fun Sequence<Double>.min(): Double defined in kotlin.sequences
+2026-11-07T17:10:37.8692132Z public fun Sequence<Float>.min(): Float defined in kotlin.sequences
+2026-11-07T17:10:37.8694598Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenStateDetector.kt:242:16 Unresolved reference. None of the following candidates is applicable because of receiver type mismatch: 
+2026-11-07T17:10:37.8725429Z public fun <T : Comparable<TypeVariable(T)>> Array<out TypeVariable(T)>.min(): TypeVariable(T) defined in kotlin.collections
+2026-11-07T17:10:37.8726876Z public fun Array<out Double>.min(): Double defined in kotlin.collections
+2026-11-07T17:10:37.8727781Z public fun Array<out Float>.min(): Float defined in kotlin.collections
+2026-11-07T17:10:37.8728625Z public fun ByteArray.min(): Byte defined in kotlin.collections
+2026-11-07T17:10:37.8729419Z public fun CharArray.min(): Char defined in kotlin.collections
+2026-11-07T17:10:37.8730203Z public fun CharSequence.min(): Char defined in kotlin.text
+2026-11-07T17:10:37.8731078Z public fun DoubleArray.min(): Double defined in kotlin.collections
+2026-11-07T17:10:37.8731976Z public fun FloatArray.min(): Float defined in kotlin.collections
+2026-11-07T17:10:37.8732829Z public fun IntArray.min(): Int defined in kotlin.collections
+2026-11-07T17:10:37.8733667Z public fun LongArray.min(): Long defined in kotlin.collections
+2026-11-07T17:10:37.8734527Z public fun ShortArray.min(): Short defined in kotlin.collections
+2026-11-07T17:10:37.8735415Z public fun UByteArray.min(): UByte defined in kotlin.collections
+2026-11-07T17:10:37.8736451Z public fun UIntArray.min(): UInt defined in kotlin.collections
+2026-11-07T17:10:37.8737310Z public fun ULongArray.min(): ULong defined in kotlin.collections
+2026-11-07T17:10:37.8738192Z public fun UShortArray.min(): UShort defined in kotlin.collections
+2026-11-07T17:10:37.8739507Z public fun <T : Comparable<TypeVariable(T)>> Iterable<TypeVariable(T)>.min(): TypeVariable(T) defined in kotlin.collections
+2026-11-07T17:10:37.8775807Z public fun Iterable<Double>.min(): Double defined in kotlin.collections
+2026-11-07T17:10:37.8776938Z public fun Iterable<Float>.min(): Float defined in kotlin.collections
+2026-11-07T17:10:37.8778246Z public fun <T : Comparable<TypeVariable(T)>> Sequence<TypeVariable(T)>.min(): TypeVariable(T) defined in kotlin.sequences
+2026-11-07T17:10:37.8779523Z public fun Sequence<Double>.min(): Double defined in kotlin.sequences
+2026-11-07T17:10:37.8780527Z public fun Sequence<Float>.min(): Float defined in kotlin.sequences
+2026-11-07T17:10:37.8782976Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenStateDetector.kt:246:15 Unresolved reference: cancel
+2026-11-07T17:10:37.8806395Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenStateDetector.kt:278:27 Unresolved reference: abs
+2026-11-07T17:10:37.8809624Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/ScreenStateDetector.kt:279:18 Unresolved reference. None of the following candidates is applicable because of receiver type mismatch: 
+2026-11-07T17:10:37.8812138Z public fun <T : Comparable<TypeVariable(T)>> Array<out TypeVariable(T)>.max(): TypeVariable(T) defined in kotlin.collections
+2026-11-07T17:10:37.8813481Z public fun Array<out Double>.max(): Double defined in kotlin.collections
+2026-11-07T17:10:37.8814455Z public fun Array<out Float>.max(): Float defined in kotlin.collections
+2026-11-07T17:10:37.8815368Z public fun ByteArray.max(): Byte defined in kotlin.collections
+2026-11-07T17:10:37.8837086Z public fun CharArray.max(): Char defined in kotlin.collections
+2026-11-07T17:10:37.8837976Z public fun CharSequence.max(): Char defined in kotlin.text
+2026-11-07T17:10:37.8838850Z public fun DoubleArray.max(): Double defined in kotlin.collections
+2026-11-07T17:10:37.8839754Z public fun FloatArray.max(): Float defined in kotlin.collections
+2026-11-07T17:10:37.8840622Z public fun IntArray.max(): Int defined in kotlin.collections
+2026-11-07T17:10:37.8841474Z public fun LongArray.max(): Long defined in kotlin.collections
+2026-11-07T17:10:37.8842337Z public fun ShortArray.max(): Short defined in kotlin.collections
+2026-11-07T17:10:37.8843218Z public fun UByteArray.max(): UByte defined in kotlin.collections
+2026-11-07T17:10:37.8844110Z public fun UIntArray.max(): UInt defined in kotlin.collections
+2026-11-07T17:10:37.8844977Z public fun ULongArray.max(): ULong defined in kotlin.collections
+2026-11-07T17:10:37.8846026Z public fun UShortArray.max(): UShort defined in kotlin.collections
+2026-11-07T17:10:37.8847359Z public fun <T : Comparable<TypeVariable(T)>> Iterable<TypeVariable(T)>.max(): TypeVariable(T) defined in kotlin.collections
+2026-11-07T17:10:37.8848565Z public fun Iterable<Double>.max(): Double defined in kotlin.collections
+2026-11-07T17:10:37.8849443Z public fun Iterable<Float>.max(): Float defined in kotlin.collections
+2026-11-07T17:10:37.8850687Z public fun <T : Comparable<TypeVariable(T)>> Sequence<TypeVariable(T)>.max(): TypeVariable(T) defined in kotlin.sequences
+2026-11-07T17:10:37.8851833Z public fun Sequence<Double>.max(): Double defined in kotlin.sequences
+2026-11-07T17:10:37.8852694Z public fun Sequence<Float>.max(): Float defined in kotlin.sequences
+2026-11-07T17:10:37.8854532Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/UiElementRecognizer.kt:365:15 Unresolved reference: cancel
+2026-11-07T17:10:37.8877494Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionEngine.kt:55:9 Unresolved reference: aiProviderRepository
+2026-11-07T17:10:37.8880810Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionEngine.kt:103:13 'when' expression must be exhaustive, add necessary 'is Failure', 'is Success' branches or 'else' branch instead
+2026-11-07T17:10:37.8883873Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionEngine.kt:108:47 Overload resolution ambiguity: 
+2026-11-07T17:10:37.8886235Z public abstract suspend fun process(inputImage: [Error type: Unresolved type for InputImage]): OcrResult defined in com.phonepilot.app.vision.OcrEngine
+2026-11-07T17:10:37.8887937Z public abstract suspend fun process(image: Bitmap): OcrResult defined in com.phonepilot.app.vision.OcrEngine
+2026-11-07T17:10:37.8890915Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionEngine.kt:109:39 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type OcrResult?
+2026-11-07T17:10:37.8894468Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionEngine.kt:110:64 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type OcrResult?
+2026-11-07T17:10:37.8917702Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionEngine.kt:262:15 Unresolved reference: cancel
+2026-11-07T17:10:37.8921040Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionFusionEngine.kt:65:48 Smart cast to 'UiElement' is impossible, because 'bestMatch' is a local variable that is captured by a changing closure
+2026-11-07T17:10:37.8924492Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionFusionEngine.kt:89:17 Type mismatch: inferred type is Boolean? but Boolean was expected
+2026-11-07T17:10:37.8927611Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionFusionEngine.kt:111:9 Unresolved reference: Log
+2026-11-07T17:10:37.8930503Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionFusionEngine.kt:185:27 Type mismatch: inferred type is String but Regex was expected
+2026-11-07T17:10:37.8933540Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionFusionEngine.kt:186:27 Type mismatch: inferred type is String but Regex was expected
+2026-11-07T17:10:37.8956891Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionFusionEngine.kt:187:27 Type mismatch: inferred type is String but Regex was expected
+2026-11-07T17:10:37.8959952Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionFusionEngine.kt:188:27 Type mismatch: inferred type is String but Regex was expected
+2026-11-07T17:10:37.8962684Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionFusionEngine.kt:199:16 Unresolved reference: sqrt
+2026-11-07T17:10:37.8965469Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionFusionEngine.kt:242:42 Type mismatch: inferred type is Any? but String? was expected
+2026-11-07T17:10:37.8968442Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionFusionEngine.kt:242:101 Not enough information to infer type variable T
+2026-11-07T17:10:37.8971359Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionFusionEngine.kt:276:64 Cannot access 'textSimilarity': it is private in 'UiElementRecognizer'
+2026-11-07T17:10:37.8974205Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionFusionEngine.kt:307:15 Unresolved reference: cancel
+2026-11-07T17:10:37.8997159Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:6:16 Unresolved reference: serialization
+2026-11-07T17:10:37.8999971Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:55:2 Cannot access 'Serializable': it is internal in 'kotlin.io'
+2026-11-07T17:10:37.9002731Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:55:2 This class does not have a constructor
+2026-11-07T17:10:37.9005947Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:90:45 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type String?
+2026-11-07T17:10:37.9009773Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:90:80 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type String?
+2026-11-07T17:10:37.9012831Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:97:2 Cannot access 'Serializable': it is internal in 'kotlin.io'
+2026-11-07T17:10:37.9026637Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:97:2 This class does not have a constructor
+2026-11-07T17:10:37.9029994Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:128:25 Unresolved reference. None of the following candidates is applicable because of receiver type mismatch: 
+2026-11-07T17:10:37.9032540Z public fun <T : Comparable<TypeVariable(T)>> Array<out TypeVariable(T)>.max(): TypeVariable(T) defined in kotlin.collections
+2026-11-07T17:10:37.9033845Z public fun Array<out Double>.max(): Double defined in kotlin.collections
+2026-11-07T17:10:37.9034826Z public fun Array<out Float>.max(): Float defined in kotlin.collections
+2026-11-07T17:10:37.9036370Z public fun ByteArray.max(): Byte defined in kotlin.collections
+2026-11-07T17:10:37.9037241Z public fun CharArray.max(): Char defined in kotlin.collections
+2026-11-07T17:10:37.9038502Z public fun CharSequence.max(): Char defined in kotlin.text
+2026-11-07T17:10:37.9039366Z public fun DoubleArray.max(): Double defined in kotlin.collections
+2026-11-07T17:10:37.9040259Z public fun FloatArray.max(): Float defined in kotlin.collections
+2026-11-07T17:10:37.9041104Z public fun IntArray.max(): Int defined in kotlin.collections
+2026-11-07T17:10:37.9041946Z public fun LongArray.max(): Long defined in kotlin.collections
+2026-11-07T17:10:37.9042812Z public fun ShortArray.max(): Short defined in kotlin.collections
+2026-11-07T17:10:37.9043679Z public fun UByteArray.max(): UByte defined in kotlin.collections
+2026-11-07T17:10:37.9044556Z public fun UIntArray.max(): UInt defined in kotlin.collections
+2026-11-07T17:10:37.9045427Z public fun ULongArray.max(): ULong defined in kotlin.collections
+2026-11-07T17:10:37.9046527Z public fun UShortArray.max(): UShort defined in kotlin.collections
+2026-11-07T17:10:37.9047861Z public fun <T : Comparable<TypeVariable(T)>> Iterable<TypeVariable(T)>.max(): TypeVariable(T) defined in kotlin.collections
+2026-11-07T17:10:37.9049122Z public fun Iterable<Double>.max(): Double defined in kotlin.collections
+2026-11-07T17:10:37.9050087Z public fun Iterable<Float>.max(): Float defined in kotlin.collections
+2026-11-07T17:10:37.9051384Z public fun <T : Comparable<TypeVariable(T)>> Sequence<TypeVariable(T)>.max(): TypeVariable(T) defined in kotlin.sequences
+2026-11-07T17:10:37.9052632Z public fun Sequence<Double>.max(): Double defined in kotlin.sequences
+2026-11-07T17:10:37.9053558Z public fun Sequence<Float>.max(): Float defined in kotlin.sequences
+2026-11-07T17:10:37.9056076Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:129:24 Unresolved reference. None of the following candidates is applicable because of receiver type mismatch: 
+2026-11-07T17:10:37.9058553Z public fun <T : Comparable<TypeVariable(T)>> Array<out TypeVariable(T)>.max(): TypeVariable(T) defined in kotlin.collections
+2026-11-07T17:10:37.9059862Z public fun Array<out Double>.max(): Double defined in kotlin.collections
+2026-11-07T17:10:37.9060843Z public fun Array<out Float>.max(): Float defined in kotlin.collections
+2026-11-07T17:10:37.9061747Z public fun ByteArray.max(): Byte defined in kotlin.collections
+2026-11-07T17:10:37.9062625Z public fun CharArray.max(): Char defined in kotlin.collections
+2026-11-07T17:10:37.9063949Z public fun CharSequence.max(): Char defined in kotlin.text
+2026-11-07T17:10:37.9064865Z public fun DoubleArray.max(): Double defined in kotlin.collections
+2026-11-07T17:10:37.9066026Z public fun FloatArray.max(): Float defined in kotlin.collections
+2026-11-07T17:10:37.9066952Z public fun IntArray.max(): Int defined in kotlin.collections
+2026-11-07T17:10:37.9067842Z public fun LongArray.max(): Long defined in kotlin.collections
+2026-11-07T17:10:37.9068746Z public fun ShortArray.max(): Short defined in kotlin.collections
+2026-11-07T17:10:37.9069653Z public fun UByteArray.max(): UByte defined in kotlin.collections
+2026-11-07T17:10:37.9070541Z public fun UIntArray.max(): UInt defined in kotlin.collections
+2026-11-07T17:10:37.9071423Z public fun ULongArray.max(): ULong defined in kotlin.collections
+2026-11-07T17:10:37.9072343Z public fun UShortArray.max(): UShort defined in kotlin.collections
+2026-11-07T17:10:37.9073744Z public fun <T : Comparable<TypeVariable(T)>> Iterable<TypeVariable(T)>.max(): TypeVariable(T) defined in kotlin.collections
+2026-11-07T17:10:37.9075085Z public fun Iterable<Double>.max(): Double defined in kotlin.collections
+2026-11-07T17:10:37.9076268Z public fun Iterable<Float>.max(): Float defined in kotlin.collections
+2026-11-07T17:10:37.9077630Z public fun <T : Comparable<TypeVariable(T)>> Sequence<TypeVariable(T)>.max(): TypeVariable(T) defined in kotlin.sequences
+2026-11-07T17:10:37.9078899Z public fun Sequence<Double>.max(): Double defined in kotlin.sequences
+2026-11-07T17:10:37.9079871Z public fun Sequence<Float>.max(): Float defined in kotlin.sequences
+2026-11-07T17:10:37.9082173Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:130:26 Unresolved reference. None of the following candidates is applicable because of receiver type mismatch: 
+2026-11-07T17:10:37.9084625Z public fun <T : Comparable<TypeVariable(T)>> Array<out TypeVariable(T)>.min(): TypeVariable(T) defined in kotlin.collections
+2026-11-07T17:10:37.9085978Z public fun Array<out Double>.min(): Double defined in kotlin.collections
+2026-11-07T17:10:37.9086865Z public fun Array<out Float>.min(): Float defined in kotlin.collections
+2026-11-07T17:10:37.9087650Z public fun ByteArray.min(): Byte defined in kotlin.collections
+2026-11-07T17:10:37.9088524Z public fun CharArray.min(): Char defined in kotlin.collections
+2026-11-07T17:10:37.9089351Z public fun CharSequence.min(): Char defined in kotlin.text
+2026-11-07T17:10:37.9090204Z public fun DoubleArray.min(): Double defined in kotlin.collections
+2026-11-07T17:10:37.9091080Z public fun FloatArray.min(): Float defined in kotlin.collections
+2026-11-07T17:10:37.9091959Z public fun IntArray.min(): Int defined in kotlin.collections
+2026-11-07T17:10:37.9092797Z public fun LongArray.min(): Long defined in kotlin.collections
+2026-11-07T17:10:37.9093658Z public fun ShortArray.min(): Short defined in kotlin.collections
+2026-11-07T17:10:37.9094527Z public fun UByteArray.min(): UByte defined in kotlin.collections
+2026-11-07T17:10:37.9095396Z public fun UIntArray.min(): UInt defined in kotlin.collections
+2026-11-07T17:10:37.9096396Z public fun ULongArray.min(): ULong defined in kotlin.collections
+2026-11-07T17:10:37.9097318Z public fun UShortArray.min(): UShort defined in kotlin.collections
+2026-11-07T17:10:37.9098640Z public fun <T : Comparable<TypeVariable(T)>> Iterable<TypeVariable(T)>.min(): TypeVariable(T) defined in kotlin.collections
+2026-11-07T17:10:37.9099908Z public fun Iterable<Double>.min(): Double defined in kotlin.collections
+2026-11-07T17:10:37.9100862Z public fun Iterable<Float>.min(): Float defined in kotlin.collections
+2026-11-07T17:10:37.9102186Z public fun <T : Comparable<TypeVariable(T)>> Sequence<TypeVariable(T)>.min(): TypeVariable(T) defined in kotlin.sequences
+2026-11-07T17:10:37.9103440Z public fun Sequence<Double>.min(): Double defined in kotlin.sequences
+2026-11-07T17:10:37.9104369Z public fun Sequence<Float>.min(): Float defined in kotlin.sequences
+2026-11-07T17:10:37.9110645Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:131:27 Unresolved reference. None of the following candidates is applicable because of receiver type mismatch: 
+2026-11-07T17:10:37.9113310Z public fun <T : Comparable<TypeVariable(T)>> Array<out TypeVariable(T)>.min(): TypeVariable(T) defined in kotlin.collections
+2026-11-07T17:10:37.9114592Z public fun Array<out Double>.min(): Double defined in kotlin.collections
+2026-11-07T17:10:37.9115737Z public fun Array<out Float>.min(): Float defined in kotlin.collections
+2026-11-07T17:10:37.9116680Z public fun ByteArray.min(): Byte defined in kotlin.collections
+2026-11-07T17:10:37.9117543Z public fun CharArray.min(): Char defined in kotlin.collections
+2026-11-07T17:10:37.9118377Z public fun CharSequence.min(): Char defined in kotlin.text
+2026-11-07T17:10:37.9119232Z public fun DoubleArray.min(): Double defined in kotlin.collections
+2026-11-07T17:10:37.9120140Z public fun FloatArray.min(): Float defined in kotlin.collections
+2026-11-07T17:10:37.9120979Z public fun IntArray.min(): Int defined in kotlin.collections
+2026-11-07T17:10:37.9121763Z public fun LongArray.min(): Long defined in kotlin.collections
+2026-11-07T17:10:37.9122585Z public fun ShortArray.min(): Short defined in kotlin.collections
+2026-11-07T17:10:37.9123409Z public fun UByteArray.min(): UByte defined in kotlin.collections
+2026-11-07T17:10:37.9124213Z public fun UIntArray.min(): UInt defined in kotlin.collections
+2026-11-07T17:10:37.9125021Z public fun ULongArray.min(): ULong defined in kotlin.collections
+2026-11-07T17:10:37.9126508Z public fun UShortArray.min(): UShort defined in kotlin.collections
+2026-11-07T17:10:37.9127803Z public fun <T : Comparable<TypeVariable(T)>> Iterable<TypeVariable(T)>.min(): TypeVariable(T) defined in kotlin.collections
+2026-11-07T17:10:37.9129001Z public fun Iterable<Double>.min(): Double defined in kotlin.collections
+2026-11-07T17:10:37.9129934Z public fun Iterable<Float>.min(): Float defined in kotlin.collections
+2026-11-07T17:10:37.9131323Z public fun <T : Comparable<TypeVariable(T)>> Sequence<TypeVariable(T)>.min(): TypeVariable(T) defined in kotlin.sequences
+2026-11-07T17:10:37.9132565Z public fun Sequence<Double>.min(): Double defined in kotlin.sequences
+2026-11-07T17:10:37.9133496Z public fun Sequence<Float>.min(): Float defined in kotlin.sequences
+2026-11-07T17:10:37.9135358Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:138:35 Overload resolution ambiguity: 
+2026-11-07T17:10:37.9137196Z public final operator fun minus(other: Byte): Int defined in kotlin.Int
+2026-11-07T17:10:37.9167312Z public final operator fun minus(other: Double): Double defined in kotlin.Int
+2026-11-07T17:10:37.9168455Z public final operator fun minus(other: Float): Float defined in kotlin.Int
+2026-11-07T17:10:37.9169475Z public final operator fun minus(other: Int): Int defined in kotlin.Int
+2026-11-07T17:10:37.9170461Z public final operator fun minus(other: Long): Long defined in kotlin.Int
+2026-11-07T17:10:37.9171469Z public final operator fun minus(other: Short): Int defined in kotlin.Int
+2026-11-07T17:10:37.9173616Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:147:24 Type mismatch: inferred type is Unit but Boolean was expected
+2026-11-07T17:10:37.9196669Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:153:2 Cannot access 'Serializable': it is internal in 'kotlin.io'
+2026-11-07T17:10:37.9199506Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:153:2 This class does not have a constructor
+2026-11-07T17:10:37.9202293Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:163:2 Cannot access 'Serializable': it is internal in 'kotlin.io'
+2026-11-07T17:10:37.9205883Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:163:2 This class does not have a constructor
+2026-11-07T17:10:37.9208503Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:178:14 Redeclaration: ScreenCaptureResult
+2026-11-07T17:10:37.9211244Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:179:6 Cannot access 'Serializable': it is internal in 'kotlin.io'
+2026-11-07T17:10:37.9213950Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:179:6 This class does not have a constructor
+2026-11-07T17:10:37.9237056Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:191:6 Cannot access 'Serializable': it is internal in 'kotlin.io'
+2026-11-07T17:10:37.9242043Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:191:6 This class does not have a constructor
+2026-11-07T17:10:37.9244801Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:197:6 Cannot access 'Serializable': it is internal in 'kotlin.io'
+2026-11-07T17:10:37.9247831Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:197:6 This class does not have a constructor
+2026-11-07T17:10:37.9250567Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:212:2 Cannot access 'Serializable': it is internal in 'kotlin.io'
+2026-11-07T17:10:37.9253262Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:212:2 This class does not have a constructor
+2026-11-07T17:10:37.9269653Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:243:2 Cannot access 'Serializable': it is internal in 'kotlin.io'
+2026-11-07T17:10:37.9272495Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:243:2 This class does not have a constructor
+2026-11-07T17:10:37.9275263Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:278:2 Cannot access 'Serializable': it is internal in 'kotlin.io'
+2026-11-07T17:10:37.9278000Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:278:2 This class does not have a constructor
+2026-11-07T17:10:37.9280534Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:296:2 Cannot access 'Serializable': it is internal in 'kotlin.io'
+2026-11-07T17:10:37.9283419Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionModels.kt:296:2 This class does not have a constructor
+2026-11-07T17:10:37.9288482Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionRepository.kt:59:9 'return' is not allowed here
+2026-11-07T17:10:37.9291084Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionRepository.kt:116:45 Unresolved reference: getProvider
+2026-11-07T17:10:37.9293652Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionRepository.kt:117:53 Unresolved reference: it
+2026-11-07T17:10:37.9296408Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionRepository.kt:177:45 Unresolved reference: label
+2026-11-07T17:10:37.9301973Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionRepository.kt:195:60 Unresolved reference: label
+2026-11-07T17:10:37.9304420Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionRepository.kt:270:45 Unresolved reference: getProvider
+2026-11-07T17:10:37.9351188Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionRepository.kt:271:43 Unresolved reference: it
+2026-11-07T17:10:37.9353776Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionRepository.kt:280:45 Unresolved reference: getProvider
+2026-11-07T17:10:37.9356534Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionRepository.kt:281:53 Unresolved reference: it
+2026-11-07T17:10:37.9359121Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisionRepository.kt:303:15 Unresolved reference: cancel
+2026-11-07T17:10:37.9361506Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisualContextManager.kt:8:27 Unresolved reference: Mutex
+2026-11-07T17:10:37.9363897Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisualContextManager.kt:25:30 Unresolved reference: Mutex
+2026-11-07T17:10:37.9366639Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisualContextManager.kt:29:30 Unresolved reference: AtomicReference
+2026-11-07T17:10:37.9369336Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisualContextManager.kt:53:36 Unresolved reference: launch
+2026-11-07T17:10:37.9372297Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisualContextManager.kt:58:52 Suspension functions can be called only within coroutine body
+2026-11-07T17:10:37.9375103Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisualContextManager.kt:94:9 'return' is not allowed here
+2026-11-07T17:10:37.9378381Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisualContextManager.kt:94:36 Unresolved reference: await
+2026-11-07T17:10:37.9381427Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisualContextManager.kt:179:33 Cannot access 'detectScreenIdentity': it is private in 'ScreenStateDetector'
+2026-11-07T17:10:37.9384946Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisualContextManager.kt:258:40 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type List<UiElement>?
+2026-11-07T17:10:37.9388166Z e: file:///home/runner/work/PhonePilot-AI/PhonePilot-AI/android-app/app/src/main/java/com/phonepilot/app/vision/VisualContextManager.kt:274:15 Unresolved reference: cancel
+2026-11-07T17:10:37.9389333Z 
+2026-11-07T17:10:37.9389612Z FAILURE: Build failed with an exception.
+2026-11-07T17:10:37.9389946Z 
+2026-11-07T17:10:37.9390138Z * What went wrong:
+2026-11-07T17:10:37.9390756Z Execution failed for task ':app:compileDebugKotlin'.
+2026-11-07T17:10:37.9392255Z > A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+2026-11-07T17:10:37.9393536Z    > Compilation error. See log for more details
+2026-11-07T17:10:37.9393904Z 
+2026-11-07T17:10:37.9394030Z * Try:
+2026-11-07T17:10:37.9394541Z > Run with --stacktrace option to get the stack trace.
+2026-11-07T17:10:37.9396175Z > Run with --info or --debug option to get more log output.
+2026-11-07T17:10:37.9397069Z > Run with --scan to get full insights.
+2026-11-07T17:10:37.9397661Z > Get more help at https://help.gradle.org.
+2026-11-07T17:10:37.9398009Z 
+2026-11-07T17:10:37.9398212Z BUILD FAILED in 2m 48s
+2026-11-07T17:10:37.9398481Z 
+2026-11-07T17:10:37.9398753Z > Task :app:compileDebugKotlin FAILED
+2026-11-07T17:10:37.9399299Z 20 actionable tasks: 20 executed
+2026-11-07T17:10:38.4013818Z ##[error]Process completed with exit code 1.

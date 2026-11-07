@@ -52,7 +52,6 @@ class VisionEngine(
     fun initialize(service: AccessibilityService) {
         accessibilityService = service
         screenCaptureManager.setAccessibilityService(service)
-        aiProviderRepository.init(context)
         _isRunning.value = true
         Log.d(TAG, "VisionEngine initialized")
     }
@@ -105,7 +104,7 @@ class VisionEngine(
                     captureBitmap = captureResult.bitmap
                     // Run OCR if capture successful and OCR enabled
                     if (config.enableOcr && captureBitmap != null) {
-                        ocrResult = ocrEngine.process(captureBitmap!!)
+                        ocrResult = ocrEngine.process(captureBitmap)
                         if (!ocrResult.success) {
                             Log.w(TAG, "OCR failed: ${ocrResult.errorMessage}")
                             ocrResult = null
@@ -118,6 +117,10 @@ class VisionEngine(
                     if (captureResult.error == ScreenCaptureResult.CaptureError.SECURE_WINDOW) {
                         Log.i(TAG, "Secure window detected, proceeding with accessibility-only analysis")
                     }
+                }
+                else -> {
+                    // Exhaustiveness check for sealed class
+                    Log.e(TAG, "Unexpected capture result type: ${captureResult::class.simpleName}")
                 }
             }
 

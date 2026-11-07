@@ -40,8 +40,8 @@ fun AgentApprovalScreen(
     val skills by SkillRepository.skills.collectAsStateWithLifecycle()
 
     val pendingApprovals = skills.filter {
-        it.lifecycleState == SkillLifecycleState.VALIDATING.name ||
-            (it.lifecycleState == SkillLifecycleState.NEEDS_REVIEW.name && it.approvalState == "PENDING")
+        it.lifecycleState == SkillLifecycleState.VALIDATING ||
+            (it.lifecycleState == SkillLifecycleState.NEEDS_REVIEW && it.approvalState == "PENDING")
     }
 
     Column(
@@ -144,7 +144,10 @@ private fun ApprovalCard(
                 }
                 androidx.compose.material3.Button(
                     onClick = onApprove,
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    ),
                 ) {
                     Text(text = "اعتماد")
                 }

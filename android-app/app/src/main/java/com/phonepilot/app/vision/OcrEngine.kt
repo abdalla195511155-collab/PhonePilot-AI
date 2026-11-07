@@ -113,14 +113,14 @@ class MlKitOcrEngine(
 
     override suspend fun process(image: Bitmap): OcrResult = withContext(Dispatchers.IO) {
         val inputImage = InputImage.fromBitmap(image, 0)
-        process(inputImage)
+        processInputImage(inputImage)
     }
 
     override suspend fun process(inputImage: InputImage): OcrResult = withContext(Dispatchers.IO) {
         val startTime = System.currentTimeMillis()
 
         if (!initialize()) {
-            return OcrResult(
+            return@withContext OcrResult(
                 errorMessage = "OCR engine not available",
                 success = false,
                 engineName = engineName,
@@ -134,7 +134,7 @@ class MlKitOcrEngine(
             Log.w(TAG, "Language hints contain unsupported languages: ${unsupportedInHints.joinToString()}. Results may be empty for these languages.")
         }
 
-        return try {
+        return@withContext try {
             val result = recognizer?.process(inputImage).await()
             if (result == null) {
                 OcrResult(
@@ -156,6 +156,9 @@ class MlKitOcrEngine(
             )
         }
     }
+
+    // Internal method to avoid overload ambiguity
+    private suspend fun processInputImage(inputImage: InputImage): OcrResult = process(inputImage)
 
     /**
      * Parse ML Kit Text result into our OcrResult format.
@@ -242,22 +245,23 @@ class TesseractOcrEngine(
 
     override suspend fun process(image: Bitmap): OcrResult = withContext(Dispatchers.IO) {
         if (!initialize()) {
-            return OcrResult(
+            return@withContext OcrResult(
                 errorMessage = "Tesseract not initialized",
                 success = false,
                 engineName = engineName,
             )
         }
         // TODO: Implement Tesseract processing
-        return OcrResult(
+        return@withContext OcrResult(
             errorMessage = "Tesseract processing not implemented",
             success = false,
             engineName = engineName,
         )
     }
 
-    override suspend fun process(inputImage: InputImage): OcrResult {
-        return process(inputImage.bitmap ?: Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
+    override suspend fun process(inputImage: InputImage): OcrResult = withContext(Dispatchers.IO) {
+        val bitmap = inputImage.bitmap ?: Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+        process(bitmap)
     }
 
     override fun isAvailable(): Boolean = false

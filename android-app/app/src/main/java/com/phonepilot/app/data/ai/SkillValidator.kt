@@ -15,7 +15,7 @@ import com.phonepilot.app.models.SkillValidationResult
 class SkillValidator {
 
     /** أقل عدد من الخطوات المشتركة لاعتبار المهارة صالحة. */
-    private const val MIN_COMMON_STEPS = 2
+    private val MIN_COMMON_STEPS = 2
 
     /**
      * يتحقق من مهارة بناءً على بيانات التعلم الفعلية.

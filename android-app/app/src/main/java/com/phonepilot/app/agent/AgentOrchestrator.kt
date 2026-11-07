@@ -132,11 +132,11 @@ class AgentOrchestrator(
             agentRepository.updateAgentState(AgentExecutionState.EXECUTING)
 
             val validationResult = SkillValidationResult(
-                valid = skill.lifecycleState == SkillLifecycleState.READY.name
+                valid = skill.lifecycleState == SkillLifecycleState.READY
                     && skill.approvalState == "APPROVED"
                     && skill.approvedByUser == true,
                 ambiguousSteps = emptyList(),
-                confidenceScore = if (skill.approvedByUser) 1.0f else 0.0f,
+                confidenceScore = if (skill.approvedByUser) 1.0 else 0.0,
             )
 
             if (!validationResult.valid) {

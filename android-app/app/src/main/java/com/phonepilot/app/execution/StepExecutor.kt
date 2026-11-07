@@ -23,7 +23,7 @@ class StepExecutor(
 ) {
 
     /** الحد الأقصى لمحاولات الاستعادة لكل خطوة. */
-    private const val MAX_RECOVERY_ATTEMPTS = 2
+    private val MAX_RECOVERY_ATTEMPTS = 2
 
     /**
      * ينفذ خطوة واحدة.
@@ -158,7 +158,7 @@ class StepExecutor(
                 "long_clicked"
             }
             "input" -> {
-                if (inputText.isNotBlank()) {
+                if (inputText?.isNotBlank() == true) {
                     // إ_clear النص الحالي ثم إدخال الجديد
                     targetNode.performAction(AccessibilityNodeInfo.ACTION_FOCUS)
                     // في التنفيذ الفعلي، يُستخدم setText عبر accessibility
@@ -276,7 +276,7 @@ class RecoveryManager(
 ) {
 
     /** الحد الأقصى لمحاولات الاستعادة. */
-    private const val MAX_RECOVERY_ATTEMPTS = 2
+    private val MAX_RECOVERY_ATTEMPTS = 2
 
     /**
      * يحاول استعادة خطوة فاشلة.
@@ -297,7 +297,7 @@ class RecoveryManager(
     ): StepExecutionResult? {
         for (attempt in 1..MAX_RECOVERY_ATTEMPTS) {
             // إعادة قراءة الشاشة وتحديد العنصر مرة أخرى (بسيطة)
-            val result = stepExecutor.executeStep(
+            val executed = stepExecutor.executeStep(
                 stepNumber = stepNumber,
                 stepDescription = "$stepDescription (استعادة المحاولة $attempt)",
                 action = action,
@@ -307,9 +307,10 @@ class RecoveryManager(
                 targetRole = targetRole,
                 requiresUserConfirmation = requiresUserConfirmation,
                 userApproved = userApproved,
-            ).copy(
+            )
+            val result = executed.copy(
                 recoveryAttempted = true,
-                recoverySucceeded = result.success,
+                recoverySucceeded = executed.success,
             )
 
             if (result.success) {

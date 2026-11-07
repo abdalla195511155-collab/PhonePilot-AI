@@ -36,7 +36,7 @@ class CommandRouter(
         } else if (_pendingCommands.value.containsKey(command.commandId)) {
             false // أمر قيد المعالجة بالفعل
         } else {
-            _pendingCommands.update { it + (command.commandId to command) }
+            _pendingCommands.value = _pendingCommands.value + (command.commandId to command)
             true
         }
     }
@@ -45,8 +45,8 @@ class CommandRouter(
      * يُマーク أمراً كمُنفذ.
      */
     fun markCommandExecuted(commandId: String) = synchronized(this) {
-        _pendingCommands.update { it - commandId }
-        _executedCommands.update { it + commandId }
+        _pendingCommands.value = _pendingCommands.value - commandId
+        _executedCommands.value = _executedCommands.value + commandId
     }
 
     /**
@@ -55,7 +55,7 @@ class CommandRouter(
     fun cancelCommand(commandId: String): Boolean = synchronized(this) {
         val wasPending = _pendingCommands.value.containsKey(commandId)
         if (wasPending) {
-            _pendingCommands.update { it - commandId }
+            _pendingCommands.value = _pendingCommands.value - commandId
         }
         wasPending
     }

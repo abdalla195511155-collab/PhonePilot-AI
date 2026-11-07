@@ -1,0 +1,51 @@
+﻿2026-11-07T17:07:45.2496276Z ##[group]Run sdkmanager --list_installed
+2026-11-07T17:07:45.2496686Z [36;1msdkmanager --list_installed[0m
+2026-11-07T17:07:45.2550706Z shell: /usr/bin/bash -e {0}
+2026-11-07T17:07:45.2550970Z env:
+2026-11-07T17:07:45.2551292Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-07T17:07:45.2551797Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-07T17:07:45.2552205Z   ANDROID_HOME: /usr/local/lib/android/sdk
+2026-11-07T17:07:45.2552511Z   ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+2026-11-07T17:07:45.2552785Z ##[endgroup]
+2026-11-07T17:07:46.6578813Z Loading package information...                                                  
+2026-11-07T17:07:46.7909780Z Loading local repository...                                                     
+2026-11-07T17:07:46.7917135Z [=========                              ] 25% Loading local repository...       
+2026-11-07T17:07:46.7918041Z [=========                              ] 25% Fetch remote repository...        
+2026-11-07T17:07:46.7918929Z [=======================================] 100% Fetch remote repository...       
+2026-11-07T17:07:46.7919555Z Installed packages:
+2026-11-07T17:07:46.8407257Z   Path                               | Version       | Description                      | Location                          
+2026-11-07T17:07:46.8432177Z   -------                            | -------       | -------                          | -------                           
+2026-11-07T17:07:46.8452558Z   build-tools;34.0.0                 | 34.0.0        | Android SDK Build-Tools 34       | build-tools/34.0.0                
+2026-11-07T17:07:46.8456740Z   build-tools;35.0.0                 | 35.0.0        | Android SDK Build-Tools 35       | build-tools/35.0.0                
+2026-11-07T17:07:46.8607361Z   build-tools;35.0.1                 | 35.0.1        | Android SDK Build-Tools 35.0.1   | build-tools/35.0.1                
+2026-11-07T17:07:46.8609256Z   build-tools;36.0.0                 | 36.0.0        | Android SDK Build-Tools 36       | build-tools/36.0.0                
+2026-11-07T17:07:46.8630659Z   build-tools;36.1.0                 | 36.1.0        | Android SDK Build-Tools 36.1     | build-tools/36.1.0                
+2026-11-07T17:07:46.8631904Z   build-tools;37.0.0                 | 37.0.0        | Android SDK Build-Tools 37       | build-tools/37.0.0                
+2026-11-07T17:07:46.8633032Z   cmake;3.31.5                       | 3.31.5        | CMake 3.31.5                     | cmake/3.31.5                      
+2026-11-07T17:07:46.8634071Z   cmake;4.1.2                        | 4.1.2         | CMake 4.1.2                      | cmake/4.1.2                       
+2026-11-07T17:07:46.8635220Z   extras;android;m2repository        | 47.0.0        | Android Support Repository       | extras/android/m2repository       
+2026-11-07T17:07:46.8636762Z   extras;google;google_play_services | 49            | Google Play services             | extras/google/google_play_services
+2026-11-07T17:07:46.8638054Z   extras;google;m2repository         | 58            | Google Repository                | extras/google/m2repository        
+2026-11-07T17:07:46.8639257Z   ndk;27.3.13750724                  | 27.3.13750724 | NDK (Side by side) 27.3.13750724 | ndk/27.3.13750724                 
+2026-11-07T17:07:46.8640484Z   ndk;29.0.14206865                  | 29.0.14206865 | NDK (Side by side) 29.0.14206865 | ndk/29.0.14206865                 
+2026-11-07T17:07:46.8643470Z   ndk;30.0.16248370                  | 30.0.16248370 | NDK (Side by side) 30.0.16248370 | ndk/30.0.16248370                 
+2026-11-07T17:07:46.8644864Z   platform-tools                     | 37.0.1        | Android SDK Platform-Tools       | platform-tools                    
+2026-11-07T17:07:46.8666868Z   platforms;android-34               | 3             | Android SDK Platform 34          | platforms/android-34              
+2026-11-07T17:07:46.8668746Z   platforms;android-34-ext10         | 1             | Android SDK Platform 34-ext10    | platforms/android-34-ext10        
+2026-11-07T17:07:46.8671130Z   platforms;android-34-ext11         | 1             | Android SDK Platform 34-ext11    | platforms/android-34-ext11        
+2026-11-07T17:07:46.8672907Z   platforms;android-34-ext12         | 1             | Android SDK Platform 34-ext12    | platforms/android-34-ext12        
+2026-11-07T17:07:46.8674888Z   platforms;android-34-ext8          | 1             | Android SDK Platform 34-ext8     | platforms/android-34-ext8         
+2026-11-07T17:07:46.8676729Z   platforms;android-35               | 2             | Android SDK Platform 35          | platforms/android-35              
+2026-11-07T17:07:46.8678608Z   platforms;android-35-ext14         | 1             | Android SDK Platform 35-ext14    | platforms/android-35-ext14        
+2026-11-07T17:07:46.8680362Z   platforms;android-35-ext15         | 1             | Android SDK Platform 35-ext15    | platforms/android-35-ext15        
+2026-11-07T17:07:46.8682252Z   platforms;android-36               | 2             | Android SDK Platform 36          | platforms/android-36              
+2026-11-07T17:07:46.8683817Z   platforms;android-36-ext18         | 1             | Android SDK Platform 36-ext18    | platforms/android-36-ext18        
+2026-11-07T17:07:46.8685862Z   platforms;android-36-ext19         | 1             | Android SDK Platform 36-ext19    | platforms/android-36-ext19        
+2026-11-07T17:07:46.8687628Z   platforms;android-36.1             | 1             | Android SDK Platform 36.1        | platforms/android-36.1            
+2026-11-07T17:07:46.8689414Z   platforms;android-37.0             | 2             | Android SDK Platform 37.0        | platforms/android-37.0            
+2026-11-07T17:07:46.8690925Z   platforms;android-37.1             | 1             | Android SDK Platform 37.1        | platforms/android-37.1            
+2026-11-07T17:07:46.8692701Z   platforms;android-37.2             | 2             | Android SDK Platform 37.2        | platforms/android-37.2            
+2026-11-07T17:07:46.8694529Z   platforms;android-37.2-beta1       | 1             | Android SDK Platform 37.2-beta1  | platforms/android-37.2-beta1      
+2026-11-07T17:07:46.8697011Z   platforms;android-37.2-beta2       | 2             | Android SDK Platform 37.2-beta2  | platforms/android-37.2-beta2      
+2026-11-07T17:07:46.8700231Z   platforms;android-37.2-beta3       | 3             | Android SDK Platform 37.2-beta3  | platforms/android-37.2-beta3      
+2026-11-07T17:07:46.8700963Z 

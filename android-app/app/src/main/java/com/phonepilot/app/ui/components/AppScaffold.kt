@@ -33,7 +33,7 @@ fun AppScaffold(
                 PhonePilotTopAppBar(title = title, onNavigateUp = onNavigateUp)
             }
         },
-        floatingActionButton = floatingActionButton,
+        floatingActionButton = floatingActionButton ?: {},
     ) { paddingValues ->
         // Scaffold already applies the system-bar insets through its default contentWindowInsets.
         content(paddingValues)

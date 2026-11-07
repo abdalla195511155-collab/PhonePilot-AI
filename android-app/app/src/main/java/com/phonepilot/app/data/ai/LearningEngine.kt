@@ -20,13 +20,13 @@ import com.phonepilot.app.models.SkillValidationResult
 class LearningEngine(private val db: TaskDatabaseHelper) {
 
     /** أقل عدد من التكرارات المكتملة المطلوب لبدء التعلم (المتطلب: 5–10 عروض). */
-    private const val MIN_ITERATIONS = 5
+    private val MIN_ITERATIONS = 5
 
     /** عتبة الحد الأدنى للثقة لاعتبار المهارة قابلة للمراجعة (ليست جاهزة للتنفيذ). */
-    private const val MIN_CONFIDENCE_FOR_REVIEW = 0.5
+    private val MIN_CONFIDENCE_FOR_REVIEW = 0.5
 
     /** عتبة الثقة لاعتبار المهارة "متماسكة" (كثير من الخطوات مشتركة). */
-    private const val COHERENT_CONFIDENCE = 0.75
+    private val COHERENT_CONFIDENCE = 0.75
 
     /**
      * يتعلّم من [taskId] من خلال مقارنة تسجيلاته المكتملة.
@@ -232,7 +232,7 @@ class LearningEngine(private val db: TaskDatabaseHelper) {
         val optionalPenalty = optionalSteps / totalPositions.toDouble() * 0.1
 
         var confidence = commonRatio * 0.5 + iterationBonus - ambiguityPenalty - optionalPenalty
-        confidence = coerceIn(confidence, 0.0, 1.0)
+        confidence = confidence.coerceIn(0.0, 1.0)
 
         return confidence
     }

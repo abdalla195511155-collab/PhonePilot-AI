@@ -24,7 +24,7 @@ class SkillSelector(
      */
     fun selectSkill(intent: InterpretedIntent, context: String? = null): SkillSelectionResult {
         val availableSkills = skillRepository.skills.value
-            .filter { it.lifecycleState == SkillLifecycleState.READY.name }
+            .filter { it.lifecycleState == SkillLifecycleState.READY }
             .filter { it.approvalState == "APPROVED" }
             .filter { it.approvedByUser == true }
 
@@ -68,7 +68,7 @@ class SkillSelector(
      * يتحقق من أن مهارة معينة صالحة للتنفيذ.
      */
     fun isSkillExecutable(skill: SkillEntity): Boolean {
-        return skill.lifecycleState == SkillLifecycleState.READY.name
+        return skill.lifecycleState == SkillLifecycleState.READY
             && skill.approvalState == "APPROVED"
             && skill.approvedByUser == true
     }

@@ -51,8 +51,8 @@ class TelegramBotChannel(
     private val scope: CoroutineScope,
 ) : CommandChannel {
 
-    private const val MAX_RETRY_ATTEMPTS = 3
-    private const val RETRY_DELAY_MS = 2000L
+    private val MAX_RETRY_ATTEMPTS = 3
+    private val RETRY_DELAY_MS = 2000L
 
     /** معرف آخر تحديث تمت معالجته (لمنع معالجة التحديث نفسه مرتين). */
     @Volatile

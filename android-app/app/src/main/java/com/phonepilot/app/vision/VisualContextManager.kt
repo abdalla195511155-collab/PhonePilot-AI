@@ -2,6 +2,7 @@ package com.phonepilot.app.vision
 
 import android.content.Context
 import android.util.Log
+import java.util.concurrent.atomic.AtomicReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -50,48 +51,45 @@ class VisualContextManager(
         // Cancel any ongoing analysis
         currentAnalysisJob?.cancel()
 
-        currentAnalysisJob = scope.launch {
-            stateMutex.withLock {
-                val previousState = _context.currentState
+        // Detect new screen state FIRST (suspend function, outside withLock)
+        val newState = screenStateDetector.analyzeScreen(
+            rootNode,
+            ocrResult,
+            packageName,
+            activityName,
+        )
 
-                // Detect new screen state
-                val newState = screenStateDetector.analyzeScreen(
-                    rootNode,
-                    ocrResult,
-                    packageName,
-                    activityName,
-                )
+        // Now update context with the result (inside withLock for thread safety)
+        return@withContext stateMutex.withLock {
+            val previousState = _context.currentState
 
-                // Detect changes if we have a previous state
-                val change = previousState?.let { prev ->
-                    screenChangeDetector.detectChanges(prev, newState)
-                } ?: ScreenChange(
-                    changeType = ChangeType.NO_CHANGE,
-                    currentState = newState,
-                    significance = Significance.MINOR,
-                )
+            // Detect changes if we have a previous state
+            val change = previousState?.let { prev ->
+                screenChangeDetector.detectChanges(prev, newState)
+            } ?: ScreenChange(
+                changeType = ChangeType.NO_CHANGE,
+                currentState = newState,
+                significance = Significance.MINOR,
+            )
 
-                // Update context
-                _context = _context.addChange(change)
-                _context = _context.copy(
-                    currentState = newState,
-                    isAnalyzing = false,
-                )
-                contextRef.set(_context)
+            // Update context
+            _context = _context.addChange(change)
+            _context = _context.copy(
+                currentState = newState,
+                isAnalyzing = false,
+            )
+            contextRef.set(_context)
 
-                // Apply privacy filtering to context
-                if (config.enablePrivacyFilter) {
-                    sanitizeContext()
-                }
-
-                // Enforce history limits
-                enforceHistoryLimits()
-
-                change
+            // Apply privacy filtering to context
+            if (config.enablePrivacyFilter) {
+                sanitizeContext()
             }
-        }
 
-        return currentAnalysisJob?.await()
+            // Enforce history limits
+            enforceHistoryLimits()
+
+            change
+        }
     }
 
     /**

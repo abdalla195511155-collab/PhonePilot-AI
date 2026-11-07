@@ -1,5 +1,19 @@
 package com.phonepilot.app.ui.navigation
 
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LibraryAdd
+import androidx.compose.material.icons.filled.MonitorHeart
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.School
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material.icons.filled.SmartToy
+import androidx.compose.material.icons.filled.Tune
+import androidx.compose.ui.graphics.vector.ImageVector
+
 object AppRoutes {
     const val Dashboard = "dashboard"
     const val TrainingStudio = "training_studio"
@@ -42,18 +56,18 @@ object AppRoutes {
         else -> route
     }
 
-    fun icon(route: String): androidx.compose.ui.graphics.vector.ImageVector = when (route) {
-        Dashboard -> androidx.compose.material.icons.Icons.Default.Dashboard
-        TrainingStudio -> androidx.compose.material.icons.Icons.Default.School
-        SkillLibrary -> androidx.compose.material.icons.Icons.Default.LibraryAdd
-        AgentControl -> androidx.compose.material.icons.Icons.Default.Tune
-        ExecutionMonitor -> androidx.compose.material.icons.Icons.Default.MonitorHeart
-        AiModelsApiSettings -> androidx.compose.material.icons.Icons.Default.Settings
-        LogsHistory -> androidx.compose.material.icons.Icons.Default.History
-        PrivacyPermissions -> androidx.compose.material.icons.Icons.Default.Shield
-        AiAssistant -> androidx.compose.material.icons.Icons.Default.SmartToy
-        AgentState -> androidx.compose.material.icons.Icons.Default.People
-        AgentApproval -> androidx.compose.material.icons.Icons.Default.CheckCircle
-        else -> androidx.compose.material.icons.Icons.Default.Home
+    fun icon(route: String): ImageVector = when (route) {
+        Dashboard -> Dashboard
+        TrainingStudio -> School
+        SkillLibrary -> LibraryAdd
+        AgentControl -> Tune
+        ExecutionMonitor -> MonitorHeart
+        AiModelsApiSettings -> Settings
+        LogsHistory -> History
+        PrivacyPermissions -> Shield
+        AiAssistant -> SmartToy
+        AgentState -> People
+        AgentApproval -> CheckCircle
+        else -> Home
     }
 }

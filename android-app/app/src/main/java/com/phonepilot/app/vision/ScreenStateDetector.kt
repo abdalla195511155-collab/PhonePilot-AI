@@ -88,7 +88,7 @@ class ScreenStateDetector(
     /**
      * Detect screen identity from elements and package/activity.
      */
-    private fun detectScreenIdentity(
+    fun detectScreenIdentity(
         elements: List<UiElement>,
         packageName: String?,
         activityName: String?,

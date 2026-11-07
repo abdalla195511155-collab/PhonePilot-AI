@@ -4,9 +4,9 @@ import android.content.Context
 import android.view.accessibility.AccessibilityNodeInfo
 import com.phonepilot.app.vision.AccessibilityTreeAnalyzer
 import com.phonepilot.app.vision.UiElementRecognizer
-import com.phonepilot.app.vision.VisionModels.UiElement
-import com.phonepilot.app.vision.VisionModels.ElementSource
-import com.phonepilot.app.vision.VisionModels.SemanticRole
+import com.phonepilot.app.vision.UiElement
+import com.phonepilot.app.vision.ElementSource
+import com.phonepilot.app.vision.SemanticRole
 import com.phonepilot.app.privacy.PrivacyFilter
 
 /**
@@ -82,10 +82,10 @@ class ElementResolver(
      */
     fun describeElement(element: ResolvedElement): String {
         val parts = mutableListOf<String>()
-        if (element.elementViewId.isNotBlank()) parts.add("viewId=${element.elementViewId}")
-        if (element.text.isNotBlank()) parts.add("text=${element.text}")
-        if (element.contentDescription.isNotBlank()) parts.add("desc=${element.contentDescription}")
-        if (element.semanticRole != SemanticRole.UNKNOWN.name) parts.add("role=${element.semanticRole}")
+        if (element.elementViewId?.isNotBlank() == true) parts.add("viewId=${element.elementViewId}")
+        if (element.text?.isNotBlank() == true) parts.add("text=${element.text}")
+        if (element.contentDescription?.isNotBlank() == true) parts.add("desc=${element.contentDescription}")
+        if (element.semanticRole != null && element.semanticRole != SemanticRole.UNKNOWN.name) parts.add("role=${element.semanticRole}")
         return parts.joinToString(", ")
     }
 }

@@ -1,13 +1,16 @@
 package com.phonepilot.app.vision
 
 import android.graphics.Rect
+import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.withContext
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.sqrt
 
 /**
  * Fuses Accessibility Tree data with OCR results for a unified view.
@@ -61,9 +64,11 @@ class VisionFusionEngine(
             }
 
             if (bestMatch != null) {
+                // Capture the match to avoid smart cast issues
+                val matchedElement = bestMatch
                 // Fuse OCR text into the accessibility element
-                val fused = fuseOcrIntoElement(bestMatch, ocrBlock, bestIou)
-                val index = accessibilityElements.indexOf(bestMatch)
+                val fused = fuseOcrIntoElement(matchedElement, ocrBlock, bestIou)
+                val index = accessibilityElements.indexOf(matchedElement)
                 if (index >= 0) {
                     fusedElements.add(fused)
                 } else {
@@ -89,7 +94,7 @@ class VisionFusionEngine(
                 element.bounds?.let { elementBounds ->
                     val distance = calculateDistance(elementBounds, ocrBlock.bounds)
                     distance < PROXIMITY_THRESHOLD_DP * dpToPx
-                }
+                } == true
             }
 
             if (nearbyElement != null) {
@@ -182,10 +187,10 @@ class VisionFusionEngine(
     private fun inferRoleFromText(text: String): SemanticRole {
         val lower = text.lowercase()
         return when {
-            lower.matches("(?i).*\\b(button|click|press|tap|submit|confirm|cancel|ok|done|next|back|close)\\b.*") -> SemanticRole.BUTTON
-            lower.matches("(?i).*\\b(search|find|query)\\b.*") -> SemanticRole.TEXT_FIELD
-            lower.matches("(?i).*\\b(menu|navigation|nav)\\b.*") -> SemanticRole.MENU_ITEM
-            lower.matches("(?i).*\\b(tab|section)\\b.*") -> SemanticRole.TAB
+            lower.matches(Regex("(?i).*\\b(button|click|press|tap|submit|confirm|cancel|ok|done|next|back|close)\\b.*")) -> SemanticRole.BUTTON
+            lower.matches(Regex("(?i).*\\b(search|find|query)\\b.*")) -> SemanticRole.TEXT_FIELD
+            lower.matches(Regex("(?i).*\\b(menu|navigation|nav)\\b.*")) -> SemanticRole.MENU_ITEM
+            lower.matches(Regex("(?i).*\\b(tab|section)\\b.*")) -> SemanticRole.TAB
             else -> SemanticRole.TEXT
         }
     }
@@ -238,7 +243,7 @@ class VisionFusionEngine(
                 }
 
                 val merged = element.copy(
-                    text = allTexts.maxByOrNull { it.length } ?: element.text,
+                    text = (allTexts.maxByOrNull { it.length } as String?) ?: element.text,
                     contentDescription = allTexts.minus(element.text?.takeIf { it.isNotBlank() } ?: emptySet())
                         .firstOrNull() ?: element.contentDescription,
                     confidence = max(element.confidence, conflicts.maxByOrNull { it.confidence }?.confidence ?: 0f),

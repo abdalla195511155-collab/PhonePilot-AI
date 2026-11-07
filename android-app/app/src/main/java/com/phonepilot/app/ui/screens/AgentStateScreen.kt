@@ -21,9 +21,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.phonepilot.app.agent.AgentExecutionState
+import com.phonepilot.app.agent.AgentMemoryEntry
 import com.phonepilot.app.agent.AgentOrchestrator
+import com.phonepilot.app.models.ExecutionState
 import com.phonepilot.app.ui.components.EmptyState
 import com.phonepilot.app.ui.components.ScreenHeader
 import com.phonepilot.app.ui.navigation.AppRoutes
@@ -98,7 +101,7 @@ fun AgentStateScreen(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(Space.xSmall),
                 ) {
-                    items(items = recentMemory, key = { it.taskId }) { entry ->
+                    items<AgentMemoryEntry>(items = recentMemory, key = { it.taskId }) { entry ->
                         MemoryEntryCard(entry = entry)
                     }
                 }
@@ -114,7 +117,7 @@ fun AgentStateScreen(
 }
 
 @Composable
-private fun MemoryEntryCard(entry: com.phonepilot.app.models.AgentMemoryEntry) {
+private fun MemoryEntryCard(entry: AgentMemoryEntry) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -138,8 +141,8 @@ private fun MemoryEntryCard(entry: com.phonepilot.app.models.AgentMemoryEntry) {
                     text = executionStateLabel(entry.executionState),
                     style = MaterialTheme.typography.bodySmall,
                     color = when (entry.executionState) {
-                        com.phonepilot.app.models.ExecutionState.COMPLETED -> MaterialTheme.colorScheme.primary
-                        com.phonepilot.app.models.ExecutionState.FAILED -> MaterialTheme.colorScheme.error
+                        ExecutionState.COMPLETED -> MaterialTheme.colorScheme.primary
+                        ExecutionState.FAILED -> MaterialTheme.colorScheme.error
                         else -> MaterialTheme.colorScheme.onSurfaceVariant
                     },
                 )
@@ -149,9 +152,9 @@ private fun MemoryEntryCard(entry: com.phonepilot.app.models.AgentMemoryEntry) {
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            entry.notes?.let { notes ->
+            if (entry.notes != null) {
                 Text(
-                    text = "ملاحظات: $notes",
+                    text = "ملاحظات: ${entry.notes}",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 2,
@@ -161,6 +164,7 @@ private fun MemoryEntryCard(entry: com.phonepilot.app.models.AgentMemoryEntry) {
     }
 }
 
+@Composable
 private fun agentStateLabel(state: AgentExecutionState): String = when (state) {
     AgentExecutionState.IDLE -> "معدّ"
     AgentExecutionState.INTERPRETING_INTENT -> "يُفسر الأمر"
@@ -173,6 +177,7 @@ private fun agentStateLabel(state: AgentExecutionState): String = when (state) {
     AgentExecutionState.CANCELLED -> "ملغي"
 }
 
+@Composable
 private fun agentStateColor(state: AgentExecutionState) = when (state) {
     AgentExecutionState.IDLE -> MaterialTheme.colorScheme.primary
     AgentExecutionState.EXECUTING -> MaterialTheme.colorScheme.secondary
@@ -181,6 +186,7 @@ private fun agentStateColor(state: AgentExecutionState) = when (state) {
     else -> MaterialTheme.colorScheme.onSurfaceVariant
 }
 
+@Composable
 private fun agentStateDescription(state: AgentExecutionState): String = when (state) {
     AgentExecutionState.IDLE -> "الوكيل غير نشط وهو ينتظر الأوامر"
     AgentExecutionState.INTERPRETING_INTENT -> "يُجري تحليل الأمر لفهم النية"

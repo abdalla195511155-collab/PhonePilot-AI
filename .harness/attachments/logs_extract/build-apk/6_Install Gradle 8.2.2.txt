@@ -1,0 +1,17 @@
+﻿2026-11-07T17:07:46.8790203Z ##[group]Run set -eux
+2026-11-07T17:07:46.8790502Z [36;1mset -eux[0m
+2026-11-07T17:07:46.8790709Z [36;1mcd /tmp[0m
+2026-11-07T17:07:46.8791176Z [36;1mcurl -sL "https://services.gradle.org/distributions/gradle-8.2.1-bin.zip" -o gradle-8.2.1-bin.zip[0m
+2026-11-07T17:07:46.8791744Z [36;1munzip -q gradle-8.2.1-bin.zip -d /opt/gradle[0m
+2026-11-07T17:07:46.8792119Z [36;1mecho "/opt/gradle/gradle-8.2.1/bin" >> "$GITHUB_PATH"[0m
+2026-11-07T17:07:46.8841734Z shell: /usr/bin/bash -e {0}
+2026-11-07T17:07:46.8841988Z env:
+2026-11-07T17:07:46.8842303Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-07T17:07:46.8842819Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+2026-11-07T17:07:46.8843237Z   ANDROID_HOME: /usr/local/lib/android/sdk
+2026-11-07T17:07:46.8843536Z   ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+2026-11-07T17:07:46.8843813Z ##[endgroup]
+2026-11-07T17:07:46.8913985Z + cd /tmp
+2026-11-07T17:07:46.8915400Z + curl -sL https://services.gradle.org/distributions/gradle-8.2.1-bin.zip -o gradle-8.2.1-bin.zip
+2026-11-07T17:07:47.4563992Z + unzip -q gradle-8.2.1-bin.zip -d /opt/gradle
+2026-11-07T17:07:48.3836764Z + echo /opt/gradle/gradle-8.2.1/bin

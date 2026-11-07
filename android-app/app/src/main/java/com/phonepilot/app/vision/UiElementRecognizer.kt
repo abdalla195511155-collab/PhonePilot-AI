@@ -162,7 +162,7 @@ class UiElementRecognizer(
     /**
      * Calculate text similarity using Jaccard index on tokens.
      */
-    private fun textSimilarity(text1: String?, text2: String?): Float {
+    fun textSimilarity(text1: String?, text2: String?): Float {
         if (text1.isNullOrBlank() && text2.isNullOrBlank()) return 1.0f
         if (text1.isNullOrBlank() || text2.isNullOrBlank()) return 0.0f
 

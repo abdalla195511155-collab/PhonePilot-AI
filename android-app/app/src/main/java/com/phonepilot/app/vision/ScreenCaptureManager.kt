@@ -1,6 +1,7 @@
 package com.phonepilot.app.vision
 
 import android.accessibilityservice.AccessibilityService
+import android.accessibilityservice.TakeScreenshotCallback
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -29,6 +30,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.await
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
 
@@ -36,31 +38,30 @@ import java.lang.ref.WeakReference
  * Screen capture result with explicit status for different failure modes.
  */
 sealed class ScreenCaptureResult {
-    data class Success(
-        val bitmap: Bitmap,
-        val width: Int,
-        val height: Int,
-        val timestamp: Long = System.currentTimeMillis(),
-    ) : ScreenCaptureResult()
+        data class Success(
+            val bitmap: Bitmap,
+            val width: Int,
+            val height: Int,
+            val timestamp: Long = System.currentTimeMillis(),
+        ) : ScreenCaptureResult()
 
-    data class Failure(
-        val error: CaptureError,
-        val errorMessage: String,
-    ) : ScreenCaptureResult()
+        data class Failure(
+            val error: CaptureError,
+            val errorMessage: String,
+        ) : ScreenCaptureResult()
 
-    @Serializable
-    enum class CaptureError {
-        SERVICE_UNAVAILABLE,
-        PERMISSION_DENIED,
-        SECURE_WINDOW,           // FLAG_SECURE window - cannot capture
-        MEDIA_PROJECTION_STOPPED,
-        NO_CAPTURE_METHOD,
-        DECODING_FAILED,
-        CONVERSION_FAILED,
-        INTERNAL_ERROR,
-        CANCELLED,
+        enum class CaptureError {
+            SERVICE_UNAVAILABLE,
+            PERMISSION_DENIED,
+            SECURE_WINDOW,           // FLAG_SECURE window - cannot capture
+            MEDIA_PROJECTION_STOPPED,
+            NO_CAPTURE_METHOD,
+            DECODING_FAILED,
+            CONVERSION_FAILED,
+            INTERNAL_ERROR,
+            CANCELLED,
+        }
     }
-}
 
 /**
  * Manages screen capture using multiple strategies:
@@ -135,53 +136,69 @@ class ScreenCaptureManager(
      * Returns SECURE_WINDOW error if the window has FLAG_SECURE set.
      */
     @RequiresApi(26)
-    fun captureViaAccessibilityService(): ScreenCaptureResult {
-        return try {
+    suspend fun captureViaAccessibilityService(): ScreenCaptureResult {
+        return suspendCancellableCoroutine { cont ->
             val service = accessibilityServiceRef?.get()
             if (service == null) {
-                return ScreenCaptureResult.Failure(
+                cont.resume(ScreenCaptureResult.Failure(
                     error = ScreenCaptureResult.CaptureError.SERVICE_UNAVAILABLE,
                     errorMessage = "Accessibility service not available"
-                )
+                ))
+                return@suspendCancellableCoroutine
             }
 
-            val screenshot = service.takeScreenshot()
-            if (screenshot == null) {
-                // This typically means a secure window (FLAG_SECURE) is showing
-                Log.w(TAG, "AccessibilityService.takeScreenshot() returned null - likely FLAG_SECURE window")
-                return ScreenCaptureResult.Failure(
-                    error = ScreenCaptureResult.CaptureError.SECURE_WINDOW,
-                    errorMessage = "Cannot capture secure window (FLAG_SECURE)"
-                )
+            val success = service.takeScreenshot(object : TakeScreenshotCallback() {
+                override fun onSuccess(screenshot: java.io.InputStream) {
+                    try {
+                        val bitmap = BitmapFactory.decodeStream(screenshot)
+                        screenshot.close()
+                        if (bitmap == null) {
+                            cont.resume(ScreenCaptureResult.Failure(
+                                error = ScreenCaptureResult.CaptureError.DECODING_FAILED,
+                                errorMessage = "Failed to decode screenshot"
+                            ))
+                        } else {
+                            cont.resume(ScreenCaptureResult.Success(
+                                bitmap = bitmap,
+                                width = bitmap.width,
+                                height = bitmap.height,
+                            ))
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Failed to process screenshot", e)
+                        cont.resume(ScreenCaptureResult.Failure(
+                            error = ScreenCaptureResult.CaptureError.INTERNAL_ERROR,
+                            errorMessage = "Screenshot processing failed: ${e.message}"
+                        ))
+                    }
+                }
+
+                override fun onFailure(e: Exception) {
+                    Log.e(TAG, "Accessibility screenshot failed", e)
+                    if (e is SecurityException) {
+                        cont.resume(ScreenCaptureResult.Failure(
+                            error = ScreenCaptureResult.CaptureError.SECURE_WINDOW,
+                            errorMessage = "Cannot capture secure window (FLAG_SECURE)"
+                        ))
+                    } else {
+                        cont.resume(ScreenCaptureResult.Failure(
+                            error = ScreenCaptureResult.CaptureError.INTERNAL_ERROR,
+                            errorMessage = "Accessibility screenshot failed: ${e.message}"
+                        ))
+                    }
+                }
+            })
+
+            if (!success) {
+                cont.resume(ScreenCaptureResult.Failure(
+                    error = ScreenCaptureResult.CaptureError.INTERNAL_ERROR,
+                    errorMessage = "Failed to queue screenshot request"
+                ))
             }
 
-            val bitmap = BitmapFactory.decodeStream(screenshot)
-            screenshot.close()
-
-            if (bitmap == null) {
-                return ScreenCaptureResult.Failure(
-                    error = ScreenCaptureResult.CaptureError.DECODING_FAILED,
-                    errorMessage = "Failed to decode screenshot"
-                )
+            cont.invokeOnCancellation {
+                // Note: TakeScreenshotCallback doesn't support cancellation once queued
             }
-
-            ScreenCaptureResult.Success(
-                bitmap = bitmap,
-                width = bitmap.width,
-                height = bitmap.height,
-            )
-        } catch (e: SecurityException) {
-            Log.e(TAG, "SecurityException during accessibility screenshot", e)
-            ScreenCaptureResult.Failure(
-                error = ScreenCaptureResult.CaptureError.SECURE_WINDOW,
-                errorMessage = "Cannot capture secure window (FLAG_SECURE)"
-            )
-        } catch (e: Exception) {
-            Log.e(TAG, "Accessibility screenshot failed", e)
-            ScreenCaptureResult.Failure(
-                error = ScreenCaptureResult.CaptureError.INTERNAL_ERROR,
-                errorMessage = "Accessibility screenshot failed: ${e.message}"
-            )
         }
     }
 

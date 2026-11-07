@@ -174,40 +174,6 @@ data class OcrResult(
     val hasText: Boolean get() = textBlocks.isNotEmpty()
 }
 
-/** Screen capture result with explicit status for different failure modes. */
-sealed class ScreenCaptureResult {
-    @Serializable
-    data class Success(
-        val bitmap: android.graphics.Bitmap? = null,
-        val width: Int = 0,
-        val height: Int = 0,
-        val timestamp: Long = System.currentTimeMillis(),
-    ) : ScreenCaptureResult() {
-        fun recycle() {
-            bitmap?.recycle()
-        }
-    }
-
-    @Serializable
-    data class Failure(
-        val error: CaptureError,
-        val errorMessage: String,
-    ) : ScreenCaptureResult()
-
-    @Serializable
-    enum class CaptureError {
-        SERVICE_UNAVAILABLE,
-        PERMISSION_DENIED,
-        SECURE_WINDOW,           // FLAG_SECURE window - cannot capture
-        MEDIA_PROJECTION_STOPPED,
-        NO_CAPTURE_METHOD,
-        DECODING_FAILED,
-        CONVERSION_FAILED,
-        INTERNAL_ERROR,
-        CANCELLED,
-    }
-}
-
 /** Screen state snapshot */
 @Serializable
 data class ScreenState(

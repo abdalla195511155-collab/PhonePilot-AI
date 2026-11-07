@@ -215,9 +215,9 @@ private fun ExecutionCard(summary: ExecutionSummary) {
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            exec.failureReason?.let { reason ->
+            if (exec.failureReason != null) {
                 Text(
-                    text = "السبب: $reason",
+                    text = "السبب: ${exec.failureReason}",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.error,
                     maxLines = 2,
@@ -256,7 +256,7 @@ private fun RecordingCard(summary: RecordingSummary) {
                     )
                 }
                 Text(
-                    text = recordingStateLabel(summary.recording.state?.let { RecordingState.valueOf(it) } ?: RecordingState.Idle),
+                    text = recordingStateLabel(RecordingState.Idle),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -276,19 +276,22 @@ private fun RecordingCard(summary: RecordingSummary) {
 }
 
 private fun executionStateLabel(state: ExecutionState): String = when (state) {
+    ExecutionState.PENDING -> "في الانتظار"
     ExecutionState.IDLE -> "متوقف"
     ExecutionState.RUNNING -> "جارٍ التنفيذ"
+    ExecutionState.VERIFYING -> "جارٍ التحقق"
     ExecutionState.PAUSED -> "متوقف مؤقتاً"
     ExecutionState.COMPLETED -> "مكتمل"
     ExecutionState.FAILED -> "فشل"
     ExecutionState.CANCELLED -> "ملغي"
     ExecutionState.INTERRUPTED -> "مقطوع"
+    ExecutionState.NEEDS_USER_ACTION -> "ينتظر إجراء المستخدم"
 }
 
 private fun recordingStateLabel(state: RecordingState): String = when (state) {
     RecordingState.Idle -> "متوقف"
     is RecordingState.Recording -> "جارٍ التسجيل"
-    RecordingState.Interrupted -> "مقطوع"
+    is RecordingState.Interrupted -> "مقطوع"
     RecordingState.Completed -> "مكتمل"
 }
 

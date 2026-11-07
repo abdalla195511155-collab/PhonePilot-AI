@@ -5,6 +5,8 @@ import com.phonepilot.app.data.ai.chat.ChatMessage
 import com.phonepilot.app.data.ai.chat.ChatOutcome
 import com.phonepilot.app.data.ai.chat.ChatRole
 import com.phonepilot.app.models.AiSkillExtractionResult
+import com.phonepilot.app.models.AiExtractedStep
+import com.phonepilot.app.models.AiExtractedException
 import com.phonepilot.app.privacy.PrivacyFilter
 
 /**
@@ -80,7 +82,7 @@ class AiSkillExtractor(
         demonstrations: List<String>,
         language: String,
     ): String {
-        val demosText = demonstrations.withIndex().joinToString(separator = "\n---\n") { index, demo ->
+        val demosText = demonstrations.withIndex().joinToString(separator = "\n---\n") { (index, demo) ->
             "العرض ${index + 1}:\n$demo"
         }
 
