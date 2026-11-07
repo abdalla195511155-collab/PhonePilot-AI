@@ -253,7 +253,7 @@ class VisualContextManager(
         val ctx = currentContext
         val state = ctx.currentState
         return "VisualContext(" +
-            "elements=${state?.elements.size ?: 0}, " +
+            "elements=${state?.elements?.size ?: 0}, " +
             "changes=${ctx.recentChanges.size}, " +
             "package=${state?.packageName}, " +
             "activity=${state?.activityName}, " +
@@ -269,7 +269,7 @@ class VisualContextManager(
      */
     fun shutdown() {
         currentAnalysisJob?.cancel()
-        scope.cancel()
+        scope.job?.cancel()
     }
 }
 
