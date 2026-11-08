@@ -6,9 +6,10 @@ import java.util.concurrent.atomic.AtomicReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.Mutex
+import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.sync.withLock
 
 /**
  * Manages visual context across screen analyses.
@@ -22,7 +23,8 @@ class VisualContextManager(
 ) {
 
     private val TAG = "VisualContextManager"
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val scopeJob = SupervisorJob()
+    private val scope = CoroutineScope(scopeJob + Dispatchers.IO)
     private val stateMutex = Mutex()
 
     // Current visual context
@@ -269,7 +271,7 @@ class VisualContextManager(
      */
     fun shutdown() {
         currentAnalysisJob?.cancel()
-        scope.job?.cancel()
+        scopeJob.cancel()
     }
 }
 
