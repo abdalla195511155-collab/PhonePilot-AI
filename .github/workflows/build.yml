@@ -36,10 +36,12 @@ jobs:
 
       - name: Make Gradle Wrapper executable
         run: |
+          cd android-app
           chmod +x ./gradlew
 
       - name: Verify Gradle Wrapper
         run: |
+          cd android-app
           ./gradlew --version
 
       - name: Run Unit Tests
@@ -93,10 +95,12 @@ jobs:
 
       - name: Make Gradle Wrapper executable
         run: |
+          cd android-app
           chmod +x ./gradlew
 
       - name: Verify Gradle Wrapper
         run: |
+          cd android-app
           ./gradlew --version
 
       - name: Build APK
