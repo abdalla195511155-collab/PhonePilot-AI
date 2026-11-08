@@ -57,17 +57,17 @@ object AppRoutes {
     }
 
     fun icon(route: String): ImageVector = when (route) {
-        Dashboard -> Dashboard
-        TrainingStudio -> School
-        SkillLibrary -> LibraryAdd
-        AgentControl -> Tune
-        ExecutionMonitor -> MonitorHeart
-        AiModelsApiSettings -> Settings
-        LogsHistory -> History
-        PrivacyPermissions -> Shield
-        AiAssistant -> SmartToy
-        AgentState -> People
-        AgentApproval -> CheckCircle
-        else -> Home
+        Dashboard -> androidx.compose.material.icons.filled.Dashboard
+        TrainingStudio -> androidx.compose.material.icons.filled.School
+        SkillLibrary -> androidx.compose.material.icons.filled.LibraryAdd
+        AgentControl -> androidx.compose.material.icons.filled.Tune
+        ExecutionMonitor -> androidx.compose.material.icons.filled.MonitorHeart
+        AiModelsApiSettings -> androidx.compose.material.icons.filled.Settings
+        LogsHistory -> androidx.compose.material.icons.filled.History
+        PrivacyPermissions -> androidx.compose.material.icons.filled.Shield
+        AiAssistant -> androidx.compose.material.icons.filled.SmartToy
+        AgentState -> androidx.compose.material.icons.filled.People
+        AgentApproval -> androidx.compose.material.icons.filled.CheckCircle
+        else -> androidx.compose.material.icons.filled.Home
     }
 }
