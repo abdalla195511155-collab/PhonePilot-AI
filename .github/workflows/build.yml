@@ -36,12 +36,10 @@ jobs:
 
       - name: Make Gradle Wrapper executable
         run: |
-          cd android-app
           chmod +x ./gradlew
 
       - name: Verify Gradle Wrapper
         run: |
-          cd android-app
           ./gradlew --version
 
       - name: Run Unit Tests
@@ -72,6 +70,9 @@ jobs:
 
   build-apk:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android-app
 
     steps:
       - name: Checkout repository
@@ -95,12 +96,10 @@ jobs:
 
       - name: Make Gradle Wrapper executable
         run: |
-          cd android-app
           chmod +x ./gradlew
 
       - name: Verify Gradle Wrapper
         run: |
-          cd android-app
           ./gradlew --version
 
       - name: Build APK
@@ -109,8 +108,8 @@ jobs:
 
       - name: Verify APK exists
         run: |
-          test -f android-app/app/build/outputs/apk/debug/app-debug.apk
-          ls -lh android-app/app/build/outputs/apk/debug/app-debug.apk
+          test -f app/build/outputs/apk/debug/app-debug.apk
+          ls -lh app/build/outputs/apk/debug/app-debug.apk
 
       - name: Upload APK Artifact
         if: success()
