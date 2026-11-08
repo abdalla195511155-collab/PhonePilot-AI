@@ -10,6 +10,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android-app
 
     steps:
       - name: Checkout repository
@@ -31,17 +34,13 @@ jobs:
         run: |
           sdkmanager --list_installed
 
-      - name: Install Gradle 8.0
+      - name: Make Gradle Wrapper executable
         run: |
-          set -eux
-          cd /tmp
-          curl -sL "https://services.gradle.org/distributions/gradle-8.0-bin.zip" -o gradle-8.0-bin.zip
-          unzip -q gradle-8.0-bin.zip -d /opt/gradle
-          echo "/opt/gradle/gradle-8.0/bin" >> "$GITHUB_PATH"
+          chmod +x ./gradlew
 
-      - name: Verify Gradle
+      - name: Verify Gradle Wrapper
         run: |
-          gradle --version
+          ./gradlew --version
 
       - name: Run Unit Tests
         # Capture complete console output and preserve exit code.
@@ -49,8 +48,7 @@ jobs:
         # tee saves the console output to a log file.
         run: |
           set -o pipefail
-          cd android-app
-          gradle :app:testDebugUnitTest --no-daemon --stacktrace --info 2>&1 | tee test-output.log
+          ./gradlew :app:testDebugUnitTest --no-daemon --stacktrace --info 2>&1 | tee test-output.log
         # The pipeline exit code (0 or Gradle's exit code) is preserved by set -o pipefail.
 
       - name: Upload Test Reports
@@ -93,22 +91,17 @@ jobs:
         run: |
           sdkmanager --list_installed
 
-      - name: Install Gradle 8.0
+      - name: Make Gradle Wrapper executable
         run: |
-          set -eux
-          cd /tmp
-          curl -sL "https://services.gradle.org/distributions/gradle-8.0-bin.zip" -o gradle-8.0-bin.zip
-          unzip -q gradle-8.0-bin.zip -d /opt/gradle
-          echo "/opt/gradle/gradle-8.0/bin" >> "$GITHUB_PATH"
+          chmod +x ./gradlew
 
-      - name: Verify Gradle
+      - name: Verify Gradle Wrapper
         run: |
-          gradle --version
+          ./gradlew --version
 
       - name: Build APK
         run: |
-          cd android-app
-          gradle :app:assembleDebug --no-daemon --stacktrace
+          ./gradlew :app:assembleDebug --no-daemon --stacktrace
 
       - name: Verify APK exists
         run: |
