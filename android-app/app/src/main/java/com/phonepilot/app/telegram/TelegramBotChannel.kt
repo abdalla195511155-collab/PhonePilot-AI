@@ -169,7 +169,7 @@ class TelegramBotChannel(
                 source = "telegram",
                 userId = userId,
             )
-            scope.runBlocking {
+            runBlocking(Dispatchers.IO) {
                 orchestrator.processCommand(command)
             }
         }

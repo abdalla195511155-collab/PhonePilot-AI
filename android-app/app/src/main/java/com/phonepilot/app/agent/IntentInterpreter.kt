@@ -73,7 +73,10 @@ class IntentInterpreter(
                 targetApp = json.optString("target_app", null).takeIf { it.isNotBlank() },
                 targetAction = json.optString("target_action", null).takeIf { it.isNotBlank() },
                 parameters = json.optJSONObject("parameters")?.let { obj ->
-                    obj.keys().asSequence().associateWith { obj.opt(it) }
+                    obj.keys().asSequence().associateWith { key ->
+                        val v = obj.opt(key)
+                        if (v != null) v.toString() else ""
+                    }
                 } ?: emptyMap(),
                 confidence = json.optDouble("confidence", 0.5).toFloat(),
                 missingInfo = json.optJSONArray("missing_info")?.let { arr ->

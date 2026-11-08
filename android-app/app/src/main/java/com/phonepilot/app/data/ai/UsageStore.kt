@@ -65,7 +65,7 @@ object UsageStore {
         if (cooldown > now) {
             val seconds = ((cooldown - now) / 1000).coerceAtLeast(1)
             return ChatLimitError(
-                message = "المزود طلب الانتظار بعد 429 — أعد المحاولة بعد $secondsث",
+                message = "المزود طلب الانتظار بعد 429 — أعد المحاولة بعد " + seconds + "ث",
                 retryAfterSeconds = seconds,
             )
         }

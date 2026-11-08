@@ -63,7 +63,7 @@ class LearningEngine(private val db: TaskDatabaseHelper) {
         val commonSteps = stepAnalysis.filter { it.isCommon }.map { it.stepDescription }
         val optionalSteps = stepAnalysis.filter { it.isOptional }.map { it.stepDescription }
         val ambiguousSteps = stepAnalysis.filter { it.isAmbiguous }.map { it.stepDescription }
-        val exceptions = stepAnalysis.filter { it.isException }.map { it.exceptionDescription }
+        val exceptions = stepAnalysis.filter { it.isException }.mapNotNull { it.exceptionDescription }
 
         if (commonSteps.isEmpty() && optionalSteps.isEmpty()) return null
 

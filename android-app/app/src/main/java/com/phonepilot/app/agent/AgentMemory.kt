@@ -22,14 +22,14 @@ class AgentMemory(
     private val dbHelper: TaskDatabaseHelper,
 ) {
 
-    private val _memory = MutableStateFlow(mutableListOf<AgentMemoryEntry>())
+    private val _memory = MutableStateFlow(listOf<AgentMemoryEntry>())
     val memory: StateFlow<List<AgentMemoryEntry>> = _memory.asStateFlow()
 
     init {
         // تحميل الذاكرة المحفوظة من SQLite عند الإنشاء
         scope.launch {
             val saved = loadFromDb()
-            _memory.value = saved
+            _memory.value = saved.toMutableList()
         }
     }
 
@@ -138,7 +138,7 @@ class AgentMemory(
      */
     fun clearTaskMemory(taskId: String) {
         scope.launch {
-            _memory.value = _memory.value.filter { it.taskId != taskId }
+            _memory.value = _memory.value.filter { it.taskId != taskId }.toMutableList()
             withContext(Dispatchers.IO) {
                 val db = dbHelper.writableDatabase
                 db.delete("agent_memory", "task_id = ?", arrayOf(taskId))
