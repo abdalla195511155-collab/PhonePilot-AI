@@ -31,13 +31,13 @@ jobs:
         run: |
           sdkmanager --list_installed
 
-      - name: Install Gradle 8.5
+      - name: Install Gradle 8.0
         run: |
           set -eux
           cd /tmp
-          curl -sL "https://services.gradle.org/distributions/gradle-8.5-bin.zip" -o gradle-8.5-bin.zip
-          unzip -q gradle-8.5-bin.zip -d /opt/gradle
-          echo "/opt/gradle/gradle-8.5/bin" >> "$GITHUB_PATH"
+          curl -sL "https://services.gradle.org/distributions/gradle-8.0-bin.zip" -o gradle-8.0-bin.zip
+          unzip -q gradle-8.0-bin.zip -d /opt/gradle
+          echo "/opt/gradle/gradle-8.0/bin" >> "$GITHUB_PATH"
 
       - name: Verify Gradle
         run: |
@@ -93,13 +93,13 @@ jobs:
         run: |
           sdkmanager --list_installed
 
-      - name: Install Gradle 8.5
+      - name: Install Gradle 8.0
         run: |
           set -eux
           cd /tmp
-          curl -sL "https://services.gradle.org/distributions/gradle-8.5-bin.zip" -o gradle-8.5-bin.zip
-          unzip -q gradle-8.5-bin.zip -d /opt/gradle
-          echo "/opt/gradle/gradle-8.5/bin" >> "$GITHUB_PATH"
+          curl -sL "https://services.gradle.org/distributions/gradle-8.0-bin.zip" -o gradle-8.0-bin.zip
+          unzip -q gradle-8.0-bin.zip -d /opt/gradle
+          echo "/opt/gradle/gradle-8.0/bin" >> "$GITHUB_PATH"
 
       - name: Verify Gradle
         run: |
