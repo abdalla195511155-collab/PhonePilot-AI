@@ -191,7 +191,7 @@ class VisualContextManager(
     /**
      * Clear context history.
      */
-    fun clearHistory() {
+    suspend fun clearHistory() {
         stateMutex.withLock {
             _context = _context.clearHistory()
             contextRef.set(_context)
@@ -201,7 +201,7 @@ class VisualContextManager(
     /**
      * Reset context completely.
      */
-    fun reset() {
+    suspend fun reset() {
         stateMutex.withLock {
             _context = VisualContext()
             contextRef.set(_context)
