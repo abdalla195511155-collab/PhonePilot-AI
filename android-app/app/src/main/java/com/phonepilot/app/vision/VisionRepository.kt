@@ -292,7 +292,7 @@ class VisionRepository(
     /**
      * Clear vision context history.
      */
-    fun clearHistory() {
+    suspend fun clearHistory() {
         visualContextManager.clearHistory()
     }
 

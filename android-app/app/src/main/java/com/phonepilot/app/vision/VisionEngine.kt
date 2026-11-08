@@ -246,7 +246,7 @@ class VisionEngine(
     /**
      * Clear context history.
      */
-    fun clearHistory() {
+    suspend fun clearHistory() {
         visualContextManager.clearHistory()
     }
 

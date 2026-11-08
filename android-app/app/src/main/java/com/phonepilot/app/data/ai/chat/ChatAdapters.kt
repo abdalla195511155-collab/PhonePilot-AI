@@ -143,7 +143,7 @@ object OpenAiCompatibleAdapter : ChatAdapter {
         return ChatOutcome.Success(
             content = message,
             usage = response.usage?.toUsage(),
-            finishReason = response.choices.firstOrNull().finishReason,
+            finishReason = response.choices.firstOrNull()?.finishReason,
         )
     }
 
@@ -275,10 +275,10 @@ object AnthropicMessagesAdapter : ChatAdapter {
         }
         return ChatOutcome.Success(
             content = text,
-            usage = response.usage?.let {
+            usage = response?.usage?.let {
                 TokenUsage(it.inputTokens, it.outputTokens)
             },
-            finishReason = response.stopReason,
+            finishReason = response?.stopReason,
         )
     }
 

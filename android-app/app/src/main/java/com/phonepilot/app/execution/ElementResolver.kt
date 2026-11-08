@@ -64,7 +64,7 @@ class ElementResolver(
                 semanticRole = element.semanticRole?.name,
                 confidence = element.confidence,
                 source = element.source,
-                matchReason = if (elementViewId.isNotBlank()) "view_id_match" else "semantic_match",
+                matchReason = if (elementViewId?.isNotBlank() == true) "view_id_match" else "semantic_match",
             )
         }.sortedByDescending { it.confidence }.take(maxResults)
     }
