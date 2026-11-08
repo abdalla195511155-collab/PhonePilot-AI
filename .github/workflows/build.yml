@@ -57,19 +57,22 @@ jobs:
         with:
           name: test-reports-debug-unit-test
           path: |
-            android-app/app/build/test-results/testDebugUnitTest/
-            android-app/app/build/reports/tests/testDebugUnitTest/
-            android-app/test-output.log
+            app/build/test-results/testDebugUnitTest/
+            app/build/reports/tests/testDebugUnitTest/
+            test-output.log
 
       - name: Upload Test Gradle Log
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-gradle-console-log
-          path: android-app/test-output.log
+          path: test-output.log
 
   build-apk:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android-app
 
     steps:
       - name: Checkout repository
@@ -105,8 +108,8 @@ jobs:
 
       - name: Verify APK exists
         run: |
-          test -f android-app/app/build/outputs/apk/debug/app-debug.apk
-          ls -lh android-app/app/build/outputs/apk/debug/app-debug.apk
+          test -f app/build/outputs/apk/debug/app-debug.apk
+          ls -lh app/build/outputs/apk/debug/app-debug.apk
 
       - name: Upload APK Artifact
         if: success()
