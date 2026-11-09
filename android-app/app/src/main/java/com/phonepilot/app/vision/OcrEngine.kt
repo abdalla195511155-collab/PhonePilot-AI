@@ -266,7 +266,7 @@ class TesseractOcrEngine(
             errorMessage = "InputImage is null",
             success = false,
             engineName = engineName,
-            processingTimeMs = System.currentTimeMillis() - startTime,
+            processingTimeMs = System.currentTimeMillis(),
         ))
     }
 

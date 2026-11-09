@@ -171,7 +171,7 @@ class TelegramBotChannel(
                 source = "telegram",
                 userId = userId,
             )
-            orchestrator.processCommand(command)
+            return orchestrator.processCommand(command)
         }
     }
 
