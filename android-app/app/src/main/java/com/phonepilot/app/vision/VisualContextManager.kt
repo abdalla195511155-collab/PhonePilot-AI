@@ -10,6 +10,9 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * Manages visual context across screen analyses.
@@ -30,6 +33,8 @@ class VisualContextManager(
     // Current visual context
     private var _context = VisualContext()
     private val contextRef = AtomicReference(_context)
+    private val _contextFlow = MutableStateFlow<VisualContext>(_context)
+    val currentContextFlow: StateFlow<VisualContext> = _contextFlow.asStateFlow()
 
     // Analysis job tracking
     private var currentAnalysisJob: Job? = null
@@ -89,6 +94,9 @@ class VisualContextManager(
 
             // Enforce history limits
             enforceHistoryLimits()
+
+            // Publish updated context to flow
+            _contextFlow.value = _context
 
             change
         }
@@ -195,6 +203,7 @@ class VisualContextManager(
         stateMutex.withLock {
             _context = _context.clearHistory()
             contextRef.set(_context)
+            _contextFlow.value = _context
         }
     }
 
@@ -205,6 +214,7 @@ class VisualContextManager(
         stateMutex.withLock {
             _context = VisualContext()
             contextRef.set(_context)
+            _contextFlow.value = _context
         }
     }
 
@@ -232,9 +242,10 @@ class VisualContextManager(
         }
 
         _context = _context.copy(
-            currentState = state.copy(elements = sanitizedElements),
-        )
+                currentState = state.copy(elements = sanitizedElements),
+            )
         contextRef.set(_context)
+        _contextFlow.value = _context
     }
 
     /**

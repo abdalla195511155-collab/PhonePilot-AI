@@ -355,7 +355,7 @@ private fun com.phonepilot.app.data.ai.ModelCapability.label(): String = when (t
 
 private fun Modifier.clickableText(onClick: () -> Unit): Modifier =
     this.then(Modifier.padding(0.dp)).let { base ->
-        androidx.compose.foundation.clickable(
+        Modifier.clickable(
             enabled = true,
             onClick = onClick,
         ).let { base.then(it) }

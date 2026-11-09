@@ -19,6 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.withContext
 import java.util.concurrent.ConcurrentHashMap
 
@@ -93,7 +94,7 @@ class MlKitOcrEngine(
         if (initialized) return recognizer != null
 
         // Filter out unsupported languages from hints
-        val filteredHints = languageHints.filter { it.toLowercase() in mlKitSupportedLanguages }
+        val filteredHints = languageHints.filter { it.lowercase() in mlKitSupportedLanguages }
         if (filteredHints.isEmpty()) {
             Log.w(TAG, "No supported languages in hints (${languageHints.joinToString()}), defaulting to English")
         }
@@ -129,7 +130,7 @@ class MlKitOcrEngine(
         }
 
         // Warn about unsupported languages in hints
-        val unsupportedInHints = languageHints.filter { it.toLowercase() in unsupportedLanguages }
+        val unsupportedInHints = languageHints.filter { it.lowercase() in unsupportedLanguages }
         if (unsupportedInHints.isNotEmpty()) {
             Log.w(TAG, "Language hints contain unsupported languages: ${unsupportedInHints.joinToString()}. Results may be empty for these languages.")
         }

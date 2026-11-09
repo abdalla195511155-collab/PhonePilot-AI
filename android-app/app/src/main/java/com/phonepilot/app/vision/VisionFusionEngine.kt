@@ -201,7 +201,7 @@ class VisionFusionEngine(
     private fun calculateDistance(b1: Bounds, b2: Bounds): Float {
         val dx = b1.centerX() - b2.centerX()
         val dy = b1.centerY() - b2.centerY()
-        return sqrt(dx * dx + dy * dy).toFloat()
+        return sqrt((dx * dx + dy * dy).toDouble()).toFloat()
     }
 
     /**
@@ -244,7 +244,7 @@ class VisionFusionEngine(
 
                 val merged = element.copy(
                     text = (allTexts.maxByOrNull { it.length } as String?) ?: element.text,
-                    contentDescription = allTexts.minus(element.text?.takeIf { it.isNotBlank() } ?: emptySet())
+                    contentDescription = allTexts.minus(element.text?.takeIf { it.isNotBlank() } ?: emptySet<String>())
                         .firstOrNull() ?: element.contentDescription,
                     confidence = max(element.confidence, conflicts.maxByOrNull { it.confidence }?.confidence ?: 0f),
                     source = ElementSource.FUSED,

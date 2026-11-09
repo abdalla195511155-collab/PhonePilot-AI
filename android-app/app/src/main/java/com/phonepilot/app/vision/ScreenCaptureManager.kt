@@ -1,12 +1,10 @@
 package com.phonepilot.app.vision
 
 import android.accessibilityservice.AccessibilityService
-import android.accessibilityservice.TakeScreenshotCallback
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.graphics.PixelFormat
 import android.hardware.display.DisplayManager
@@ -29,7 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.await
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
@@ -135,7 +133,7 @@ class ScreenCaptureManager(
      * This is the preferred method as it doesn't require user permission.
      * Returns SECURE_WINDOW error if the window has FLAG_SECURE set.
      */
-    @RequiresApi(26)
+    @RequiresApi(30)
     suspend fun captureViaAccessibilityService(): ScreenCaptureResult {
         return suspendCancellableCoroutine { cont ->
             val service = accessibilityServiceRef?.get()
@@ -147,11 +145,10 @@ class ScreenCaptureManager(
                 return@suspendCancellableCoroutine
             }
 
-            val success = service.takeScreenshot(object : TakeScreenshotCallback() {
-                override fun onSuccess(screenshot: java.io.InputStream) {
+            val callback = object : AccessibilityService.TakeScreenshotCallback() {
+                override fun onSuccess(result: AccessibilityService.ScreenshotResult) {
                     try {
-                        val bitmap = BitmapFactory.decodeStream(screenshot)
-                        screenshot.close()
+                        val bitmap = result.bitmap
                         if (bitmap == null) {
                             cont.resume(ScreenCaptureResult.Failure(
                                 error = ScreenCaptureResult.CaptureError.DECODING_FAILED,
@@ -187,7 +184,9 @@ class ScreenCaptureManager(
                         ))
                     }
                 }
-            })
+            }
+
+            val success = service.takeScreenshot(callback)
 
             if (!success) {
                 cont.resume(ScreenCaptureResult.Failure(
@@ -197,7 +196,7 @@ class ScreenCaptureManager(
             }
 
             cont.invokeOnCancellation {
-                // Note: TakeScreenshotCallback doesn't support cancellation once queued
+                // Note: AccessibilityService.TakeScreenshotCallback doesn't support cancellation once queued
             }
         }
     }
@@ -383,10 +382,9 @@ class ScreenCaptureManager(
      */
     suspend fun capture(): ScreenCaptureResult = withContext(Dispatchers.IO) {
         isCapturing = true
-        defer { isCapturing = false }
-
-        // Try AccessibilityService first (no permission needed)
-        if (Build.VERSION.SDK_INT >= 26 && accessibilityServiceRef?.get() != null) {
+        try {
+        // Try AccessibilityService first (no permission needed, API 30+)
+        if (Build.VERSION.SDK_INT >= 30 && accessibilityServiceRef?.get() != null) {
             val result = captureViaAccessibilityService()
             if (result is ScreenCaptureResult.Success) {
                 return@withContext result
@@ -413,15 +411,18 @@ class ScreenCaptureManager(
         }
 
         // No capture method available
-        ScreenCaptureResult.Failure(
+        return@withContext ScreenCaptureResult.Failure(
             error = ScreenCaptureResult.CaptureError.NO_CAPTURE_METHOD,
             errorMessage = "No screen capture method available. Enable accessibility service or grant MediaProjection permission."
         )
+    } finally {
+        isCapturing = false
     }
+}
 
-    /**
-     * Convert Image to Bitmap.
-     * Must be called on the same thread that acquired the image.
+/**
+ * Convert Image to Bitmap.
+ * Must be called on the same thread that acquired the image.
      */
     @RequiresApi(21)
     private fun imageToBitmap(image: Image): Bitmap? {

@@ -40,6 +40,7 @@ fun AppScaffold(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PhonePilotTopAppBar(
     title: String,

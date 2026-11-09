@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.graphics.ColorUtils
+import androidx.core.view.WindowInsetsControllerCompat
 
 data class UiThemeState(
     val isDark: Boolean = false,
@@ -60,10 +61,10 @@ fun ThemeSwitcher(onThemeChange: (Boolean) -> Unit) {
             onThemeChange(checked)
         },
         colors = androidx.compose.material3.SwitchDefaults.colors(
-            uncheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
-            checkedColor = MaterialTheme.colorScheme.primary,
-            uncheckedThumbColor = MaterialTheme.colorScheme.surface,
-            checkedThumbColor = MaterialTheme.colorScheme.surface,
+            uncheckedThumbColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+            checkedThumbColor = MaterialTheme.colorScheme.primary,
+            uncheckedTrackColor = MaterialTheme.colorScheme.surface,
+            checkedTrackColor = MaterialTheme.colorScheme.surface,
         ),
     )
 }
@@ -74,7 +75,7 @@ fun StatusBarColor(color: Color = MaterialTheme.colorScheme.background) {
     val activity = context as? android.app.Activity ?: return
     val isLight = ColorUtils.calculateLuminance(color.toArgb()) > 0.5
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        activity.window.insetsController?.isAppearanceLightStatusBars = isLight
+        WindowInsetsControllerCompat(activity.window, activity.window.decorView).isAppearanceLightStatusBars = isLight
     }
     @Suppress("DEPRECATION")
     activity.window.statusBarColor = color.toArgb()

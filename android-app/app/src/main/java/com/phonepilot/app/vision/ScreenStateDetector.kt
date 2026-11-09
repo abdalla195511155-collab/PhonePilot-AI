@@ -11,6 +11,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -141,7 +144,7 @@ class ScreenStateDetector(
         // Dominant element types
         val sortedTypes = elementTypes.entries.sortedByDescending { it.value }.take(3)
         if (sortedTypes.isNotEmpty()) {
-            parts.add("Elements: ${sortedTypes.map { "${it.key.label}(${it.value})" }.joinToString(", ")}")
+            parts.add("Elements: ${sortedTypes.map { "${it.key}(${it.value})" }.joinToString(", ")}")
         }
 
         // Structural hints

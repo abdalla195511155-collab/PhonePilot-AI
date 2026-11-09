@@ -10,12 +10,14 @@ import com.phonepilot.app.vision.VisionEngine
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.MutableStateFlow
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import com.phonepilot.app.vision.label
 
 /**
  * UI State for Vision Engine screen.
@@ -62,9 +64,9 @@ class VisionEngineStateHolder(
             }
         }
 
-        // Observe visual context
+        // Observe visual context flow for automatic UI updates
         scope.launch {
-            visionEngine.visualContextManager.currentContext.collect { ctx =>
+            visionEngine.visualContextManager.currentContextFlow.collect { ctx ->
                 _uiState.update { current ->
                     current.copy(
                         currentState = ctx.currentState,
@@ -232,7 +234,7 @@ class VisionEngineStateHolder(
     /**
      * Clear analysis history.
      */
-    fun clearHistory() {
+    suspend fun clearHistory() {
         visionEngine.clearHistory()
         _uiState.update { it.copy(lastAnalysis = null, lastChange = null, recentChanges = emptyList()) }
     }
@@ -241,48 +243,5 @@ class VisionEngineStateHolder(
         scope.cancel()
     }
 }
-
-/**
- * Extension for SemanticRole label.
- */
-private fun com.phonepilot.app.vision.SemanticRole.label(): String = when (this) {
-    com.phonepilot.app.vision.SemanticRole.BUTTON -> "زر"
-    com.phonepilot.app.vision.SemanticRole.TEXT_FIELD -> "حقل نص"
-    com.phonepilot.app.vision.SemanticRole.CHECKBOX -> "مربع اختيار"
-    com.phonepilot.app.vision.SemanticRole.RADIO_BUTTON -> "زر راديو"
-    com.phonepilot.app.vision.SemanticRole.SWITCH -> "مفتاح"
-    com.phonepilot.app.vision.SemanticRole.SLIDER -> "شريط تمرير"
-    com.phonepilot.app.vision.SemanticRole.TAB -> "تبويب"
-    com.phonepilot.app.vision.SemanticRole.MENU_ITEM -> "عنصر قائمة"
-    com.phonepilot.app.vision.SemanticRole.LIST_ITEM -> "عنصر قائمة"
-    com.phonepilot.app.vision.SemanticRole.GRID_ITEM -> "عنصر شبكة"
-    com.phonepilot.app.vision.SemanticRole.IMAGE -> "صورة"
-    com.phonepilot.app.vision.SemanticRole.TEXT -> "نص"
-    com.phonepilot.app.vision.SemanticRole.LABEL -> "تسمية"
-    com.phonepilot.app.vision.SemanticRole.HEADER -> "رأس"
-    com.phonepilot.app.vision.SemanticRole.FOOTER -> "تذييل"
-    com.phonepilot.app.vision.SemanticRole.DIALOG -> "حوار"
-    com.phonepilot.app.vision.SemanticRole.TOAST -> "تنبيه"
-    com.phonepilot.app.vision.SemanticRole.SNACKBAR -> "سناكبار"
-    com.phonepilot.app.vision.SemanticRole.PROGRESS_BAR -> "شريط تقدم"
-    com.phonepilot.app.vision.SemanticRole.SEEK_BAR -> "شريط بحث"
-    com.phonepilot.app.vision.SemanticRole.SPINNER -> "محمل"
-    com.phonepilot.app.vision.SemanticRole.PICKER -> "منتقي"
-    com.phonepilot.app.vision.SemanticRole.NAVIGATION_DRAWER -> "درج تنقل"
-    com.phonepilot.app.vision.SemanticRole.APP_BAR -> "شريط تطبيق"
-    com.phonepilot.app.vision.SemanticRole.TAB_BAR -> "شريط تبويبات"
-    com.phonepilot.app.vision.SemanticRole.BOTTOM_SHEET -> "ورقة سفلية"
-    com.phonepilot.app.vision.SemanticRole.MODAL -> "مودال"
-    com.phonepilot.app.vision.SemanticRole.POPOVER -> "بوبओفر"
-    com.phonepilot.app.vision.SemanticRole.TOOLTIP -> "تلميح"
-    com.phonepilot.app.vision.SemanticRole.SCROLL_VIEW -> "عرض تمرير"
-    com.phonepilot.app.vision.SemanticRole.RECYCLER_VIEW -> "ريسيكلر فيو"
-    com.phonepilot.app.vision.SemanticRole.LIST_VIEW -> "ليست فيو"
-    com.phonepilot.app.vision.SemanticRole.GRID_VIEW -> "غريد فيو"
-    com.phonepilot.app.vision.SemanticRole.WEB_VIEW -> "ويب فيو"
-    com.phonepilot.app.vision.SemanticRole.VIDEO_VIEW -> "فيديو فيو"
-    com.phonepilot.app.vision.SemanticRole.MAP_VIEW -> "خريطة"
-    com.phonepilot.app.vision.SemanticRole.AD_VIEW -> "إعلان"
-    com.phonepilot.app.vision.SemanticRole.UNKNOWN_CONTAINER -> "حاوية"
-    com.phonepilot.app.vision.SemanticRole.UNKNOWN -> "غير معروف"
 }
+

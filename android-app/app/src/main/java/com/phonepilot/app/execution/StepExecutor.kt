@@ -182,7 +182,7 @@ class StepExecutor(
     /** البحث عن عقدة الوصولية بمعرّف العرض. */
     private fun findNodeByViewId(node: AccessibilityNodeInfo, viewId: String?): AccessibilityNodeInfo? {
         if (viewId.isNullOrBlank()) return null
-        if (viewId == node.viewId) return node
+        if (viewId == node.viewIdResourceName) return node
 
         for (i in 0 until node.childCount) {
             val child = node.getChild(i)

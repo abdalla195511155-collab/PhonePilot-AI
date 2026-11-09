@@ -1,7 +1,7 @@
 package com.phonepilot.app.ui.theme
 
 import android.os.Build
-import androidx.compose.ui.graphics.ColorScheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme

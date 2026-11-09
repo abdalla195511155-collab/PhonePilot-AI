@@ -21,6 +21,7 @@ import com.phonepilot.app.ui.screens.LogsHistoryScreen
 import com.phonepilot.app.ui.screens.PrivacyPermissionsScreen
 import com.phonepilot.app.ui.screens.SkillLibraryScreen
 import com.phonepilot.app.ui.screens.TrainingStudioScreen
+import com.phonepilot.app.agent.AgentOrchestrator
 
 @Composable
 fun AppNavigation(

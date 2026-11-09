@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.math.min
@@ -123,8 +124,8 @@ class AccessibilityTreeAnalyzer(
         }
 
         // Skip very small nodes (likely decorative)
-        val hasBounds = node.getBoundsInScreen(rect)
-        if (hasBounds && rect.width() < 4 && rect.height() < 4) return false
+        node.getBoundsInScreen(rect)
+        if (rect.width() < 4 && rect.height() < 4) return false
 
         return true
     }
@@ -252,7 +253,7 @@ class AccessibilityTreeAnalyzer(
     /**
      * Build parent-child relationships between elements.
      */
-    private fun buildHierarchy(elements: List<UiElement>) {
+    private fun buildHierarchy(elements: MutableList<UiElement>) {
         val elementMap = elements.associateBy { it.elementId }
 
         // For each element, find its parent and children based on bounds containment
@@ -298,7 +299,7 @@ class AccessibilityTreeAnalyzer(
     /**
      * Apply privacy filtering to elements.
      */
-    private fun applyPrivacyFilter(elements: List<UiElement>) {
+    private fun applyPrivacyFilter(elements: MutableList<UiElement>) {
         val packageName = elements.firstOrNull()?.className?.let { 
             // Try to extract package name from class name or context
             context.packageName 

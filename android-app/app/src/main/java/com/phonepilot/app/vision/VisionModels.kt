@@ -3,6 +3,8 @@ package com.phonepilot.app.vision
 import android.graphics.Rect
 import android.os.Parcel
 import android.os.Parcelable
+import kotlin.math.max
+import kotlin.math.min
 import kotlinx.serialization.Serializable
 
 /** Source of element information */
@@ -87,7 +89,7 @@ data class UiElement(
     val height: Int get() = bounds?.height() ?: 0
 
     /** Whether this element has any text content (text or contentDescription) */
-    val hasTextContent: Boolean get() = text.isNotBlank() || contentDescription.isNotBlank()
+    val hasTextContent: Boolean get() = text?.isNotBlank() == true || contentDescription?.isNotBlank() == true
 
     /** Primary text for matching - prefers text over contentDescription */
     val primaryText: String? get() = text?.takeIf { it.isNotBlank() } ?: contentDescription?.takeIf { it.isNotBlank() }
@@ -306,4 +308,47 @@ data class VisionConfig(
     fun isLanguageSupported(language: String): Boolean {
         return language.toLowerCase() !in unsupportedOcrLanguages
     }
+}
+
+/** Human-readable label for a SemanticRole. */
+internal fun SemanticRole.label(): String = when (this) {
+    SemanticRole.BUTTON -> "زر"
+    SemanticRole.TEXT_FIELD -> "حقل نص"
+    SemanticRole.CHECKBOX -> "مربع اختيار"
+    SemanticRole.RADIO_BUTTON -> "زر راديو"
+    SemanticRole.SWITCH -> "مفتاح"
+    SemanticRole.SLIDER -> "شريط تمرير"
+    SemanticRole.TAB -> "تبويب"
+    SemanticRole.MENU_ITEM -> "عنصر قائمة"
+    SemanticRole.LIST_ITEM -> "عنصر قائمة"
+    SemanticRole.GRID_ITEM -> "عنصر شبكة"
+    SemanticRole.IMAGE -> "صورة"
+    SemanticRole.TEXT -> "نص"
+    SemanticRole.LABEL -> "تسمية"
+    SemanticRole.HEADER -> "رأس"
+    SemanticRole.FOOTER -> "تذييل"
+    SemanticRole.DIALOG -> "حوار"
+    SemanticRole.TOAST -> "تنبيه"
+    SemanticRole.SNACKBAR -> "سناكبار"
+    SemanticRole.PROGRESS_BAR -> "شريط تقدم"
+    SemanticRole.SEEK_BAR -> "شريط بحث"
+    SemanticRole.SPINNER -> "محمل"
+    SemanticRole.PICKER -> "منتقي"
+    SemanticRole.NAVIGATION_DRAWER -> "درج تنقل"
+    SemanticRole.APP_BAR -> "شريط تطبيق"
+    SemanticRole.TAB_BAR -> "شريط تبويبات"
+    SemanticRole.BOTTOM_SHEET -> "ورقة سفلية"
+    SemanticRole.MODAL -> "مودال"
+    SemanticRole.POPOVER -> "بوبأوفر"
+    SemanticRole.TOOLTIP -> "تلميح"
+    SemanticRole.SCROLL_VIEW -> "عرض تمرير"
+    SemanticRole.RECYCLER_VIEW -> "ريسيكلر فيو"
+    SemanticRole.LIST_VIEW -> "ليست فيو"
+    SemanticRole.GRID_VIEW -> "غريد فيو"
+    SemanticRole.WEB_VIEW -> "ويب فيو"
+    SemanticRole.VIDEO_VIEW -> "فيديو فيو"
+    SemanticRole.MAP_VIEW -> "خريطة"
+    SemanticRole.AD_VIEW -> "إعلان"
+    SemanticRole.UNKNOWN_CONTAINER -> "حاوية"
+    SemanticRole.UNKNOWN -> "غير معروف"
 }

@@ -22,12 +22,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.phonepilot.app.models.ExecutionState
+import com.phonepilot.app.models.RecordingState
 import com.phonepilot.app.ui.components.EmptyState
 import com.phonepilot.app.ui.components.ErrorState
 import com.phonepilot.app.ui.components.LoadingState
 import com.phonepilot.app.ui.components.ScreenHeader
 import com.phonepilot.app.ui.monitor.ExecutionMonitorStateHolder
 import com.phonepilot.app.ui.monitor.ExecutionMonitorUiState
+import com.phonepilot.app.ui.monitor.ExecutionSummary
+import com.phonepilot.app.ui.monitor.RecordingSummary
 import com.phonepilot.app.ui.theme.Space
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -293,6 +296,7 @@ private fun recordingStateLabel(state: RecordingState): String = when (state) {
     is RecordingState.Recording -> "جارٍ التسجيل"
     is RecordingState.Interrupted -> "مقطوع"
     RecordingState.Completed -> "مكتمل"
+    else -> "غير معروف"
 }
 
 private fun formatTimestamp(value: Long): String =

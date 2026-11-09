@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.withContext
 
 /**
@@ -113,7 +114,7 @@ class VisionRepository(
     ): String? {
         val providerId = aiProviderRepository.activeProviderId.value
         val modelId = aiProviderRepository.activeModelId.value
-        val provider = aiProviderRepository.getProvider(providerId)
+        val provider = aiProviderRepository.providers.value.firstOrNull { it.id == providerId }
         val model = provider?.models?.firstOrNull { it.id == modelId }
 
         if (provider == null || model == null) {
@@ -267,7 +268,7 @@ class VisionRepository(
      */
     fun getVisionCapableModels(): List<com.phonepilot.app.data.ai.AiModelSpec> {
         val providerId = aiProviderRepository.activeProviderId.value
-        val provider = aiProviderRepository.getProvider(providerId)
+        val provider = aiProviderRepository.providers.value.firstOrNull { it.id == providerId }
         return provider?.models?.filter { it.hasCapability(ModelCapability.VISION) } ?: emptyList()
     }
 
@@ -277,7 +278,7 @@ class VisionRepository(
     fun isCurrentModelVisionCapable(): Boolean {
         val providerId = aiProviderRepository.activeProviderId.value
         val modelId = aiProviderRepository.activeModelId.value
-        val provider = aiProviderRepository.getProvider(providerId)
+        val provider = aiProviderRepository.providers.value.firstOrNull { it.id == providerId }
         val model = provider?.models?.firstOrNull { it.id == modelId }
         return model?.hasCapability(ModelCapability.VISION) == true
     }

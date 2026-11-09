@@ -57,16 +57,16 @@ jobs:
         with:
           name: test-reports-debug-unit-test
           path: |
-            app/build/test-results/testDebugUnitTest/
-            app/build/reports/tests/testDebugUnitTest/
-            test-output.log
+            android-app/app/build/test-results/testDebugUnitTest/
+            android-app/app/build/reports/tests/testDebugUnitTest/
+            android-app/test-output.log
 
       - name: Upload Test Gradle Log
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-gradle-console-log
-          path: test-output.log
+          path: android-app/test-output.log
 
   build-apk:
     runs-on: ubuntu-latest

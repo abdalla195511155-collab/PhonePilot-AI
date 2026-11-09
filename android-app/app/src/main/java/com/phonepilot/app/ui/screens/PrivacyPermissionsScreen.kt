@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.filled.Shield
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -137,7 +138,7 @@ fun PrivacyPermissionsScreen(onNavigateTo: (String) -> Unit) {
                         checked = privacyFilterEnabled,
                         onCheckedChange = { SettingsRepository.setPrivacyFilterEnabled(it) },
                         colors = androidx.compose.material3.SwitchDefaults.colors(
-                            checkedColor = MaterialTheme.colorScheme.primary,
+                            checkedThumbColor = MaterialTheme.colorScheme.primary,
                         ),
                     )
                     Column(modifier = Modifier.weight(1f)) {

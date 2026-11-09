@@ -6,6 +6,8 @@ import com.phonepilot.app.agent.UserCommand
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 /**
@@ -184,7 +186,7 @@ class TelegramBotChannel(
          * يوضح كيفية إعداد توكن البوت.
          * التوكن يُحصل عليه من @BotFather على التيليغرام ويُخزن بشكل آمن.
          */
-        const val BOT_TOKEN_SETUP_NOTE = """
+        val BOT_TOKEN_SETUP_NOTE = """
             للحصول على توكن البوت:
             1. ابدأ محادثة مع @BotFather على التيليغرام
             2. أرسل /newbot واتبع التعليمات

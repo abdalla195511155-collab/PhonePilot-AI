@@ -24,6 +24,7 @@ import com.phonepilot.app.recording.PhonePilotAccessibilityService
 import com.phonepilot.app.repository.RecordingRepository
 import com.phonepilot.app.ui.navigation.AppNavigation
 import com.phonepilot.app.ui.theme.PhonePilotTheme
+import com.phonepilot.app.data.ai.UsageStore
 
 class MainActivity : ComponentActivity() {
 

@@ -15,13 +15,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.text.FontWeight
+import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.phonepilot.app.agent.AgentExecutionState
 import com.phonepilot.app.agent.AgentMemoryEntry
@@ -71,7 +72,7 @@ fun AgentStateScreen(
                     text = agentStateLabel(state),
                     style = MaterialTheme.typography.bodyLarge,
                     color = agentStateColor(state),
-                    fontWeight = androidx.compose.ui.text.FontWeight.Bold,
+                    fontWeight = FontWeight.Bold,
                 )
                 Text(
                     text = agentStateDescription(state),
@@ -101,7 +102,7 @@ fun AgentStateScreen(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(Space.xSmall),
                 ) {
-                    items<AgentMemoryEntry>(items = recentMemory, key = { it.taskId }) { entry ->
+                    items(recentMemory, key = { it.taskId }) { entry ->
                         MemoryEntryCard(entry = entry)
                     }
                 }
