@@ -145,7 +145,7 @@ class ScreenCaptureManager(
                 return@suspendCancellableCoroutine
             }
 
-            val callback = object : AccessibilityService.TakeScreenshotCallback() {
+            val callback = object : AccessibilityService.TakeScreenshotCallback {
                 override fun onSuccess(result: AccessibilityService.ScreenshotResult) {
                     try {
                         val bitmap = result.bitmap

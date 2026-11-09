@@ -277,8 +277,7 @@ class AccessibilityTreeAnalyzer(
                 }
             }
 
-            if (bestParent != null) {
-                val foundParent = bestParent
+            bestParent?.let { foundParent ->
                 val parentId = foundParent.elementId
                 val childIds = foundParent.childrenIds + element.elementId
                 val index = elements.indexOf(foundParent)

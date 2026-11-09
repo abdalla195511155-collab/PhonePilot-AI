@@ -143,7 +143,7 @@ class TelegramBotChannel(
      * يستخدم [updateId] لمنع معالجة نفس التحديث مرتين (deduplication)
      * ويُحدّث [lastProcessedUpdateId] ك offset للتحديثات التالية.
      */
-    fun handleTelegramUpdate(
+    suspend fun handleTelegramUpdate(
         userId: String,
         messageText: String,
         commandId: String,
@@ -171,9 +171,7 @@ class TelegramBotChannel(
                 source = "telegram",
                 userId = userId,
             )
-            withContext(Dispatchers.IO) {
-                orchestrator.processCommand(command)
-            }
+            orchestrator.processCommand(command)
         }
     }
 

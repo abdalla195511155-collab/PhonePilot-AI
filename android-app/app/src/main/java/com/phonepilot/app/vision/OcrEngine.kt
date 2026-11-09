@@ -136,7 +136,8 @@ class MlKitOcrEngine(
         }
 
         return@withContext try {
-            val result = recognizer?.process(inputImage).await()
+            val task = recognizer?.process(inputImage)
+            val result = if (task != null) com.google.android.gms.tasks.Tasks.await(task) else null
             if (result == null) {
                 OcrResult(
                     errorMessage = "OCR returned null result",
