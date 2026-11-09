@@ -19,6 +19,7 @@ compose-material3 = "1.2.1"
 activity-compose = "1.8.2"
 lifecycle-runtime-compose = "2.7.0"
 navigation-compose = "2.7.7"
+mlkit = "17.0.2"
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -52,4 +53,3 @@ mlkit-text-recognition-chinese = { group = "com.google.mlkit", name = "text-reco
 mlkit-text-recognition-devanagari = { group = "com.google.mlkit", name = "text-recognition-devanagari", version.ref = "mlkit" }
 mlkit-text-recognition-japanese = { group = "com.google.mlkit", name = "text-recognition-japanese", version.ref = "mlkit" }
 mlkit-text-recognition-korean = { group = "com.google.mlkit", name = "text-recognition-korean", version.ref = "mlkit" }
-mlkit = "17.0.2"
