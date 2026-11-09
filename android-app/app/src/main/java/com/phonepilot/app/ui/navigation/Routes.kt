@@ -1,6 +1,17 @@
 package com.phonepilot.app.ui.navigation
 
-import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LibraryAdd
+import androidx.compose.material.icons.filled.MonitorHeart
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.School
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material.icons.filled.SmartToy
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.ui.graphics.vector.ImageVector
 
 object AppRoutes {
@@ -46,17 +57,17 @@ object AppRoutes {
     }
 
     fun icon(route: String): ImageVector = when (route) {
-        Dashboard -> Icons.Default.Dashboard
-        TrainingStudio -> Icons.Default.School
-        SkillLibrary -> Icons.Default.LibraryAdd
-        AgentControl -> Icons.Default.Tune
-        ExecutionMonitor -> Icons.Default.MonitorHeart
-        AiModelsApiSettings -> Icons.Default.Settings
-        LogsHistory -> Icons.Default.History
-        PrivacyPermissions -> Icons.Default.Shield
-        AiAssistant -> Icons.Default.SmartToy
-        AgentState -> Icons.Default.People
-        AgentApproval -> Icons.Default.CheckCircle
-        else -> Icons.Default.Home
+        Dashboard -> Dashboard
+        TrainingStudio -> School
+        SkillLibrary -> LibraryAdd
+        AgentControl -> Tune
+        ExecutionMonitor -> MonitorHeart
+        AiModelsApiSettings -> Settings
+        LogsHistory -> History
+        PrivacyPermissions -> Shield
+        AiAssistant -> SmartToy
+        AgentState -> People
+        AgentApproval -> CheckCircle
+        else -> Home
     }
 }
