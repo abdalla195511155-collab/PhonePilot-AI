@@ -57,7 +57,7 @@ class VisionRepository(
         _isAnalyzing.value = true
         _lastError.value = null
 
-        return try {
+        try {
             // Update visual context
             val change = visualContextManager.analyzeAndUpdate(
                 rootNode = rootNode,
@@ -175,7 +175,7 @@ class VisionRepository(
         builder.append("--- العناصر التفاعلية (${state.interactiveElements.size}) ---\n")
         for (element in state.interactiveElements.take(20)) {
             val text = element.primaryText?.takeIf { it.isNotBlank() } ?: "[بدون نص]"
-            val role = element.semanticRole.label
+            val role = element.semanticRole.label()
             val bounds = element.bounds?.let { "[${it.left},${it.top},${it.right},${it.bottom}]" } ?: ""
             builder.append("• [$role] $text $bounds\n")
         }
@@ -193,7 +193,7 @@ class VisionRepository(
         if (state.loadingIndicators.isNotEmpty()) {
             builder.append("\n--- مؤشرات التحميل ---\n")
             for (indicator in state.loadingIndicators) {
-                builder.append("• ${indicator.semanticRole.label} ${indicator.primaryText ?: ""}\n")
+                builder.append("• ${indicator.semanticRole.label()} ${indicator.primaryText ?: ""}\n")
             }
         }
 
