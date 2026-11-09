@@ -139,7 +139,7 @@ class MlKitOcrEngine(
             val task = recognizer?.process(inputImage)
             val result = if (task != null) com.google.android.gms.tasks.Tasks.await(task) else null
             if (result == null) {
-                OcrResult(
+                return OcrResult(
                     errorMessage = "OCR returned null result",
                     success = false,
                     engineName = engineName,
@@ -150,7 +150,7 @@ class MlKitOcrEngine(
             }
         } catch (e: Exception) {
             Log.e(TAG, "OCR processing failed", e)
-            OcrResult(
+            return OcrResult(
                 errorMessage = "OCR processing failed: ${e.message}",
                 success = false,
                 engineName = engineName,

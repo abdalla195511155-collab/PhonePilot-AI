@@ -151,13 +151,13 @@ class TelegramBotChannel(
     ): AgentCommandResult {
         // Deduplication: تجاهل التحديثات التي تمت معالجتها بالفعل
         if (processedUpdateIds.contains(updateId)) {
-            AgentCommandResult(
+            return AgentCommandResult(
                 commandId = commandId,
                 success = false,
                 message = "تحديث مكرر تم تجاهله",
             )
         } else if (updateId != -1L && updateId <= lastProcessedUpdateId) {
-            AgentCommandResult(
+            return AgentCommandResult(
                 commandId = commandId,
                 success = false,
                 message = "تحديث سابق للمعالجة (offset غير صالح)",

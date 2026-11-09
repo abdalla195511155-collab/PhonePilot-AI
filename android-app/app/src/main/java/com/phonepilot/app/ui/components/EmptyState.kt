@@ -17,7 +17,7 @@ import com.phonepilot.app.ui.theme.Space
 
 @Composable
 fun EmptyState(
-    icon: androidx.compose.ui.graphics.vector.ImageVector = Icons.Filled.Inbox,
+    icon: androidx.compose.ui.graphics.vector.ImageVector = Icons.Default.Inbox,
     title: String,
     description: String? = null,
     modifier: Modifier = Modifier,
