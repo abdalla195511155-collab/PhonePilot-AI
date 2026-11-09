@@ -19,7 +19,7 @@
     <string name="skill_library">Skill Library</string>
     <string name="agent_control">Agent Control</string>
     <string name="execution_monitor">Execution Monitor</string>
-    <string name="ai_models_api_settings">AI Models & API Settings</string>
+    <string name="ai_models_api_settings">AI Models &amp; API Settings</string>
     <string name="logs_history">Logs History</string>
     <string name="privacy_permissions">Privacy Permissions</string>
     <string name="ai_assistant">AI Assistant</string>
