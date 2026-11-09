@@ -170,19 +170,12 @@ class ScreenCaptureManager(
                     }
                 }
 
-                override fun onFailure(e: Exception) {
-                    Log.e(TAG, "Accessibility screenshot failed", e)
-                    if (e is SecurityException) {
-                        cont.resume(ScreenCaptureResult.Failure(
-                            error = ScreenCaptureResult.CaptureError.SECURE_WINDOW,
-                            errorMessage = "Cannot capture secure window (FLAG_SECURE)"
-                        ))
-                    } else {
-                        cont.resume(ScreenCaptureResult.Failure(
-                            error = ScreenCaptureResult.CaptureError.INTERNAL_ERROR,
-                            errorMessage = "Accessibility screenshot failed: ${e.message}"
-                        ))
-                    }
+                override fun onFailure(reason: Int) {
+                    Log.e(TAG, "Accessibility screenshot failed with reason: $reason")
+                    cont.resume(ScreenCaptureResult.Failure(
+                        error = ScreenCaptureResult.CaptureError.INTERNAL_ERROR,
+                        errorMessage = "Accessibility screenshot failed (reason: $reason)"
+                    ))
                 }
             }
 
@@ -392,12 +385,13 @@ class ScreenCaptureManager(
             
             // If it's a secure window error, don't fall back to MediaProjection
             // because MediaProjection also cannot capture secure windows
-            if (result.error == ScreenCaptureResult.CaptureError.SECURE_WINDOW) {
-                Log.w(TAG, "Secure window detected (FLAG_SECURE), not attempting MediaProjection fallback")
-                return@withContext result
+            if (result is ScreenCaptureResult.Failure) {
+                if (result.error == ScreenCaptureResult.CaptureError.SECURE_WINDOW) {
+                    Log.w(TAG, "Secure window detected (FLAG_SECURE), not attempting MediaProjection fallback")
+                    return@withContext result
+                }
+                Log.w(TAG, "Accessibility capture failed, trying MediaProjection: ${result.errorMessage}")
             }
-            
-            Log.w(TAG, "Accessibility capture failed, trying MediaProjection: ${result.errorMessage}")
         }
 
         // Try MediaProjection if available
@@ -406,7 +400,9 @@ class ScreenCaptureManager(
             if (result is ScreenCaptureResult.Success) {
                 return@withContext result
             }
-            Log.w(TAG, "MediaProjection capture failed: ${result.errorMessage}")
+            if (result is ScreenCaptureResult.Failure) {
+                Log.w(TAG, "MediaProjection capture failed: ${result.errorMessage}")
+            }
             return@withContext result
         }
 
