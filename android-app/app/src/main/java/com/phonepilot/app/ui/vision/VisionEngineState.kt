@@ -60,19 +60,17 @@ class VisionEngineStateHolder(
         // Observe vision engine state
         scope.launch {
             visionEngine.isRunning.collect { running ->
-                _uiState.update { it.copy(isRunning = running) }
+                _uiState.value = _uiState.value.copy(isRunning = running)
             }
         }
 
         // Observe visual context flow for automatic UI updates
         scope.launch {
             visionEngine.visualContextManager.currentContextFlow.collect { ctx ->
-                _uiState.update { current ->
-                    current.copy(
-                        currentState = ctx.currentState,
-                        recentChanges = ctx.recentChanges,
-                    )
-                }
+                _uiState.value = _uiState.value.copy(
+                    currentState = ctx.currentState,
+                    recentChanges = ctx.recentChanges,
+                )
             }
         }
 
@@ -80,7 +78,7 @@ class VisionEngineStateHolder(
         scope.launch {
             visionEngine.visionRepository.lastError.collect { error ->
                 if (error != null) {
-                    _uiState.update { it.copy(error = error) }
+                    _uiState.value = _uiState.value.copy(error = error)
                 }
             }
         }
@@ -91,7 +89,7 @@ class VisionEngineStateHolder(
      */
     fun start(service: android.accessibilityservice.AccessibilityService) {
         visionEngine.initialize(service)
-        _uiState.update { it.copy(isRunning = true, message = "محرك الرؤية يعمل") }
+        _uiState.value = _uiState.value.copy(isRunning = true, message = "محرك الرؤية يعمل")
     }
 
     /**
@@ -99,7 +97,7 @@ class VisionEngineStateHolder(
      */
     fun stop() {
         visionEngine.shutdown()
-        _uiState.update { it.copy(isRunning = false, message = "تم إيقاف محرك الرؤية") }
+        _uiState.value = _uiState.value.copy(isRunning = false, message = "تم إيقاف محرك الرؤية")
     }
 
     /**
@@ -113,7 +111,7 @@ class VisionEngineStateHolder(
         aiPrompt: String? = null,
     ) {
         scope.launch {
-            _uiState.update { it.copy(isAnalyzing = true, error = null) }
+            _uiState.value = _uiState.value.copy(isAnalyzing = true, error = null)
             try {
                 val result = visionEngine.analyzeScreen(
                     rootNode = rootNode,
@@ -122,19 +120,17 @@ class VisionEngineStateHolder(
                     sendToAi = sendToAi,
                     aiPrompt = aiPrompt,
                 )
-                _uiState.update { current ->
-                    current.copy(
-                        isAnalyzing = false,
-                        lastAnalysis = result,
-                        lastChange = result.change,
-                        message = if (result.success) "تم التحليل بنجاح" else "فشل التحليل",
-                        error = result.errorMessage,
-                    )
-                }
+                _uiState.value = _uiState.value.copy(
+                    isAnalyzing = false,
+                    lastAnalysis = result,
+                    lastChange = result.change,
+                    message = if (result.success) "تم التحليل بنجاح" else "فشل التحليل",
+                    error = result.errorMessage,
+                )
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                _uiState.update { it.copy(isAnalyzing = false, error = e.message) }
+                _uiState.value = _uiState.value.copy(isAnalyzing = false, error = e.message)
             }
         }
     }
@@ -148,26 +144,24 @@ class VisionEngineStateHolder(
         activityName: String? = null,
     ) {
         scope.launch {
-            _uiState.update { it.copy(isAnalyzing = true, error = null) }
+            _uiState.value = _uiState.value.copy(isAnalyzing = true, error = null)
             try {
                 val result = visionEngine.analyzeAccessibilityOnly(
                     rootNode = rootNode,
                     packageName = packageName,
                     activityName = activityName,
                 )
-                _uiState.update { current ->
-                    current.copy(
-                        isAnalyzing = false,
-                        lastAnalysis = result,
-                        lastChange = result.change,
-                        message = if (result.success) "تم التحليل بنجاح" else "فشل التحليل",
-                        error = result.errorMessage,
-                    )
-                }
+                _uiState.value = _uiState.value.copy(
+                    isAnalyzing = false,
+                    lastAnalysis = result,
+                    lastChange = result.change,
+                    message = if (result.success) "تم التحليل بنجاح" else "فشل التحليل",
+                    error = result.errorMessage,
+                )
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                _uiState.update { it.copy(isAnalyzing = false, error = e.message) }
+                _uiState.value = _uiState.value.copy(isAnalyzing = false, error = e.message)
             }
         }
     }
@@ -177,21 +171,19 @@ class VisionEngineStateHolder(
      */
     fun askAboutScreen(question: String) {
         scope.launch {
-            _uiState.update { it.copy(isAnalyzing = true, error = null) }
+            _uiState.value = _uiState.value.copy(isAnalyzing = true, error = null)
             try {
                 val result = visionEngine.askAboutScreen(question)
-                _uiState.update { current ->
-                    current.copy(
-                        isAnalyzing = false,
-                        lastAnalysis = result,
-                        message = if (result.success) "تم الرد" else "فشل الرد",
-                        error = result.errorMessage,
-                    )
-                }
+                _uiState.value = _uiState.value.copy(
+                    isAnalyzing = false,
+                    lastAnalysis = result,
+                    message = if (result.success) "تم الرد" else "فشل الرد",
+                    error = result.errorMessage,
+                )
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                _uiState.update { it.copy(isAnalyzing = false, error = e.message) }
+                _uiState.value = _uiState.value.copy(isAnalyzing = false, error = e.message)
             }
         }
     }
@@ -200,35 +192,35 @@ class VisionEngineStateHolder(
      * Toggle OCR overlay display.
      */
     fun toggleOcrOverlay() {
-        _uiState.update { it.copy(showOcrOverlay = !it.showOcrOverlay) }
+        _uiState.value = _uiState.value.copy(showOcrOverlay = !_uiState.value.showOcrOverlay)
     }
 
     /**
      * Toggle accessibility overlay display.
      */
     fun toggleAccessibilityOverlay() {
-        _uiState.update { it.copy(showAccessibilityOverlay = !it.showAccessibilityOverlay) }
+        _uiState.value = _uiState.value.copy(showAccessibilityOverlay = !_uiState.value.showAccessibilityOverlay)
     }
 
     /**
      * Toggle fused overlay display.
      */
     fun toggleFusedOverlay() {
-        _uiState.update { it.copy(showFusedOverlay = !it.showFusedOverlay) }
+        _uiState.value = _uiState.value.copy(showFusedOverlay = !_uiState.value.showFusedOverlay)
     }
 
     /**
      * Update vision configuration.
      */
     fun updateConfig(newConfig: VisionConfig) {
-        _uiState.update { it.copy(config = newConfig) }
+        _uiState.value = _uiState.value.copy(config = newConfig)
     }
 
     /**
      * Clear error message.
      */
     fun clearError() {
-        _uiState.update { it.copy(error = null) }
+        _uiState.value = _uiState.value.copy(error = null)
     }
 
     /**
@@ -236,12 +228,10 @@ class VisionEngineStateHolder(
      */
     suspend fun clearHistory() {
         visionEngine.clearHistory()
-        _uiState.update { it.copy(lastAnalysis = null, lastChange = null, recentChanges = emptyList()) }
+        _uiState.value = _uiState.value.copy(lastAnalysis = null, lastChange = null, recentChanges = emptyList())
     }
 
     fun shutdown() {
         scope.cancel()
     }
 }
-
-
