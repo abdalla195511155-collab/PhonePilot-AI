@@ -65,7 +65,7 @@ class VisionFusionEngine(
 
             if (bestMatch != null) {
                 // Capture the match to avoid smart cast issues
-                val matchedElement = bestMatch
+                val matchedElement = bestMatch!!
                 // Fuse OCR text into the accessibility element
                 val fused = fuseOcrIntoElement(matchedElement, ocrBlock, bestIou)
                 val index = accessibilityElements.indexOf(matchedElement)
@@ -245,7 +245,7 @@ class VisionFusionEngine(
                 val merged = element.copy(
                     text = (allTexts.maxByOrNull { it.length } as String?) ?: element.text,
                     contentDescription = allTexts.minus(element.text?.takeIf { it.isNotBlank() } ?: emptySet<String>())
-                        .firstOrNull() ?: element.contentDescription,
+                        .firstOrNull() as String? ?: element.contentDescription,
                     confidence = max(element.confidence, conflicts.maxByOrNull { it.confidence }?.confidence ?: 0f),
                     source = ElementSource.FUSED,
                 )

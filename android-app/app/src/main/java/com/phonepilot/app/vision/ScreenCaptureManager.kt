@@ -148,7 +148,7 @@ class ScreenCaptureManager(
             val callback = object : AccessibilityService.TakeScreenshotCallback {
                 override fun onSuccess(result: AccessibilityService.ScreenshotResult) {
                     try {
-                        val bitmap = result.bitmap
+                        val bitmap = result.getBitmap()
                         if (bitmap == null) {
                             cont.resume(ScreenCaptureResult.Failure(
                                 error = ScreenCaptureResult.CaptureError.DECODING_FAILED,

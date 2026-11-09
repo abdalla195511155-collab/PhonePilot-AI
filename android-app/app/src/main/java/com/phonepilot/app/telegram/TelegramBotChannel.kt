@@ -148,7 +148,7 @@ class TelegramBotChannel(
         messageText: String,
         commandId: String,
         updateId: Long,
-    ): AgentCommandResult = synchronized(this) {
+    ): AgentCommandResult {
         // Deduplication: تجاهل التحديثات التي تمت معالجتها بالفعل
         if (processedUpdateIds.contains(updateId)) {
             AgentCommandResult(

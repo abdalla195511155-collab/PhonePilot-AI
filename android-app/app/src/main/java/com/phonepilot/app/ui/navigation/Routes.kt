@@ -46,17 +46,17 @@ object AppRoutes {
     }
 
     fun icon(route: String): ImageVector = when (route) {
-        Dashboard -> Icons.Default.Dashboard
-        TrainingStudio -> Icons.Default.School
-        SkillLibrary -> Icons.Default.LibraryAdd
-        AgentControl -> Icons.Default.Tune
-        ExecutionMonitor -> Icons.Default.MonitorHeart
-        AiModelsApiSettings -> Icons.Default.Settings
-        LogsHistory -> Icons.Default.History
-        PrivacyPermissions -> Icons.Default.Shield
-        AiAssistant -> Icons.Default.SmartToy
-        AgentState -> Icons.Default.People
-        AgentApproval -> Icons.Default.CheckCircle
-        else -> Icons.Default.Home
+        Dashboard -> Icons.Filled.Dashboard
+        TrainingStudio -> Icons.Filled.School
+        SkillLibrary -> Icons.Filled.LibraryAdd
+        AgentControl -> Icons.Filled.Tune
+        ExecutionMonitor -> Icons.Filled.MonitorHeart
+        AiModelsApiSettings -> Icons.Filled.Settings
+        LogsHistory -> Icons.Filled.History
+        PrivacyPermissions -> Icons.Filled.Shield
+        AiAssistant -> Icons.Filled.SmartToy
+        AgentState -> Icons.Filled.People
+        AgentApproval -> Icons.Filled.CheckCircle
+        else -> Icons.Filled.Home
     }
 }

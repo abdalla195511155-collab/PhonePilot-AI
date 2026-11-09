@@ -246,7 +246,7 @@ class ScreenStateDetector(
     }
 
     fun shutdown() {
-        scope.cancel()
+        scope.coroutineContext.cancel()
     }
 }
 

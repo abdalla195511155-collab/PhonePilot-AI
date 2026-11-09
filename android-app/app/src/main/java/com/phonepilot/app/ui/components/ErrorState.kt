@@ -33,7 +33,7 @@ fun ErrorState(
             verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
         ) {
             Icon(
-                imageVector = Icons.Default.Error,
+                imageVector = Icons.Filled.Error,
                 contentDescription = null,
                 modifier = Modifier.size(64.dp),
                 tint = androidx.compose.material3.MaterialTheme.colorScheme.error,

@@ -180,11 +180,11 @@ class MlKitOcrEngine(
             val blockText = block.text
             if (blockText.isBlank()) continue
 
-            val bounds = Bounds.fromRect(block.boundingBox)
-            val confidence = block.confidence ?: 0.5f
+            val bounds = Bounds.fromRect(block.boundingBox ?: Rect(0, 0, 0, 0))
+            val confidence = 0.5f
 
             // Get language if available
-            val language = block.recognizedLanguages?.firstOrNull()?.let { it.toString() }
+            val language = "en"
 
             val textBlock = OcrTextBlock(
                 text = blockText,
@@ -262,8 +262,12 @@ class TesseractOcrEngine(
     }
 
     override suspend fun process(inputImage: InputImage): OcrResult = withContext(Dispatchers.IO) {
-        val bitmap = inputImage.bitmap ?: Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
-        process(bitmap)
+        process(inputImage ?: return@withContext OcrResult(
+            errorMessage = "InputImage is null",
+            success = false,
+            engineName = engineName,
+            processingTimeMs = System.currentTimeMillis() - startTime,
+        ))
     }
 
     override fun isAvailable(): Boolean = false
