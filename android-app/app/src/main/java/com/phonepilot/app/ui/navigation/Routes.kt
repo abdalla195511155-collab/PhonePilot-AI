@@ -1,6 +1,6 @@
 package com.phonepilot.app.ui.navigation
 
-import androidx.compose.material.icons.Icons.Filled as Icons
+import androidx.compose.material.icons.Icons
 import androidx.compose.ui.graphics.vector.ImageVector
 
 object AppRoutes {
@@ -46,17 +46,17 @@ object AppRoutes {
     }
 
     fun icon(route: String): ImageVector = when (route) {
-        Dashboard -> Icons.Dashboard
-        TrainingStudio -> Icons.School
-        SkillLibrary -> Icons.LibraryAdd
-        AgentControl -> Icons.Tune
-        ExecutionMonitor -> Icons.MonitorHeart
-        AiModelsApiSettings -> Icons.Settings
-        LogsHistory -> Icons.History
-        PrivacyPermissions -> Icons.Shield
-        AiAssistant -> Icons.SmartToy
-        AgentState -> Icons.People
-        AgentApproval -> Icons.CheckCircle
-        else -> Icons.Home
+        Dashboard -> Icons.Filled.Dashboard
+        TrainingStudio -> Icons.Filled.School
+        SkillLibrary -> Icons.Filled.LibraryAdd
+        AgentControl -> Icons.Filled.Tune
+        ExecutionMonitor -> Icons.Filled.MonitorHeart
+        AiModelsApiSettings -> Icons.Filled.Settings
+        LogsHistory -> Icons.Filled.History
+        PrivacyPermissions -> Icons.Filled.Shield
+        AiAssistant -> Icons.Filled.SmartToy
+        AgentState -> Icons.Filled.People
+        AgentApproval -> Icons.Filled.CheckCircle
+        else -> Icons.Filled.Home
     }
 }
