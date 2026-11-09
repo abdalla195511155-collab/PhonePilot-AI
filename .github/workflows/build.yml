@@ -25,6 +25,9 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
       - name: Install Android SDK Platform 34 and Build Tools 34.0.0
         uses: android-actions/setup-android@v3
         with:
@@ -84,6 +87,9 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
           cache: 'gradle'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Install Android SDK Platform 34 and Build Tools 34.0.0
         uses: android-actions/setup-android@v3
