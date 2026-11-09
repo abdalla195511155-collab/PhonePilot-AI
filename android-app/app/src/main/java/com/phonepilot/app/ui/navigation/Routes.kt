@@ -1,17 +1,17 @@
 package com.phonepilot.app.ui.navigation
 
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Dashboard
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.LibraryAdd
-import androidx.compose.material.icons.filled.MonitorHeart
-import androidx.compose.material.icons.filled.People
-import androidx.compose.material.icons.filled.School
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Shield
-import androidx.compose.material.icons.filled.SmartToy
-import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material.icons.filled.CheckCircle as CheckCircleIcon
+import androidx.compose.material.icons.filled.Dashboard as DashboardIcon
+import androidx.compose.material.icons.filled.History as HistoryIcon
+import androidx.compose.material.icons.filled.Home as HomeIcon
+import androidx.compose.material.icons.filled.LibraryAdd as LibraryAddIcon
+import androidx.compose.material.icons.filled.MonitorHeart as MonitorHeartIcon
+import androidx.compose.material.icons.filled.People as PeopleIcon
+import androidx.compose.material.icons.filled.School as SchoolIcon
+import androidx.compose.material.icons.filled.Settings as SettingsIcon
+import androidx.compose.material.icons.filled.Shield as ShieldIcon
+import androidx.compose.material.icons.filled.SmartToy as SmartToyIcon
+import androidx.compose.material.icons.filled.Tune as TuneIcon
 import androidx.compose.ui.graphics.vector.ImageVector
 
 object AppRoutes {
@@ -57,17 +57,17 @@ object AppRoutes {
     }
 
     fun icon(route: String): ImageVector = when (route) {
-        Dashboard -> Dashboard
-        TrainingStudio -> School
-        SkillLibrary -> LibraryAdd
-        AgentControl -> Tune
-        ExecutionMonitor -> MonitorHeart
-        AiModelsApiSettings -> Settings
-        LogsHistory -> History
-        PrivacyPermissions -> Shield
-        AiAssistant -> SmartToy
-        AgentState -> People
-        AgentApproval -> CheckCircle
-        else -> Home
+        Dashboard -> DashboardIcon
+        TrainingStudio -> SchoolIcon
+        SkillLibrary -> LibraryAddIcon
+        AgentControl -> TuneIcon
+        ExecutionMonitor -> MonitorHeartIcon
+        AiModelsApiSettings -> SettingsIcon
+        LogsHistory -> HistoryIcon
+        PrivacyPermissions -> ShieldIcon
+        AiAssistant -> SmartToyIcon
+        AgentState -> PeopleIcon
+        AgentApproval -> CheckCircleIcon
+        else -> HomeIcon
     }
 }
