@@ -146,7 +146,8 @@ data class Bounds(
         fun fromRect(rect: Rect): Bounds = Bounds(rect.left, rect.top, rect.right, rect.bottom)
         fun fromAccessibilityNodeInfo(node: android.view.accessibility.AccessibilityNodeInfo): Bounds? {
             val rect = Rect()
-            return if (node.getBoundsInScreen(rect)) Bounds.fromRect(rect) else null
+            val hasBounds = node.getBoundsInScreen(rect)
+            return if (hasBounds) Bounds.fromRect(rect) else null
         }
     }
 }

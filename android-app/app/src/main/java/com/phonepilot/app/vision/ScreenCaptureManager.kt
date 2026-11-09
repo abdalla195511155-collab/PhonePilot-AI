@@ -145,10 +145,10 @@ class ScreenCaptureManager(
                 return@suspendCancellableCoroutine
             }
 
-            val callback = object : AccessibilityService.TakeScreenshotCallback {
+            val callback = object : AccessibilityService.TakeScreenshotCallback(Handler(Looper.getMainLooper())) {
                 override fun onSuccess(result: AccessibilityService.ScreenshotResult) {
                     try {
-                        val bitmap = result.getBitmap()
+                        val bitmap = result.bitmap
                         if (bitmap == null) {
                             cont.resume(ScreenCaptureResult.Failure(
                                 error = ScreenCaptureResult.CaptureError.DECODING_FAILED,

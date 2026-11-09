@@ -139,7 +139,7 @@ class MlKitOcrEngine(
             val task = recognizer?.process(inputImage)
             val result = if (task != null) com.google.android.gms.tasks.Tasks.await(task) else null
             if (result == null) {
-                return OcrResult(
+                OcrResult(
                     errorMessage = "OCR returned null result",
                     success = false,
                     engineName = engineName,
@@ -150,7 +150,7 @@ class MlKitOcrEngine(
             }
         } catch (e: Exception) {
             Log.e(TAG, "OCR processing failed", e)
-            return OcrResult(
+            OcrResult(
                 errorMessage = "OCR processing failed: ${e.message}",
                 success = false,
                 engineName = engineName,
@@ -262,12 +262,15 @@ class TesseractOcrEngine(
     }
 
     override suspend fun process(inputImage: InputImage): OcrResult = withContext(Dispatchers.IO) {
-        process(inputImage ?: return@withContext OcrResult(
-            errorMessage = "InputImage is null",
-            success = false,
-            engineName = engineName,
-            processingTimeMs = System.currentTimeMillis(),
-        ))
+        if (inputImage == null) {
+            return@withContext OcrResult(
+                errorMessage = "InputImage is null",
+                success = false,
+                engineName = engineName,
+                processingTimeMs = System.currentTimeMillis(),
+            )
+        }
+        process(inputImage)
     }
 
     override fun isAvailable(): Boolean = false
