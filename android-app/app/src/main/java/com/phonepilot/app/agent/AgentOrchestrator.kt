@@ -133,7 +133,7 @@ class AgentOrchestrator(
 
             val validationResult = SkillValidationResult(
                 valid = skill.lifecycleState == SkillLifecycleState.READY
-                    && skill.approvalState == "APPROVED"
+                    && skill.approvalState.equals("APPROVED", ignoreCase = true)
                     && skill.approvedByUser == true,
                 ambiguousSteps = emptyList(),
                 confidenceScore = if (skill.approvedByUser) 1.0 else 0.0,
@@ -161,7 +161,7 @@ class AgentOrchestrator(
                     taskId = command.commandId,
                     intent = intent.intent,
                     skillId = skill.id,
-                    executionState = ExecutionState.valueOf(execution.state),
+                    executionState = ExecutionState.entries.firstOrNull { it.name == execution.state } ?: ExecutionState.IDLE,
                     completedAt = execution.completedAt,
                     success = success,
                     notes = execution.failureReason,
@@ -172,7 +172,7 @@ class AgentOrchestrator(
                 taskId = command.commandId,
                 intent = intent.intent,
                 skillId = skill.id,
-                executionState = ExecutionState.valueOf(execution.state),
+                executionState = ExecutionState.entries.firstOrNull { it.name == execution.state } ?: ExecutionState.IDLE,
                 completedAt = execution.completedAt,
                 success = success,
                 notes = execution.failureReason,

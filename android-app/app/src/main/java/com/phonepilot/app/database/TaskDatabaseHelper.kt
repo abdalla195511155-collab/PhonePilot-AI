@@ -261,7 +261,7 @@ class TaskDatabaseHelper private constructor(context: Context) :
         db.beginTransaction()
         try {
             db.update("task_recordings", ContentValues().apply {
-                put("state", "INTERRUPTED_FAILED")
+                put("state", "INTERRUPTED")
                 put("failure_reason", "process_terminated_before_completion")
             }, "state = ?", arrayOf("RECORDING"))
             db.setTransactionSuccessful()
@@ -347,7 +347,7 @@ class TaskDatabaseHelper private constructor(context: Context) :
         db.beginTransaction()
         try {
             val values = ContentValues().apply {
-                put("state", "INTERRUPTED_FAILED")
+                put("state", "INTERRUPTED")
                 put("accepted_count", acceptedCount)
                 put("failure_reason", failureReason)
             }
@@ -793,7 +793,7 @@ class TaskDatabaseHelper private constructor(context: Context) :
             description = cursor.getString(cursor.getColumnIndexOrThrow("description")),
             level = cursor.getString(cursor.getColumnIndexOrThrow("level")),
             sourceRecordingId = if (cursor.isNull(cursor.getColumnIndexOrThrow("source_recording_id"))) null else cursor.getLong(cursor.getColumnIndexOrThrow("source_recording_id")),
-            lifecycleState = SkillLifecycleState.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("lifecycle_state"))),
+            lifecycleState = SkillLifecycleState.entries.firstOrNull { it.name == cursor.getString(cursor.getColumnIndexOrThrow("lifecycle_state")) } ?: SkillLifecycleState.DRAFT,
             approvalState = cursor.getString(cursor.getColumnIndexOrThrow("approval_state")),
             approvedAt = if (cursor.isNull(cursor.getColumnIndexOrThrow("approved_at"))) null else cursor.getLong(cursor.getColumnIndexOrThrow("approved_at")),
             approvedByUser = cursor.getInt(cursor.getColumnIndexOrThrow("approved_by_user")) == 1,
@@ -808,7 +808,7 @@ class TaskDatabaseHelper private constructor(context: Context) :
             title = cursor.getString(cursor.getColumnIndexOrThrow("title")),
             description = cursor.getString(cursor.getColumnIndexOrThrow("description")),
             level = cursor.getString(cursor.getColumnIndexOrThrow("level")),
-            lifecycleState = SkillLifecycleState.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("lifecycle_state"))),
+            lifecycleState = SkillLifecycleState.entries.firstOrNull { it.name == cursor.getString(cursor.getColumnIndexOrThrow("lifecycle_state")) } ?: SkillLifecycleState.DRAFT,
             sourceRecordingId = if (cursor.isNull(cursor.getColumnIndexOrThrow("source_recording_id"))) null else cursor.getLong(cursor.getColumnIndexOrThrow("source_recording_id")),
             createdAt = cursor.getLong(cursor.getColumnIndexOrThrow("created_at")),
         )

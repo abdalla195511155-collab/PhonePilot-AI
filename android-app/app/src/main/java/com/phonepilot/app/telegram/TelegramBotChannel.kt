@@ -171,7 +171,7 @@ class TelegramBotChannel(
                 source = "telegram",
                 userId = userId,
             )
-            runBlocking(Dispatchers.IO) {
+            withContext(Dispatchers.IO) {
                 orchestrator.processCommand(command)
             }
         }
