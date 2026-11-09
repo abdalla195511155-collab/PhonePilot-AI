@@ -186,6 +186,8 @@ class TaskDatabaseHelper private constructor(context: Context) :
         db.execSQL(CREATE_TASKS)
         db.execSQL(CREATE_RECORDINGS_V1)
         db.execSQL(ALTER_RECORDINGS_ADD_STATE)
+        db.execSQL(ALTER_RECORDINGS_ADD_ACCEPTED_COUNT)
+        db.execSQL(ALTER_RECORDINGS_ADD_FAILURE_REASON)
         db.execSQL(CREATE_EVENTS)
         db.execSQL(CREATE_INDEX_EVENTS)
         // جداول المراحل 5 و 6 و 7 تُنشَز بالكامل عند التثبيت الجديد (الإصدار 9)
