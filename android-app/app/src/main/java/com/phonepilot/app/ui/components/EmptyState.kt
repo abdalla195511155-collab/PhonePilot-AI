@@ -13,11 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import com.phonepilot.app.ui.theme.Space
 
 @Composable
 fun EmptyState(
-    icon: androidx.compose.ui.graphics.vector.ImageVector = Icons.Filled.Inbox,
+    icon: androidx.compose.ui.graphics.vector.ImageVector = Icons.Filled.Home,
     title: String,
     description: String? = null,
     modifier: Modifier = Modifier,

@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import com.phonepilot.app.ui.theme.Space
 
 @Composable
@@ -33,7 +34,7 @@ fun ErrorState(
             verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
         ) {
             Icon(
-                imageVector = Icons.Filled.Error,
+                imageVector = Icons.Filled.Warning,
                 contentDescription = null,
                 modifier = Modifier.size(64.dp),
                 tint = androidx.compose.material3.MaterialTheme.colorScheme.error,
