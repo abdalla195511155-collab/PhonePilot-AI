@@ -22,448 +22,272 @@ import android.view.Display
 import android.view.OrientationEventListener
 import android.view.Surface
 import androidx.annotation.RequiresApi
+import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
 
-/**
- * Screen capture result with explicit status for different failure modes.
- */
 sealed class ScreenCaptureResult {
-        data class Success(
-            val bitmap: Bitmap,
-            val width: Int,
-            val height: Int,
-            val timestamp: Long = System.currentTimeMillis(),
-        ) : ScreenCaptureResult()
+    data class Success(
+        val bitmap: Bitmap,
+        val width: Int,
+        val height: Int,
+        val timestamp: Long = System.currentTimeMillis(),
+    ) : ScreenCaptureResult()
 
-        data class Failure(
-            val error: CaptureError,
-            val errorMessage: String,
-        ) : ScreenCaptureResult()
+    data class Failure(val error: CaptureError, val errorMessage: String) : ScreenCaptureResult()
 
-        enum class CaptureError {
-            SERVICE_UNAVAILABLE,
-            PERMISSION_DENIED,
-            SECURE_WINDOW,           // FLAG_SECURE window - cannot capture
-            MEDIA_PROJECTION_STOPPED,
-            NO_CAPTURE_METHOD,
-            DECODING_FAILED,
-            CONVERSION_FAILED,
-            INTERNAL_ERROR,
-            CANCELLED,
-        }
+    enum class CaptureError {
+        SERVICE_UNAVAILABLE, PERMISSION_DENIED, SECURE_WINDOW,
+        MEDIA_PROJECTION_STOPPED, NO_CAPTURE_METHOD, DECODING_FAILED,
+        CONVERSION_FAILED, INTERNAL_ERROR, CANCELLED,
     }
+}
 
-/**
- * Manages screen capture using multiple strategies:
- * 1. AccessibilityService.takeScreenshot() (API 26+) - preferred, no permission needed
- * 2. MediaProjection (API 21+, requires user permission via system dialog)
- * 
- * Handles FLAG_SECURE windows by returning explicit SECURE_WINDOW error.
- * Properly cleans up resources and handles Android 14+ foreground service requirements.
- */
+/** Manages screenshot capture through AccessibilityService or MediaProjection. */
 class ScreenCaptureManager(
     private val context: Context,
     private val config: VisionConfig = VisionConfig(),
 ) {
-
-    private val TAG = "ScreenCaptureManager"
+    private val tag = "ScreenCaptureManager"
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val handler = Handler(Looper.getMainLooper())
-
-    // MediaProjection components
     private var mediaProjection: MediaProjection? = null
     private var imageReader: ImageReader? = null
     private var virtualDisplay: VirtualDisplay? = null
-    private var displayMetrics = DisplayMetrics()
+    private val displayMetrics = DisplayMetrics()
     private var currentRotation = 0
     private var isCapturing = false
-
-    // Accessibility service reference for screenshot API
     private var accessibilityServiceRef: WeakReference<AccessibilityService>? = null
-
-    // Orientation listener for rotation handling
     private var orientationListener: OrientationEventListener? = null
-
-    // Pending permission request callback
     private var pendingPermissionCallback: ((ScreenCaptureResult) -> Unit)? = null
 
     init {
-        context.getSystemService(Context.DISPLAY_SERVICE)
-            ?.let { (it as DisplayManager).getDisplay(Display.DEFAULT_DISPLAY) }
-            ?.getRealMetrics(displayMetrics)
+        (context.getSystemService(Context.DISPLAY_SERVICE) as? DisplayManager)
+            ?.getDisplay(Display.DEFAULT_DISPLAY)?.getRealMetrics(displayMetrics)
     }
 
-    /**
-     * Set the accessibility service for using takeScreenshot API.
-     */
     fun setAccessibilityService(service: AccessibilityService) {
         accessibilityServiceRef = WeakReference(service)
     }
 
-    /**
-     * Check if screen capture is available via any method.
-     */
-    fun isCaptureAvailable(): Boolean {
-        // AccessibilityService.takeScreenshot requires API 26+
-        if (Build.VERSION.SDK_INT >= 26 && accessibilityServiceRef?.get() != null) {
-            return true
-        }
-        // MediaProjection requires API 21+
-        if (Build.VERSION.SDK_INT >= 21) {
-            return true
-        }
-        return false
-    }
+    fun isCaptureAvailable(): Boolean =
+        (Build.VERSION.SDK_INT >= 30 && accessibilityServiceRef?.get() != null) || Build.VERSION.SDK_INT >= 21
 
-    /**
-     * Check if MediaProjection is currently active.
-     */
     fun isMediaProjectionActive(): Boolean = mediaProjection != null
 
-    /**
-     * Capture screen using AccessibilityService.takeScreenshot (API 26+).
-     * This is the preferred method as it doesn't require user permission.
-     * Returns SECURE_WINDOW error if the window has FLAG_SECURE set.
-     */
     @RequiresApi(30)
-    suspend fun captureViaAccessibilityService(): ScreenCaptureResult {
-        return suspendCancellableCoroutine { cont ->
-            val service = accessibilityServiceRef?.get()
-            if (service == null) {
-                cont.resume(ScreenCaptureResult.Failure(
-                    error = ScreenCaptureResult.CaptureError.SERVICE_UNAVAILABLE,
-                    errorMessage = "Accessibility service not available"
-                ))
-                return@suspendCancellableCoroutine
+    suspend fun captureViaAccessibilityService(): ScreenCaptureResult = suspendCancellableCoroutine { cont ->
+        val service = accessibilityServiceRef?.get()
+        if (service == null) {
+            resumeCapture(cont, ScreenCaptureResult.Failure(
+                ScreenCaptureResult.CaptureError.SERVICE_UNAVAILABLE,
+                "Accessibility service not available",
+            ))
+            return@suspendCancellableCoroutine
+        }
+        val callback = object : AccessibilityService.TakeScreenshotCallback {
+            override fun onSuccess(result: AccessibilityService.ScreenshotResult) {
+                val bitmap = try {
+                    Bitmap.wrapHardwareBuffer(result.hardwareBuffer, result.colorSpace)
+                } catch (e: Exception) {
+                    Log.e(tag, "Could not convert accessibility screenshot", e)
+                    null
+                } finally {
+                    result.hardwareBuffer.close()
+                }
+                val capture = if (bitmap == null) {
+                    ScreenCaptureResult.Failure(
+                        ScreenCaptureResult.CaptureError.DECODING_FAILED,
+                        "Failed to decode screenshot",
+                    )
+                } else {
+                    ScreenCaptureResult.Success(bitmap, bitmap.width, bitmap.height)
+                }
+                resumeCapture(cont, capture)
             }
 
-            val callback = object : AccessibilityService.TakeScreenshotCallback(Handler(Looper.getMainLooper())) {
-                override fun onSuccess(result: AccessibilityService.ScreenshotResult) {
-                    try {
-                        val bitmap = result.bitmap
-                        if (bitmap == null) {
-                            cont.resume(ScreenCaptureResult.Failure(
-                                error = ScreenCaptureResult.CaptureError.DECODING_FAILED,
-                                errorMessage = "Failed to decode screenshot"
-                            ))
-                        } else {
-                            cont.resume(ScreenCaptureResult.Success(
-                                bitmap = bitmap,
-                                width = bitmap.width,
-                                height = bitmap.height,
-                            ))
-                        }
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Failed to process screenshot", e)
-                        cont.resume(ScreenCaptureResult.Failure(
-                            error = ScreenCaptureResult.CaptureError.INTERNAL_ERROR,
-                            errorMessage = "Screenshot processing failed: ${e.message}"
-                        ))
-                    }
-                }
-
-                override fun onFailure(reason: Int) {
-                    Log.e(TAG, "Accessibility screenshot failed with reason: $reason")
-                    cont.resume(ScreenCaptureResult.Failure(
-                        error = ScreenCaptureResult.CaptureError.INTERNAL_ERROR,
-                        errorMessage = "Accessibility screenshot failed (reason: $reason)"
-                    ))
-                }
-            }
-
-            val success = service.takeScreenshot(callback)
-
-            if (!success) {
-                cont.resume(ScreenCaptureResult.Failure(
-                    error = ScreenCaptureResult.CaptureError.INTERNAL_ERROR,
-                    errorMessage = "Failed to queue screenshot request"
+            override fun onFailure(errorCode: Int) {
+                Log.e(tag, "Accessibility screenshot failed: $errorCode")
+                resumeCapture(cont, ScreenCaptureResult.Failure(
+                    ScreenCaptureResult.CaptureError.INTERNAL_ERROR,
+                    "Accessibility screenshot failed (reason: $errorCode)",
                 ))
             }
-
-            cont.invokeOnCancellation {
-                // Note: AccessibilityService.TakeScreenshotCallback doesn't support cancellation once queued
-            }
+        }
+        try {
+            service.takeScreenshot(Display.DEFAULT_DISPLAY, context.mainExecutor, callback)
+        } catch (e: Exception) {
+            Log.e(tag, "Failed to queue accessibility screenshot", e)
+            resumeCapture(cont, ScreenCaptureResult.Failure(
+                ScreenCaptureResult.CaptureError.INTERNAL_ERROR,
+                "Failed to queue screenshot request: ${e.message}",
+            ))
         }
     }
 
-    /**
-     * Create MediaProjection permission intent for user consent.
-     * Must be started via Activity.startActivityForResult() or Activity Result API.
-     * Returns null if API level < 21.
-     */
-    fun createMediaProjectionPermissionIntent(): Intent? {
-        if (Build.VERSION.SDK_INT < 21) return null
-
-        val projectionManager = context.getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
-        return projectionManager.createScreenCaptureIntent()
+    private fun resumeCapture(
+        continuation: CancellableContinuation<ScreenCaptureResult>,
+        result: ScreenCaptureResult,
+    ) {
+        if (continuation.isActive) continuation.resume(result, onCancellation = null)
     }
 
-    /**
-     * Initialize MediaProjection with the result from permission activity.
-     * Call this from Activity.onActivityResult() or Activity Result callback.
-     * Returns true if initialization succeeded.
-     */
+    fun createMediaProjectionPermissionIntent(): Intent? {
+        if (Build.VERSION.SDK_INT < 21) return null
+        val manager = context.getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+        return manager.createScreenCaptureIntent()
+    }
+
     fun initMediaProjection(resultCode: Int, data: Intent?): Boolean {
-        if (Build.VERSION.SDK_INT < 21) return false
-        if (resultCode != Activity.RESULT_OK || data == null) {
-            Log.w(TAG, "MediaProjection permission denied or cancelled by user")
+        if (Build.VERSION.SDK_INT < 21 || resultCode != Activity.RESULT_OK || data == null) {
             pendingPermissionCallback?.invoke(ScreenCaptureResult.Failure(
-                error = ScreenCaptureResult.CaptureError.PERMISSION_DENIED,
-                errorMessage = "User denied screen capture permission"
+                ScreenCaptureResult.CaptureError.PERMISSION_DENIED,
+                "User denied screen capture permission",
             ))
             pendingPermissionCallback = null
             return false
         }
-
         return try {
-            val projectionManager = context.getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
-            mediaProjection = projectionManager.getMediaProjection(resultCode, data)
-
-            if (mediaProjection == null) {
-                pendingPermissionCallback?.invoke(ScreenCaptureResult.Failure(
-                    error = ScreenCaptureResult.CaptureError.PERMISSION_DENIED,
-                    errorMessage = "Failed to get MediaProjection"
-                ))
-                pendingPermissionCallback = null
-                return false
-            }
-
-            // Set up callback for projection stop (user revokes permission or system stops it)
-            mediaProjection?.registerCallback(object : MediaProjection.Callback() {
+            val manager = context.getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+            mediaProjection = manager.getMediaProjection(resultCode, data)
+            val projection = mediaProjection ?: return false
+            projection.registerCallback(object : MediaProjection.Callback() {
                 override fun onStop() {
-                    Log.w(TAG, "MediaProjection stopped by system/user")
+                    Log.w(tag, "MediaProjection stopped")
                     cleanupMediaProjection()
-                    // Notify any pending capture that projection stopped
-                    // Note: We don't have a direct callback here for active captures
                 }
             }, handler)
-
             setupImageReader()
             setupVirtualDisplay()
             startOrientationListener()
-
-            Log.d(TAG, "MediaProjection initialized successfully")
             pendingPermissionCallback?.invoke(ScreenCaptureResult.Success(
-                bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888), // placeholder
-                width = displayMetrics.widthPixels,
-                height = displayMetrics.heightPixels,
+                Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888),
+                displayMetrics.widthPixels,
+                displayMetrics.heightPixels,
             ))
             pendingPermissionCallback = null
             true
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to init MediaProjection", e)
+            Log.e(tag, "Failed to initialize MediaProjection", e)
             cleanupMediaProjection()
             pendingPermissionCallback?.invoke(ScreenCaptureResult.Failure(
-                error = ScreenCaptureResult.CaptureError.INTERNAL_ERROR,
-                errorMessage = "MediaProjection initialization failed: ${e.message}"
+                ScreenCaptureResult.CaptureError.INTERNAL_ERROR,
+                "MediaProjection initialization failed: ${e.message}",
             ))
             pendingPermissionCallback = null
             false
         }
     }
 
-    /**
-     * Request MediaProjection permission and wait for user response.
-     * This is a suspend function that waits for the user to grant/deny permission.
-     * The Activity must call initMediaProjection() with the result.
-     */
     suspend fun requestMediaProjectionPermission(activity: Activity): ScreenCaptureResult = withContext(Dispatchers.IO) {
         if (isMediaProjectionActive()) {
             return@withContext ScreenCaptureResult.Success(
-                bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888),
-                width = displayMetrics.widthPixels,
-                height = displayMetrics.heightPixels,
+                Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888),
+                displayMetrics.widthPixels,
+                displayMetrics.heightPixels,
             )
         }
-
-        val intent = createMediaProjectionPermissionIntent()
-            ?: return@withContext ScreenCaptureResult.Failure(
-                error = ScreenCaptureResult.CaptureError.NO_CAPTURE_METHOD,
-                errorMessage = "MediaProjection not supported on this device"
-            )
-
-        return@withContext suspendCancellableCoroutine { cont ->
-            pendingPermissionCallback = { result ->
-                cont.resume(result)
-            }
-            
-            // Start the permission activity
-            try {
-                activity.startActivityForResult(intent, 0) // Request code handled by caller
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to start MediaProjection permission activity", e)
-                cont.resume(ScreenCaptureResult.Failure(
-                    error = ScreenCaptureResult.CaptureError.INTERNAL_ERROR,
-                    errorMessage = "Failed to start permission activity: ${e.message}"
-                ))
-                pendingPermissionCallback = null
-            }
-            
-            // Handle cancellation
+        val intent = createMediaProjectionPermissionIntent() ?: return@withContext ScreenCaptureResult.Failure(
+            ScreenCaptureResult.CaptureError.NO_CAPTURE_METHOD,
+            "MediaProjection not supported on this device",
+        )
+        suspendCancellableCoroutine { cont ->
+            pendingPermissionCallback = { result -> resumeCapture(cont, result) }
             cont.invokeOnCancellation {
-                pendingPermissionCallback?.invoke(ScreenCaptureResult.Failure(
-                    error = ScreenCaptureResult.CaptureError.CANCELLED,
-                    errorMessage = "Permission request cancelled"
-                ))
                 pendingPermissionCallback = null
             }
+            try {
+                activity.startActivityForResult(intent, 0)
+            } catch (e: Exception) {
+                pendingPermissionCallback = null
+                resumeCapture(cont, ScreenCaptureResult.Failure(
+                    ScreenCaptureResult.CaptureError.INTERNAL_ERROR,
+                    "Failed to start permission activity: ${e.message}",
+                ))
+            }
         }
     }
 
-    /**
-     * Capture screen using MediaProjection.
-     * Returns SECURE_WINDOW if the content is protected (rare for MediaProjection but possible).
-     */
     fun captureViaMediaProjection(): ScreenCaptureResult {
+        if (mediaProjection == null || imageReader == null) return ScreenCaptureResult.Failure(
+            ScreenCaptureResult.CaptureError.MEDIA_PROJECTION_STOPPED,
+            "MediaProjection not initialized or stopped",
+        )
+        val image = imageReader?.acquireLatestImage() ?: return ScreenCaptureResult.Failure(
+            ScreenCaptureResult.CaptureError.INTERNAL_ERROR,
+            "No image available from ImageReader",
+        )
         return try {
-            if (mediaProjection == null || imageReader == null) {
-                return ScreenCaptureResult.Failure(
-                    error = ScreenCaptureResult.CaptureError.MEDIA_PROJECTION_STOPPED,
-                    errorMessage = "MediaProjection not initialized or stopped"
-                )
-            }
-
-            val image = imageReader?.acquireLatestImage()
-                ?: return ScreenCaptureResult.Failure(
-                    error = ScreenCaptureResult.CaptureError.INTERNAL_ERROR,
-                    errorMessage = "No image available from ImageReader"
-                )
-
-            val bitmap = imageToBitmap(image)
-            image.close()
-
-            if (bitmap == null) {
-                return ScreenCaptureResult.Failure(
-                    error = ScreenCaptureResult.CaptureError.CONVERSION_FAILED,
-                    errorMessage = "Failed to convert image to bitmap"
-                )
-            }
-
-            ScreenCaptureResult.Success(
-                bitmap = bitmap,
-                width = bitmap.width,
-                height = bitmap.height,
+            val bitmap = imageToBitmap(image) ?: return ScreenCaptureResult.Failure(
+                ScreenCaptureResult.CaptureError.CONVERSION_FAILED,
+                "Failed to convert image to bitmap",
             )
-        } catch (e: IllegalStateException) {
-            // Can happen if MediaProjection was stopped
-            Log.w(TAG, "MediaProjection capture failed - projection likely stopped", e)
-            ScreenCaptureResult.Failure(
-                error = ScreenCaptureResult.CaptureError.MEDIA_PROJECTION_STOPPED,
-                errorMessage = "MediaProjection stopped"
-            )
+            ScreenCaptureResult.Success(bitmap, bitmap.width, bitmap.height)
         } catch (e: Exception) {
-            Log.e(TAG, "MediaProjection capture failed", e)
+            Log.e(tag, "MediaProjection capture failed", e)
             ScreenCaptureResult.Failure(
-                error = ScreenCaptureResult.CaptureError.INTERNAL_ERROR,
-                errorMessage = "MediaProjection capture failed: ${e.message}"
+                ScreenCaptureResult.CaptureError.INTERNAL_ERROR,
+                "MediaProjection capture failed: ${e.message}",
             )
+        } finally {
+            image.close()
         }
     }
 
-    /**
-     * Capture screen using the best available method.
-     * Priority: AccessibilityService (no permission) > MediaProjection (with permission).
-     * Returns explicit error for secure windows.
-     */
     suspend fun capture(): ScreenCaptureResult = withContext(Dispatchers.IO) {
         isCapturing = true
         try {
-        // Try AccessibilityService first (no permission needed, API 30+)
-        if (Build.VERSION.SDK_INT >= 30 && accessibilityServiceRef?.get() != null) {
-            val result = captureViaAccessibilityService()
-            if (result is ScreenCaptureResult.Success) {
-                return@withContext result
+            if (Build.VERSION.SDK_INT >= 30 && accessibilityServiceRef?.get() != null) {
+                val result = captureViaAccessibilityService()
+                if (result is ScreenCaptureResult.Success ||
+                    (result is ScreenCaptureResult.Failure && result.error == ScreenCaptureResult.CaptureError.SECURE_WINDOW)
+                ) return@withContext result
             }
-            
-            // If it's a secure window error, don't fall back to MediaProjection
-            // because MediaProjection also cannot capture secure windows
-            if (result is ScreenCaptureResult.Failure) {
-                if (result.error == ScreenCaptureResult.CaptureError.SECURE_WINDOW) {
-                    Log.w(TAG, "Secure window detected (FLAG_SECURE), not attempting MediaProjection fallback")
-                    return@withContext result
-                }
-                Log.w(TAG, "Accessibility capture failed, trying MediaProjection: ${result.errorMessage}")
-            }
+            if (mediaProjection != null && imageReader != null) return@withContext captureViaMediaProjection()
+            ScreenCaptureResult.Failure(
+                ScreenCaptureResult.CaptureError.NO_CAPTURE_METHOD,
+                "No screen capture method available. Enable accessibility service or grant MediaProjection permission.",
+            )
+        } finally {
+            isCapturing = false
         }
-
-        // Try MediaProjection if available
-        if (mediaProjection != null && imageReader != null) {
-            val result = captureViaMediaProjection()
-            if (result is ScreenCaptureResult.Success) {
-                return@withContext result
-            }
-            if (result is ScreenCaptureResult.Failure) {
-                Log.w(TAG, "MediaProjection capture failed: ${result.errorMessage}")
-            }
-            return@withContext result
-        }
-
-        // No capture method available
-        return@withContext ScreenCaptureResult.Failure(
-            error = ScreenCaptureResult.CaptureError.NO_CAPTURE_METHOD,
-            errorMessage = "No screen capture method available. Enable accessibility service or grant MediaProjection permission."
-        )
-    } finally {
-        isCapturing = false
     }
-}
 
-/**
- * Convert Image to Bitmap.
- * Must be called on the same thread that acquired the image.
-     */
     @RequiresApi(21)
     private fun imageToBitmap(image: Image): Bitmap? {
-        val planes = image.planes
-        if (planes.size != 1) return null
-
-        val buffer = planes[0].buffer
-        val width = image.width
-        val height = image.height
-
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        bitmap.copyPixelsFromBuffer(buffer)
-
-        // Handle rotation if needed
-        if (currentRotation != 0) {
-            val matrix = Matrix()
-            matrix.postRotate(currentRotation.toFloat())
-            return Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true)
-        }
-
-        return bitmap
+        val plane = image.planes.firstOrNull() ?: return null
+        val pixelStride = plane.pixelStride
+        val rowStride = plane.rowStride
+        val rowPadding = rowStride - pixelStride * image.width
+        val paddedWidth = image.width + rowPadding / pixelStride
+        val padded = Bitmap.createBitmap(paddedWidth, image.height, Bitmap.Config.ARGB_8888)
+        padded.copyPixelsFromBuffer(plane.buffer)
+        val cropped = Bitmap.createBitmap(padded, 0, 0, image.width, image.height)
+        if (currentRotation == 0) return cropped
+        val matrix = Matrix().apply { postRotate((currentRotation * 90).toFloat()) }
+        return Bitmap.createBitmap(cropped, 0, 0, cropped.width, cropped.height, matrix, true)
     }
 
-    /**
-     * Set up ImageReader for capturing frames.
-     */
     @RequiresApi(21)
     private fun setupImageReader() {
         imageReader?.close()
-
         imageReader = ImageReader.newInstance(
-            displayMetrics.widthPixels,
-            displayMetrics.heightPixels,
+            displayMetrics.widthPixels.coerceAtLeast(1),
+            displayMetrics.heightPixels.coerceAtLeast(1),
             PixelFormat.RGBA_8888,
-            2 // max images
+            2,
         )
     }
 
-    /**
-     * Set up VirtualDisplay for capturing.
-     */
     @RequiresApi(21)
     private fun setupVirtualDisplay() {
         virtualDisplay?.release()
-
         virtualDisplay = mediaProjection?.createVirtualDisplay(
             "PhonePilotScreenCapture",
             displayMetrics.widthPixels,
@@ -472,68 +296,44 @@ class ScreenCaptureManager(
             DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
             imageReader?.surface,
             null,
-            handler
+            handler,
         )
-        
-        if (virtualDisplay == null) {
-            Log.e(TAG, "Failed to create VirtualDisplay")
-        }
     }
 
-    /**
-     * Start orientation listener for rotation handling.
-     */
     private fun startOrientationListener() {
         orientationListener?.disable()
         orientationListener = object : OrientationEventListener(context) {
             override fun onOrientationChanged(orientation: Int) {
                 if (orientation == ORIENTATION_UNKNOWN) return
-
-                val rotation = when {
-                    orientation in 45..135 -> Surface.ROTATION_90
-                    orientation in 135..225 -> Surface.ROTATION_180
-                    orientation in 225..315 -> Surface.ROTATION_270
-                    else -> Surface.ROTATION_0
+                val rotation = when (orientation) {
+                    in 45..134 -> 1
+                    in 135..224 -> 2
+                    in 225..314 -> 3
+                    else -> 0
                 }
-
                 if (rotation != currentRotation) {
                     currentRotation = rotation
                     setupVirtualDisplay()
                 }
             }
-        }
-        orientationListener?.enable()
+        }.also { it.enable() }
     }
 
-    /**
-     * Clean up MediaProjection resources.
-     * Must be called when projection stops or on shutdown.
-     */
     private fun cleanupMediaProjection() {
         virtualDisplay?.release()
         virtualDisplay = null
-
         imageReader?.close()
         imageReader = null
-
         mediaProjection?.stop()
         mediaProjection = null
-
         orientationListener?.disable()
         orientationListener = null
     }
 
-    /**
-     * Release a captured bitmap when done.
-     * Call this to prevent memory leaks.
-     */
     fun releaseCapture(result: ScreenCaptureResult.Success) {
-        result.bitmap.recycle()
+        if (!result.bitmap.isRecycled) result.bitmap.recycle()
     }
 
-    /**
-     * Shutdown the capture manager and release all resources.
-     */
     fun shutdown() {
         cleanupMediaProjection()
         scope.cancel()
