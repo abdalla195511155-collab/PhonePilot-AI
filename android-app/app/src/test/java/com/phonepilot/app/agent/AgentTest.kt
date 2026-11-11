@@ -1,5 +1,8 @@
 package com.phonepilot.app.agent
 
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import com.phonepilot.app.database.TaskDatabaseHelper
 import com.phonepilot.app.models.AgentMemoryEntry
 import com.phonepilot.app.models.ExecutionState
 import org.junit.Assert.assertEquals
@@ -8,6 +11,8 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
 class AgentModelsTest {
 
@@ -283,12 +288,15 @@ class SkillSelectorTest {
     }
 }
 
+@RunWith(RobolectricTestRunner::class)
 class AgentMemoryTest {
 
     @Test
     fun `agentMemoryRecordsAndRetrieves`() = kotlinx.coroutines.runBlocking {
         val scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Unconfined)
-        val memory = AgentMemory(scope)
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val dbHelper = TaskDatabaseHelper.getInstance(context)
+        val memory = AgentMemory(scope, dbHelper)
 
         memory.recordTask(
             taskId = "task-1",
