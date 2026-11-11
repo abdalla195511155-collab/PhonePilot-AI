@@ -14,59 +14,57 @@ import kotlinx.coroutines.withContext
  * ذاكرة الوكيل (Phase 7 — Agent Orchestration).
  *
  * تحفظ سياق المهام ونتائجها دون تخزين بيانات حساسة (كلمات مرور، API Keys).
- * الذاكرة دائمة: تُحفظ في [agent_memory] عبر [TaskDatabaseHelper] وتُحمّل عند الإنشاء،
- * لذا لا تُفقد عند إعادة تشغيل التطبيق.
+ * الذاكرة دائمة عند توفير [TaskDatabaseHelper]، كما يمكن استخدامها بذاكرة مؤقتة
+ * فقط في الاختبارات أو السياقات التي لا تحتاج تخزيناً دائماً.
  */
 class AgentMemory(
     private val scope: CoroutineScope,
-    private val dbHelper: TaskDatabaseHelper,
+    private val dbHelper: TaskDatabaseHelper? = null,
 ) {
-
-    private val _memory = MutableStateFlow(listOf<AgentMemoryEntry>())
+    private val _memory = MutableStateFlow<List<AgentMemoryEntry>>(emptyList())
     val memory: StateFlow<List<AgentMemoryEntry>> = _memory.asStateFlow()
 
     init {
-        // تحميل الذاكرة المحفوظة من SQLite عند الإنشاء
-        scope.launch {
-            val saved = loadFromDb()
-            _memory.value = saved.toMutableList()
-        }
-    }
-
-    private suspend fun loadFromDb(): List<AgentMemoryEntry> {
-        return withContext(Dispatchers.IO) {
-            val db = dbHelper.readableDatabase
-            val cursor = db.query(
-                "agent_memory",
-                null,
-                null, null, null, null, "created_at ASC"
-            )
-            try {
-                val results = mutableListOf<AgentMemoryEntry>()
-                while (cursor.moveToNext()) {
-                    results.add(AgentMemoryEntry(
-                        taskId = cursor.getString(cursor.getColumnIndexOrThrow("task_id")),
-                        intent = cursor.getString(cursor.getColumnIndexOrThrow("intent")),
-                        skillId = if (cursor.isNull(cursor.getColumnIndexOrThrow("skill_id"))) null else cursor.getString(cursor.getColumnIndexOrThrow("skill_id")),
-                        executionState = ExecutionState.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("execution_state"))),
-                        completedAt = if (cursor.isNull(cursor.getColumnIndexOrThrow("completed_at"))) null else cursor.getLong(cursor.getColumnIndexOrThrow("completed_at")),
-                        success = cursor.getInt(cursor.getColumnIndexOrThrow("success")) == 1,
-                        notes = if (cursor.isNull(cursor.getColumnIndexOrThrow("notes"))) null else cursor.getString(cursor.getColumnIndexOrThrow("notes")),
-                    ))
-                }
-                results
-            } finally {
-                cursor.close()
+        if (dbHelper != null) {
+            scope.launch {
+                _memory.value = loadFromDb(dbHelper)
             }
         }
     }
 
-    /**
-     * تسجل إدخال ذاكرة جديد لمهمة.
-     *
-     * لا تُخزن كلمات المرور أو API Keys أو أي بيانات حساسة.
-     * يُحفظ فوراً في SQLite وفي الذاكرة الفورية للشاشة.
-     */
+    private suspend fun loadFromDb(helper: TaskDatabaseHelper): List<AgentMemoryEntry> =
+        withContext(Dispatchers.IO) {
+            val cursor = helper.readableDatabase.query(
+                "agent_memory",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "created_at ASC",
+            )
+            try {
+                buildList {
+                    while (cursor.moveToNext()) {
+                        add(
+                            AgentMemoryEntry(
+                                taskId = cursor.getString(cursor.getColumnIndexOrThrow("task_id")),
+                                intent = cursor.getString(cursor.getColumnIndexOrThrow("intent")),
+                                skillId = if (cursor.isNull(cursor.getColumnIndexOrThrow("skill_id"))) null else cursor.getString(cursor.getColumnIndexOrThrow("skill_id")),
+                                executionState = ExecutionState.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("execution_state"))),
+                                completedAt = if (cursor.isNull(cursor.getColumnIndexOrThrow("completed_at"))) null else cursor.getLong(cursor.getColumnIndexOrThrow("completed_at")),
+                                success = cursor.getInt(cursor.getColumnIndexOrThrow("success")) == 1,
+                                notes = if (cursor.isNull(cursor.getColumnIndexOrThrow("notes"))) null else cursor.getString(cursor.getColumnIndexOrThrow("notes")),
+                            ),
+                        )
+                    }
+                }
+            } finally {
+                cursor.close()
+            }
+        }
+
+    /** Record a task in memory and persist it when a database helper is configured. */
     fun recordTask(
         taskId: String,
         intent: String,
@@ -85,19 +83,17 @@ class AgentMemory(
             success = success,
             notes = notes,
         )
-        // تحديث الذاكرة الفورية للشاشة
         scope.launch {
             _memory.value = _memory.value + entry
         }
-        // التخزين الدائم في SQLite
-        scope.launch {
-            saveToDb(entry)
+        dbHelper?.let { helper ->
+            scope.launch { saveToDb(helper, entry) }
         }
     }
 
-    private suspend fun saveToDb(entry: AgentMemoryEntry) {
+    private suspend fun saveToDb(helper: TaskDatabaseHelper, entry: AgentMemoryEntry) {
         withContext(Dispatchers.IO) {
-            val db = dbHelper.writableDatabase
+            val db = helper.writableDatabase
             db.beginTransaction()
             try {
                 val values = android.content.ContentValues().apply {
@@ -118,38 +114,23 @@ class AgentMemory(
         }
     }
 
-    /**
-     * جلب ذاكرة لمهمة معينة (من الذاكرة الفورية).
-     */
-    fun getTaskMemory(taskId: String): List<AgentMemoryEntry> {
-        return _memory.value.filter { it.taskId == taskId }
-    }
+    fun getTaskMemory(taskId: String): List<AgentMemoryEntry> =
+        _memory.value.filter { it.taskId == taskId }
 
-    /**
-     * جلب آخر N إدخالات ذاكرة (من الذاكرة الفورية).
-     */
-    fun getRecentMemory(limit: Int = 10): List<AgentMemoryEntry> {
-        return _memory.value.takeLast(limit)
-    }
+    fun getRecentMemory(limit: Int = 10): List<AgentMemoryEntry> =
+        _memory.value.takeLast(limit)
 
-    /**
-     * مسح ذاكرة مهمة معينة (احترام الحذف والخصوصية).
-     * يُحذف من SQLite والذاكرة الفورية.
-     */
     fun clearTaskMemory(taskId: String) {
         scope.launch {
-            _memory.value = _memory.value.filter { it.taskId != taskId }.toMutableList()
-            withContext(Dispatchers.IO) {
-                val db = dbHelper.writableDatabase
-                db.delete("agent_memory", "task_id = ?", arrayOf(taskId))
+            _memory.value = _memory.value.filter { it.taskId != taskId }
+            dbHelper?.let { helper ->
+                withContext(Dispatchers.IO) {
+                    helper.writableDatabase.delete("agent_memory", "task_id = ?", arrayOf(taskId))
+                }
             }
         }
     }
 
-    /**
-     * التحقق من أن هناك سياقاً سابقاً لمهمة يمكن الاعتماد عليه.
-     */
-    fun hasPreviousContext(taskId: String): Boolean {
-        return _memory.value.any { it.taskId == taskId }
-    }
+    fun hasPreviousContext(taskId: String): Boolean =
+        _memory.value.any { it.taskId == taskId }
 }
