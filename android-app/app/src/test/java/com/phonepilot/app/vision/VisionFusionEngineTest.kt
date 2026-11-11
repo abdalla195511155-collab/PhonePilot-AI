@@ -1,5 +1,6 @@
 package com.phonepilot.app.vision
 
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -160,5 +161,3 @@ class VisionFusionEngineTest {
         assertEquals(2, resolved.size)
     }
 }
-
-import kotlinx.coroutines.runBlocking

@@ -1,5 +1,9 @@
 package com.phonepilot.app.vision
 
+import com.phonepilot.app.data.ai.AiModelSpec
+import com.phonepilot.app.data.ai.CapabilityEvidence
+import com.phonepilot.app.data.ai.ModelCapability
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -7,7 +11,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import kotlinx.coroutines.runBlocking
+import kotlin.math.min
 
 class VisionRepositoryTest {
 
@@ -91,10 +95,6 @@ class VisionRepositoryTest {
         assertTrue(prompt.contains("إجراء مقترح"))
     }
 }
-
-import com.phonepilot.app.data.ai.AiModelSpec
-import com.phonepilot.app.data.ai.CapabilityEvidence
-import com.phonepilot.app.data.ai.ModelCapability
 
 private fun buildTestVisionSummary(state: ScreenState, change: ScreenChange?): String {
     val builder = StringBuilder()
@@ -195,8 +195,6 @@ class AccessibilityTreeAnalyzerTest {
         assertEquals(1.0f, min(confidence, 1.0f), 0.001f)
     }
 }
-
-import kotlin.math.min
 
 private fun generateTestElementId(
     viewId: String?,
