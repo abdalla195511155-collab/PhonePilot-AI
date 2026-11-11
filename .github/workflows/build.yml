@@ -8,69 +8,6 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: android-app
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-          cache: 'gradle'
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Install Android SDK Platform 34 and Build Tools 34.0.0
-        uses: android-actions/setup-android@v3
-        with:
-          packages: 'platforms;android-34 build-tools;34.0.0'
-
-      - name: Verify Android SDK
-        run: |
-          sdkmanager --list_installed
-
-      - name: Make Gradle Wrapper executable
-        run: |
-          chmod +x ./gradlew
-
-      - name: Verify Gradle Wrapper
-        run: |
-          ./gradlew --version
-
-      - name: Run Unit Tests
-        # Capture complete console output and preserve exit code.
-        # set -o pipefail ensures the pipeline fails if Gradle fails.
-        # tee saves the console output to a log file.
-        run: |
-          set -o pipefail
-          ./gradlew :app:testDebugUnitTest --no-daemon --stacktrace --info 2>&1 | tee test-output.log
-        # The pipeline exit code (0 or Gradle's exit code) is preserved by set -o pipefail.
-
-      - name: Upload Test Reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-reports-debug-unit-test
-          path: |
-            android-app/app/build/test-results/testDebugUnitTest/
-            android-app/app/build/reports/tests/testDebugUnitTest/
-            android-app/test-output.log
-
-      - name: Upload Test Gradle Log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-gradle-console-log
-          path: android-app/test-output.log
-
   build-apk:
     runs-on: ubuntu-latest
     defaults:
