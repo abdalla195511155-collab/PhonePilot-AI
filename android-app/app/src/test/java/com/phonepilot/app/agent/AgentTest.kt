@@ -1,6 +1,8 @@
 package com.phonepilot.app.agent
 
-import com.phonepilot.app.models.AgentMemoryEntry
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import com.phonepilot.app.database.TaskDatabaseHelper
 import com.phonepilot.app.models.ExecutionState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -8,6 +10,8 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
 class AgentModelsTest {
 
@@ -283,12 +287,15 @@ class SkillSelectorTest {
     }
 }
 
+@RunWith(RobolectricTestRunner::class)
 class AgentMemoryTest {
 
     @Test
     fun `agentMemoryRecordsAndRetrieves`() = kotlinx.coroutines.runBlocking {
+        val context = ApplicationProvider.getApplicationContext<Context>()
         val scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Unconfined)
-        val memory = AgentMemory(scope)
+        val database = TaskDatabaseHelper.getInstance(context)
+        val memory = AgentMemory(scope, database)
 
         memory.recordTask(
             taskId = "task-1",
@@ -389,6 +396,7 @@ class ModelSelectorTest {
     }
 }
 
+@RunWith(RobolectricTestRunner::class)
 class BotTokenValidatorTest {
 
     @Test
@@ -417,13 +425,21 @@ class BotTokenValidatorTest {
 
     @Test
     fun `telegramBotChannelRejectsUnauthorizedUser`() = kotlinx.coroutines.runBlocking {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val database = TaskDatabaseHelper.getInstance(context)
+        val scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Unconfined)
+        val orchestrator = AgentOrchestrator(
+            context = context,
+            taskDatabaseHelper = database,
+            accessibilityService = null,
+            scope = scope,
+        )
         val channel = TelegramBotChannel(
             botToken = "test-token",
             authorizedUserIds = setOf("authorized-user"),
-            orchestrator = null!!, // TODO: would need mock orchestrator
-            scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Unconfined),
+            orchestrator = orchestrator,
+            scope = scope,
         )
-        // This would fail due to null orchestrator, but we test the authorization check separately
         assertFalse(channel.isAuthorizedUser(null))
         assertFalse(channel.isAuthorizedUser("unauthorized-user"))
         assertTrue(channel.isAuthorizedUser("authorized-user"))
