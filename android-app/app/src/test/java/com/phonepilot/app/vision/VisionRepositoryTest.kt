@@ -107,7 +107,7 @@ private fun buildTestVisionSummary(state: ScreenState, change: ScreenChange?): S
     builder.append("--- العناصر التفاعلية (${state.interactiveElements.size}) ---\n")
     for (element in state.interactiveElements.take(20)) {
         val text = element.primaryText?.takeIf { it.isNotBlank() } ?: "[بدون نص]"
-        val role = element.semanticRole.label
+        val role = element.semanticRole.label()
         val bounds = element.bounds?.let { "[${it.left},${it.top},${it.right},${it.bottom}]" } ?: ""
         builder.append("• [$role] $text $bounds\n")
     }
