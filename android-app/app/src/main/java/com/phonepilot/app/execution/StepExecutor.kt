@@ -159,10 +159,18 @@ class StepExecutor(
             }
             "input" -> {
                 if (inputText?.isNotBlank() == true) {
-                    // إ_clear النص الحالي ثم إدخال الجديد
                     targetNode.performAction(AccessibilityNodeInfo.ACTION_FOCUS)
-                    // في التنفيذ الفعلي، يُستخدم setText عبر accessibility
-                    "input_$inputText"
+                    val args = android.os.Bundle()
+                    args.putCharSequence(
+                        AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE,
+                        inputText,
+                    )
+                    // لا نُعيد النص المكتوب في النتيجة (قد يكون حساسًا)
+                    if (targetNode.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args)) {
+                        "input_set"
+                    } else {
+                        "input_failed"
+                    }
                 } else {
                     "input_empty"
                 }

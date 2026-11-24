@@ -41,6 +41,7 @@ class PhonePilotAccessibilityService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         Log.d(TAG, "Accessibility service connected")
+        instance = this
         val info = serviceInfo
         info?.flags = (info?.flags ?: 0) or
             AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or
@@ -167,6 +168,7 @@ class PhonePilotAccessibilityService : AccessibilityService() {
 
     override fun onUnbind(intent: android.content.Intent?): Boolean {
         Log.d(TAG, "Accessibility service unbind")
+        if (instance === this) instance = null
         isServiceConnected = false
         RecordingRepository.serviceInterrupted()
         currentSequence = 0
@@ -175,6 +177,7 @@ class PhonePilotAccessibilityService : AccessibilityService() {
 
     override fun onDestroy() {
         super.onDestroy()
+        if (instance === this) instance = null
         isServiceConnected = false
         // Best-effort cleanup: close channel and attempt drain via coroutine.
         // Note: if the process is killed before the drain completes, pending
@@ -220,6 +223,11 @@ class PhonePilotAccessibilityService : AccessibilityService() {
     }
 
     companion object {
+        /** الخدمة الحية أثناء اتصالها، وإلا null. يستخدمها الوكيل للتنفيذ. */
+        @Volatile
+        var instance: PhonePilotAccessibilityService? = null
+            private set
+
         fun isServiceEnabled(context: android.content.Context): Boolean {
             try {
                 val enabledServices = Settings.Secure.getString(
