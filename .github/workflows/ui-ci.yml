@@ -64,3 +64,16 @@ jobs:
           name: ui-screenshots
           path: android-app/app/build/screenshots
           if-no-files-found: warn
+      - name: Publish screenshots to a branch
+        if: always()
+        run: |
+          mkdir -p /tmp/shots
+          cp android-app/app/build/screenshots/* /tmp/shots/ || true
+          git config user.name "ci-bot"
+          git config user.email "ci-bot@users.noreply.github.com"
+          git checkout -q --orphan ci-screenshots
+          git rm -rq -f . || true
+          cp /tmp/shots/* . || true
+          git add -A
+          git commit -q -m "screenshots" || true
+          git push -f origin ci-screenshots
