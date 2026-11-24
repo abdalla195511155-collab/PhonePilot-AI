@@ -37,7 +37,7 @@ import java.io.File
 @RunWith(AndroidJUnit4::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(sdk = [34], qualifiers = "ar-rSA-w411dp-h4200dp-xxhdpi")
-class BotFormEditorTest {
+class BotFormEditorScreenshotTest {
     @get:Rule
     val rule = createAndroidComposeRule<ComponentActivity>()
 
