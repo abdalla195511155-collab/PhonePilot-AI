@@ -30,6 +30,7 @@ class VisionFusionEngineTest {
             clickable = true,
             semanticRole = SemanticRole.BUTTON,
             source = ElementSource.ACCESSIBILITY,
+            confidence = 0.8f, // below 1.0 so the OCR confirmation boost is observable
         )
 
         val ocrBlock = OcrTextBlock(
@@ -96,7 +97,7 @@ class VisionFusionEngineTest {
 
         val ocrResult = OcrResult(textBlocks = listOf(ocrBlock), fullText = "Subtitle", engineName = "Test", success = true)
 
-        val fused = fusionEngine.fuse(listOf(accElement), ocrResult, 200, 200)
+        val fused = fusionEngine.fuse(listOf(accElement), ocrResult, 360, 640)
 
         // Should merge into existing element
         assertEquals(1, fused.size)

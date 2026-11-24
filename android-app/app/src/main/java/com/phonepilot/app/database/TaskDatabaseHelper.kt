@@ -631,8 +631,8 @@ class TaskDatabaseHelper private constructor(context: Context) :
         val db = writableDatabase
         val values = ContentValues().apply {
             put("approval_state", approvalState)
-            approvedAt?.let { values.put("approved_at", it) }
-            values.put("approved_by_user", if (approvedByUser) 1 else 0)
+            approvedAt?.let { put("approved_at", it) }
+            put("approved_by_user", if (approvedByUser) 1 else 0)
         }
         return db.update("skills", values, "id = ?", arrayOf(id.toString()))
     }
@@ -796,7 +796,8 @@ class TaskDatabaseHelper private constructor(context: Context) :
         return SkillEntity(
             id = cursor.getLong(cursor.getColumnIndexOrThrow("id")).toString(),
             title = cursor.getString(cursor.getColumnIndexOrThrow("title")),
-            description = cursor.getString(cursor.getColumnIndexOrThrow("description")),
+            // description is nullable in the table (insertSkill accepts null) but non-null in SkillEntity
+            description = cursor.getString(cursor.getColumnIndexOrThrow("description")) ?: "",
             level = cursor.getString(cursor.getColumnIndexOrThrow("level")),
             sourceRecordingId = if (cursor.isNull(cursor.getColumnIndexOrThrow("source_recording_id"))) null else cursor.getLong(cursor.getColumnIndexOrThrow("source_recording_id")),
             lifecycleState = SkillLifecycleState.entries.firstOrNull { it.name == cursor.getString(cursor.getColumnIndexOrThrow("lifecycle_state")) } ?: SkillLifecycleState.DRAFT,

@@ -92,7 +92,7 @@ class VisionRepositoryTest {
         assertTrue(prompt.contains("شاشة"))
         assertTrue(prompt.contains("Login"))
         assertTrue(prompt.contains("العربية"))
-        assertTrue(prompt.contains("إجراء مقترح"))
+        assertTrue(prompt.contains("الإجراء المقترح"))
     }
 }
 

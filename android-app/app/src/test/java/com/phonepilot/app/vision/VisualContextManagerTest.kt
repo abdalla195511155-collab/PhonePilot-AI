@@ -88,9 +88,9 @@ class VisionEngineIntegrationTest {
         // We test the core logic by creating elements directly
 
         val accElements = listOf(
-            UiElement("1", text = "Login", clickable = true, semanticRole = SemanticRole.BUTTON, viewIdResourceName = "btn_login"),
-            UiElement("2", text = "Username", editable = true, semanticRole = SemanticRole.TEXT_FIELD, viewIdResourceName = "et_username"),
-            UiElement("3", text = "Password", editable = true, isPassword = true, semanticRole = SemanticRole.TEXT_FIELD, viewIdResourceName = "et_password"),
+            UiElement("1", text = "Login", clickable = true, semanticRole = SemanticRole.BUTTON, viewIdResourceName = "btn_login", bounds = Bounds(100, 200, 300, 250)),
+            UiElement("2", text = "Username", editable = true, semanticRole = SemanticRole.TEXT_FIELD, viewIdResourceName = "et_username", bounds = Bounds(100, 300, 300, 350)),
+            UiElement("3", text = "Password", editable = true, isPassword = true, semanticRole = SemanticRole.TEXT_FIELD, viewIdResourceName = "et_password", bounds = Bounds(100, 400, 300, 450)),
         )
 
         val ocrBlocks = listOf(
