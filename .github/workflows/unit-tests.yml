@@ -2,11 +2,12 @@ name: Unit Tests
 
 on:
   push:
-    branches: [ 'ci/**' ]
+    branches: [ main, 'ci/**' ]
+  pull_request:
   workflow_dispatch: {}
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   unit-tests:
@@ -16,19 +17,6 @@ jobs:
         working-directory: android-app
     steps:
       - uses: actions/checkout@v4
-      - name: Apply pending patch (if any)
-        id: patch
-        working-directory: .
-        run: |
-          if [ -f ci-patches/pending.b64 ]; then
-            base64 -d ci-patches/pending.b64 > "$RUNNER_TEMP/pending.patch"
-            git apply --index --whitespace=nowarn "$RUNNER_TEMP/pending.patch"
-            git rm -q -f ci-patches/pending.b64
-            git config user.name "phonepilot-ci"
-            git config user.email "phonepilot-ci@users.noreply.github.com"
-            git commit -q -m "test: update unit tests to current APIs"
-            echo "applied=1" >> "$GITHUB_OUTPUT"
-          fi
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
@@ -71,10 +59,6 @@ jobs:
           if fails:
               print('::error title=failing tests (%d)::%s' % (len(fails), enc('\n'.join(fails[:100]))))
           PY
-      - name: Push applied patch to branch
-        if: always() && steps.patch.outputs.applied == '1'
-        working-directory: .
-        run: git push origin "HEAD:${GITHUB_REF_NAME}"
       - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v4
