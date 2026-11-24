@@ -102,7 +102,11 @@ class VisionFusionEngineTest {
         // Should merge into existing element
         assertEquals(1, fused.size)
         val fusedElement = fused[0]
-        assertTrue(fusedElement.text == "Title" || fusedElement.contentDescription == "Subtitle")
+        // fuseOcrIntoElement prefers the longer text, so the OCR text is kept
+        assertEquals("Subtitle", fusedElement.text)
+        assertEquals(ElementSource.FUSED, fusedElement.source)
+        // the element keeps its own accessibility bounds
+        assertEquals(accElement.bounds, fusedElement.bounds)
     }
 
     @Test
