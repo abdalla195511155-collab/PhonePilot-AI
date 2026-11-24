@@ -199,20 +199,7 @@ fun BotsScreen(onNavigateTo: (String) -> Unit, storeOverride: BotStore? = null) 
                     )
                     val draft = try { BotJson.parse(editorText) } catch (e: BotJson.ParseException) { null }
                     if (draft != null && BotApproval.needsApproval(draft)) {
-                        Text(
-                            "تحذير: هذا البوت له خطوة بأثر خارجي (مثل إرسال رسالة) ومحفّزه تلقائي. لو وافقت سيُنفَّذ بدون أن تكون أمام الشاشة، ولا يوجد تراجع عن الرسالة بعد إرسالها.",
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier.testTag("bots_approval_warning"),
-                        )
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Checkbox(
-                                modifier = Modifier.testTag("bots_approval_checkbox"),
-                                checked = approvalChecked,
-                                onCheckedChange = { approvalChecked = it; approvalTouched = true },
-                            )
-                            Text("أوافق على تشغيل هذا البوت تلقائيًا بدون حضوري", style = MaterialTheme.typography.bodyMedium)
-                        }
+                        ApprovalSection(checked = approvalChecked, onChange = { approvalChecked = it; approvalTouched = true })
                     }
                     editorErrors.forEach {
                         Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
@@ -245,5 +232,25 @@ fun BotsScreen(onNavigateTo: (String) -> Unit, storeOverride: BotStore? = null) 
             },
             dismissButton = { TextButton(onClick = { editing = null }) { Text("إلغاء") } },
         )
+    }
+}
+
+@Composable
+internal fun ApprovalSection(checked: Boolean, onChange: (Boolean) -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(Space.xSmall)) {
+        Text(
+            "تحذير: هذا البوت له خطوة بأثر خارجي (مثل إرسال رسالة) ومحفّزه تلقائي. لو وافقت سيُنفَّذ بدون أن تكون أمام الشاشة، ولا يوجد تراجع عن الرسالة بعد إرسالها.",
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.labelSmall,
+            modifier = Modifier.testTag("bots_approval_warning"),
+        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(
+                modifier = Modifier.testTag("bots_approval_checkbox"),
+                checked = checked,
+                onCheckedChange = onChange,
+            )
+            Text("أوافق على تشغيل هذا البوت تلقائيًا بدون حضوري", style = MaterialTheme.typography.bodyMedium)
+        }
     }
 }
