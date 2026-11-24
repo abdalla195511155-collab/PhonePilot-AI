@@ -74,6 +74,6 @@ jobs:
           git checkout -q --orphan ci-screenshots
           git rm -rq -f . || true
           cp /tmp/shots/* . || true
-          git add -A
+          git add -f -- *.png failures.txt
           git commit -q -m "screenshots" || true
           git push -f origin ci-screenshots
