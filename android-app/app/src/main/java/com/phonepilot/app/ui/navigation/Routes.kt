@@ -26,6 +26,7 @@ object AppRoutes {
     const val AiAssistant = "ai_assistant"
     const val AgentState = "agent_state"
     const val AgentApproval = "agent_approval"
+    const val Settings = "settings"
 
     val allScreens = listOf(
         Dashboard,
@@ -39,6 +40,7 @@ object AppRoutes {
         AiAssistant,
         AgentState,
         AgentApproval,
+        Settings,
     )
 
     fun label(route: String): String = when (route) {
@@ -53,13 +55,14 @@ object AppRoutes {
         AiAssistant -> "المساعد الذكي"
         AgentState -> "حالة الوكيل"
         AgentApproval -> "موافقات المهارات"
+        Settings -> "الإعدادات"
         else -> route
     }
 
     fun icon(route: String): ImageVector = when (route) {
         Dashboard -> Icons.Filled.Home
-        TrainingStudio -> Icons.Filled.Build
-        SkillLibrary -> Icons.Filled.Add
+        TrainingStudio -> Icons.Filled.Add
+        SkillLibrary -> Icons.Filled.Build
         AgentControl -> Icons.Filled.Tune
         ExecutionMonitor -> Icons.Filled.MonitorHeart
         AiModelsApiSettings -> Icons.Filled.Settings
@@ -68,6 +71,7 @@ object AppRoutes {
         AiAssistant -> Icons.Filled.SmartToy
         AgentState -> Icons.Filled.People
         AgentApproval -> Icons.Filled.CheckCircle
+        Settings -> Icons.Filled.Settings
         else -> Icons.Filled.Home
     }
 }

@@ -40,8 +40,9 @@ fun AgentApprovalScreen(
     val skills by SkillRepository.skills.collectAsStateWithLifecycle()
 
     val pendingApprovals = skills.filter {
-        it.lifecycleState == SkillLifecycleState.VALIDATING ||
-            (it.lifecycleState == SkillLifecycleState.NEEDS_REVIEW && it.approvalState == "PENDING")
+        it.approvalState == "PENDING" &&
+            (it.lifecycleState == SkillLifecycleState.VALIDATING ||
+                it.lifecycleState == SkillLifecycleState.NEEDS_REVIEW)
     }
 
     Column(
