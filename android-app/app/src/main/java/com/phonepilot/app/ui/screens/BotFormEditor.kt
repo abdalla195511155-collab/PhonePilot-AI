@@ -14,6 +14,10 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -58,9 +62,16 @@ private fun TextF(label: String, value: String, tag: String, onValue: (String) -
 
 @Composable
 private fun NumF(label: String, value: Int, tag: String, onValue: (Int) -> Unit) {
+    // نص محلي حتى يمكن مسح الحقل بالكامل أثناء الكتابة؛ يُزامَن فقط عند تغيّر القيمة من الخارج.
+    var text by remember { mutableStateOf(value.toString()) }
+    if (BotForm.digitsToInt(text) != value) text = value.toString()
     OutlinedTextField(
-        value = value.toString(),
-        onValueChange = { onValue(BotForm.digitsToInt(it)) },
+        value = text,
+        onValueChange = {
+            val digits = it.filter { c -> c in '0'..'9' }.take(6)
+            text = digits
+            onValue(BotForm.digitsToInt(digits))
+        },
         label = { Text(label) },
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
