@@ -27,6 +27,7 @@ object AppRoutes {
     const val AgentState = "agent_state"
     const val AgentApproval = "agent_approval"
     const val Settings = "settings"
+    const val Bots = "bots"
 
     val allScreens = listOf(
         Dashboard,
@@ -41,6 +42,7 @@ object AppRoutes {
         AgentState,
         AgentApproval,
         Settings,
+        Bots,
     )
 
     fun label(route: String): String = when (route) {
@@ -56,6 +58,7 @@ object AppRoutes {
         AgentState -> "حالة الوكيل"
         AgentApproval -> "موافقات المهارات"
         Settings -> "الإعدادات"
+        Bots -> "البوتات"
         else -> route
     }
 
@@ -72,6 +75,7 @@ object AppRoutes {
         AgentState -> Icons.Filled.People
         AgentApproval -> Icons.Filled.CheckCircle
         Settings -> Icons.Filled.Settings
+        Bots -> Icons.Filled.SmartToy
         else -> Icons.Filled.Home
     }
 }
