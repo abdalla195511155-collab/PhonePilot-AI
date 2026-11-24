@@ -30,7 +30,7 @@ class ScreenshotTest {
 
     private fun shot(name: String) {
         try {
-            rule.waitForIdle()
+            rule.mainClock.advanceTimeBy(1000)
             val bmp = rule.onNodeWithTag("root").captureToImage().asAndroidBitmap()
             File(outDir, "$name.png").outputStream().use { bmp.compress(Bitmap.CompressFormat.PNG, 100, it) }
         } catch (e: Throwable) {
@@ -39,13 +39,15 @@ class ScreenshotTest {
     }
 
     private fun step(name: String, block: () -> Unit) {
-        try { block() } catch (e: Throwable) {
+        try { block(); rule.mainClock.advanceTimeBy(500) } catch (e: Throwable) {
             failures += "step $name: ${e::class.simpleName} ${e.message?.take(300)}"
         }
     }
 
     @Test
     fun walkAllScreens() {
+        rule.mainClock.autoAdvance = false
+        rule.mainClock.advanceTimeBy(1000)
         shot("01_dashboard")
         step("skills") { rule.onNodeWithTag("nav_${AppRoutes.SkillLibrary}").performClick() }
         shot("02_skills")
