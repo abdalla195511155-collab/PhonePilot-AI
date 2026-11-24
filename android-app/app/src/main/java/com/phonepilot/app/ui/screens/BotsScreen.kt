@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
@@ -28,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.phonepilot.app.bot.AccessibilityScreenActions
+import com.phonepilot.app.bot.BotApproval
 import com.phonepilot.app.bot.BotDefinition
 import com.phonepilot.app.bot.BotExecution
 import com.phonepilot.app.bot.BotJson
@@ -52,6 +54,8 @@ fun BotsScreen(onNavigateTo: (String) -> Unit, storeOverride: BotStore? = null) 
     var bots by remember { mutableStateOf(store.list()) }
     var editing by remember { mutableStateOf<BotDefinition?>(null) }
     var editorText by remember { mutableStateOf("") }
+    var approvalChecked by remember { mutableStateOf(false) }
+    var approvalTouched by remember { mutableStateOf(false) }
     var editorErrors by remember { mutableStateOf<List<String>>(emptyList()) }
     var confirmRun by remember { mutableStateOf<BotDefinition?>(null) }
     var message by remember { mutableStateOf<String?>(null) }
@@ -63,6 +67,8 @@ fun BotsScreen(onNavigateTo: (String) -> Unit, storeOverride: BotStore? = null) 
         editing = def
         editorText = BotJson.toPrettyJson(def)
         editorErrors = emptyList()
+        approvalChecked = def.unattendedApproved
+        approvalTouched = false
     }
 
     fun startRun(def: BotDefinition) {
@@ -129,7 +135,10 @@ fun BotsScreen(onNavigateTo: (String) -> Unit, storeOverride: BotStore? = null) 
                         Text(def.name, style = MaterialTheme.typography.titleMedium)
                         Text(
                             "${BotSummary.trigger(def.trigger)} • ${def.steps.size} خطوة" +
-                                if (BotSummary.hasExternalEffect(def)) " • فيه خطوة بأثر خارجي" else "",
+                                (if (BotSummary.hasExternalEffect(def)) " • فيه خطوة بأثر خارجي" else "") +
+                                if (BotApproval.needsApproval(def)) {
+                                    if (def.unattendedApproved) " • مسموح بالتشغيل بدون حضور" else " • بدون موافقة: لن يعمل تلقائيًا"
+                                } else "",
                             style = MaterialTheme.typography.bodyMedium,
                         )
                         Text(
@@ -188,6 +197,23 @@ fun BotsScreen(onNavigateTo: (String) -> Unit, storeOverride: BotStore? = null) 
                         minLines = 8,
                         maxLines = 14,
                     )
+                    val draft = try { BotJson.parse(editorText) } catch (e: BotJson.ParseException) { null }
+                    if (draft != null && BotApproval.needsApproval(draft)) {
+                        Text(
+                            "تحذير: هذا البوت له خطوة بأثر خارجي (مثل إرسال رسالة) ومحفّزه تلقائي. لو وافقت سيُنفَّذ بدون أن تكون أمام الشاشة، ولا يوجد تراجع عن الرسالة بعد إرسالها.",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.testTag("bots_approval_warning"),
+                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(
+                                modifier = Modifier.testTag("bots_approval_checkbox"),
+                                checked = approvalChecked,
+                                onCheckedChange = { approvalChecked = it; approvalTouched = true },
+                            )
+                            Text("أوافق على تشغيل هذا البوت تلقائيًا بدون حضوري", style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
                     editorErrors.forEach {
                         Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
                     }
@@ -198,7 +224,12 @@ fun BotsScreen(onNavigateTo: (String) -> Unit, storeOverride: BotStore? = null) 
                     modifier = Modifier.testTag("bots_save"),
                     onClick = {
                         try {
-                            val def = BotJson.parse(editorText)
+                            val parsed = BotJson.parse(editorText)
+                            val def = parsed.copy(
+                                unattendedApproved = BotApproval.resolve(
+                                    parsed, store.list().firstOrNull { it.id == parsed.id }, approvalChecked, approvalTouched,
+                                ),
+                            )
                             val errs = BotValidator.validate(def)
                             if (errs.isEmpty()) {
                                 store.save(def)
