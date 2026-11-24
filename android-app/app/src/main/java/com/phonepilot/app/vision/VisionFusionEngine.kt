@@ -207,7 +207,7 @@ class VisionFusionEngine(
     /**
      * Resolve conflicts and deduplicate fused elements.
      */
-    private fun resolveConflicts(elements: List<UiElement>): List<UiElement> {
+    internal fun resolveConflicts(elements: List<UiElement>): List<UiElement> {
         val resolved = mutableListOf<UiElement>()
         val processed = mutableSetOf<String>()
 

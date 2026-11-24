@@ -152,7 +152,7 @@ class VisionFusionEngineTest {
     @Test
     fun `resolve conflicting elements`() = runBlocking {
         val element1 = UiElement("1", text = "A", bounds = Bounds(0, 0, 100, 100), confidence = 0.8f)
-        val element2 = UiElement("2", text = "B", bounds = Bounds(10, 10, 110, 110), confidence = 0.7f) // High IoU
+        val element2 = UiElement("2", text = "B", bounds = Bounds(5, 5, 105, 105), confidence = 0.7f) // IoU ~0.82, above the 0.7 merge threshold
         val element3 = UiElement("3", text = "C", bounds = Bounds(200, 200, 300, 300), confidence = 0.9f) // Far away
 
         val resolved = fusionEngine.resolveConflicts(listOf(element1, element2, element3))

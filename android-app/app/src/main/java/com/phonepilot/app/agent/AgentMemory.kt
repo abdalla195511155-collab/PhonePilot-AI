@@ -29,7 +29,8 @@ class AgentMemory(
         // تحميل الذاكرة المحفوظة من SQLite عند الإنشاء
         scope.launch {
             val saved = loadFromDb()
-            _memory.value = saved.toMutableList()
+            // دمج مع أي إدخالات سُجّلت قبل اكتمال التحميل حتى لا تُفقد
+            _memory.value = saved + _memory.value.filter { it !in saved }
         }
     }
 

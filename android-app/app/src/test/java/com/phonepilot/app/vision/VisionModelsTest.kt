@@ -60,8 +60,8 @@ class VisionModelsTest {
         assertEquals("Hello", element.primaryText)
         assertTrue(element.hasTextContent)
         assertTrue(element.clickable)
-        assertEquals(50, element.centerX())
-        assertEquals(25, element.centerY())
+        assertEquals(50, element.centerX)
+        assertEquals(25, element.centerY)
         assertEquals(100, element.width)
         assertEquals(50, element.height)
     }

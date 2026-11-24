@@ -1,7 +1,5 @@
 package com.phonepilot.app.database
 
-import android.content.Context
-import androidx.test.core.app.ApplicationProvider
 import com.phonepilot.app.models.EventEntity
 import com.phonepilot.app.models.TaskEntity
 import com.phonepilot.app.models.TaskRecordingEntity
@@ -23,8 +21,7 @@ class TaskDatabaseHelperTest {
 
     @Before
     fun setUp() {
-        val context: Context = ApplicationProvider.getApplicationContext()
-        dbHelper = TaskDatabaseHelper.getInstance(context)
+        dbHelper = com.phonepilot.app.TestDatabase.fresh()
         dbHelper.markInterruptedRecordings()
     }
 

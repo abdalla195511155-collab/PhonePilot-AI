@@ -11,14 +11,24 @@ import kotlinx.coroutines.flow.flow
  * Glue between the UI and [AiChatEngine]: declared-limit guard, usage counters,
  * and failure recording. It never retries a POST automatically.
  */
-object AiChatRepository {
+/** Minimal seam so non-UI code (and tests) can send chat requests without the global singleton. */
+interface ChatSender {
+    suspend fun send(
+        provider: AiProviderSpec,
+        model: AiModelSpec,
+        apiKey: String?,
+        messages: List<ChatMessage>,
+    ): ChatOutcome
+}
+
+object AiChatRepository : ChatSender {
 
     private val engine = AiChatEngine(
         transport = OkHttpHttpTransport(),
         streamingTransport = OkHttpStreamingTransport(),
     )
 
-    suspend fun send(
+    override suspend fun send(
         provider: AiProviderSpec,
         model: AiModelSpec,
         apiKey: String?,

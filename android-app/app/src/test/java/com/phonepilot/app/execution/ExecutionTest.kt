@@ -1,5 +1,6 @@
 package com.phonepilot.app.execution
 
+import com.phonepilot.app.models.ExecutionEntity
 import com.phonepilot.app.models.ExecutionState
 import com.phonepilot.app.models.SkillEntity
 import com.phonepilot.app.models.SkillLifecycleState

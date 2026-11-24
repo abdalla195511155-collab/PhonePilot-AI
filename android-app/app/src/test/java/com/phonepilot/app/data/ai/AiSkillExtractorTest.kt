@@ -4,6 +4,7 @@ import com.phonepilot.app.data.ai.chat.AiChatRepository
 import com.phonepilot.app.data.ai.chat.ChatMessage
 import com.phonepilot.app.data.ai.chat.ChatOutcome
 import com.phonepilot.app.data.ai.chat.ChatRole
+import com.phonepilot.app.data.ai.chat.ChatSender
 import com.phonepilot.app.privacy.PrivacyFilter
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -15,7 +16,7 @@ import org.junit.Test
 
 class AiSkillExtractorTest {
 
-    private class FakeChatRepository : AiChatRepository() {
+    private class FakeChatRepository : ChatSender {
         var lastOutcome: ChatOutcome? = null
         var shouldFail = false
 
@@ -61,7 +62,7 @@ class AiSkillExtractorTest {
 
         assertNotNull(result)
         assertTrue(result.confidence < 0.5) // ثقة منخفضة للتحليل المحلي
-        assertTrue(result.reasoning.contains("محلي"))
+        assertTrue(result.reasoning!!.contains("محلي"))
     }
 
     @Test
@@ -83,7 +84,7 @@ class AiSkillExtractorTest {
     @Test
     fun `invalid AI JSON output returns null rather than crashing`() = runBlocking {
         val providerRepo = com.phonepilot.app.data.ai.AiProviderRepository
-        val chatRepo = object : FakeChatRepository() {
+        val chatRepo = object : ChatSender {
             override suspend fun send(
                 provider: com.phonepilot.app.data.ai.AiProviderSpec,
                 model: com.phonepilot.app.data.ai.AiModelSpec,

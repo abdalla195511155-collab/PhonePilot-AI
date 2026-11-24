@@ -48,7 +48,7 @@ class ScreenStateDetectorTest {
         )
 
         val errorKeywords = setOf("error", "failed", "فشل", "خطأ", "error", "exception", "crash", "تعذر", "مشكلة")
-        val errors = elements.filter { it.hasTextContent && errorKeywords.any { it.primaryText?.lowercase()?.contains(it) == true } }
+        val errors = elements.filter { el -> el.hasTextContent && errorKeywords.any { kw -> el.primaryText?.lowercase()?.contains(kw) == true } }
 
         assertEquals(2, errors.size)
     }
@@ -63,7 +63,7 @@ class ScreenStateDetectorTest {
         )
 
         val emptyKeywords = setOf("empty", "no data", "لا يوجد", "فارغ", "no results", "لا نتائج", "nothing here")
-        val emptyStates = elements.filter { it.hasTextContent && emptyKeywords.any { it.primaryText?.lowercase()?.contains(it) == true } }
+        val emptyStates = elements.filter { el -> el.hasTextContent && emptyKeywords.any { kw -> el.primaryText?.lowercase()?.contains(kw) == true } }
 
         assertEquals(2, emptyStates.size)
     }
