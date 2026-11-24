@@ -92,10 +92,35 @@ private fun IntakeContent(text: String?) {
         }
         val facts = remember(text) { DocumentIntake.analyze(text) }
         Text("الأسطر: ${facts.lineCount}" + if (facts.truncated) " (اقتُطع المستند)" else "")
+        Text(
+            "المجاميع تشمل فقط سطرًا فيه رقم واحد ملاصق لعملة واحدة. أي سطر فيه أرقام أخرى (كمية، رقم فاتورة) لم يُجمَّع ويظهر للمراجعة. ما زالت النتيجة تحتاج مقارنتها بالمستند.",
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier.testTag("intake_warning"),
+        )
         Text("مجاميع محسوبة بالكود (مبالغ بعملة واضحة فقط):", style = MaterialTheme.typography.titleMedium)
         if (facts.totalsByCurrency.isEmpty()) Text("لا توجد مبالغ بعملة واضحة")
         facts.totalsByCurrency.forEach { (c, v) -> Text("$c: ${v.toPlainString()}", modifier = Modifier.testTag("intake_total_$c")) }
         Text("أرقام بدون عملة واضحة (غير مجمّعة): ${facts.unclassifiedCount}")
+        val summed = facts.amounts.filter { it.currency != null }
+        if (summed.isNotEmpty()) {
+            Text("البنود التي دخلت في المجاميع:", style = MaterialTheme.typography.titleMedium)
+            summed.take(200).forEach {
+                Text("سطر ${it.line}: ${it.raw} ${it.currency} — ${it.lineText}", style = MaterialTheme.typography.bodySmall)
+            }
+            if (summed.size > 200) Text("(عُرض أول 200 بند من ${summed.size})")
+        }
+        if (facts.review.isNotEmpty()) {
+            Text("أسطر بعملة لم تُجمَّع (استخراج غير مؤكد، راجعها يدويًا):", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.error)
+            facts.review.take(100).forEach {
+                Text("سطر ${it.line}: ${it.numbers.joinToString("، ")} — ${it.lineText}", style = MaterialTheme.typography.bodySmall, modifier = Modifier.testTag("intake_review"))
+            }
+        }
+        if (facts.excluded.isNotEmpty()) {
+            Text(
+                "استُبعدت لأنها تبدو تواريخ/معرّفات/نسبًا: " + facts.excluded.take(50).joinToString("، ") { "سطر ${it.line}: ${it.raw}" },
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
         if (facts.ambiguous.isNotEmpty()) {
             Text(
                 "أرقام بتنسيق غير واضح، لم تُحسب: " + facts.ambiguous.joinToString("، ") { "سطر ${it.line}: ${it.raw}" },
