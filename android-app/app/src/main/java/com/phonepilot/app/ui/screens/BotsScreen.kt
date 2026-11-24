@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
@@ -57,6 +59,8 @@ fun BotsScreen(onNavigateTo: (String) -> Unit, storeOverride: BotStore? = null) 
     var bots by remember { mutableStateOf(store.list()) }
     var editing by remember { mutableStateOf<BotDefinition?>(null) }
     var editorText by remember { mutableStateOf("") }
+    var formMode by remember { mutableStateOf(true) }
+    var formDraft by remember { mutableStateOf<BotDefinition?>(null) }
     var approvalChecked by remember { mutableStateOf(false) }
     var approvalTouched by remember { mutableStateOf(false) }
     var editorErrors by remember { mutableStateOf<List<String>>(emptyList()) }
@@ -68,6 +72,8 @@ fun BotsScreen(onNavigateTo: (String) -> Unit, storeOverride: BotStore? = null) 
 
     fun openEditor(def: BotDefinition) {
         editing = def
+        formDraft = def
+        formMode = true
         editorText = BotJson.toPrettyJson(def)
         editorErrors = emptyList()
         approvalChecked = def.unattendedApproved
@@ -205,17 +211,44 @@ fun BotsScreen(onNavigateTo: (String) -> Unit, storeOverride: BotStore? = null) 
     editing?.let {
         AlertDialog(
             onDismissRequest = { editing = null },
-            title = { Text("تعديل البوت (JSON)") },
+            title = { Text(if (formMode) "تعديل البوت" else "تعديل البوت (JSON)") },
             text = {
-                Column(verticalArrangement = Arrangement.spacedBy(Space.xSmall)) {
-                    OutlinedTextField(
-                        value = editorText,
-                        onValueChange = { editorText = it },
-                        modifier = Modifier.fillMaxWidth().testTag("bots_editor"),
-                        minLines = 8,
-                        maxLines = 14,
-                    )
-                    val draft = try { BotJson.parse(editorText) } catch (e: BotJson.ParseException) { null }
+                Column(
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(Space.xSmall),
+                ) {
+                    TextButton(
+                        modifier = Modifier.testTag("bots_mode_toggle"),
+                        onClick = {
+                            if (formMode) {
+                                formDraft?.let { editorText = BotJson.toPrettyJson(it) }
+                                editorErrors = emptyList()
+                                formMode = false
+                            } else {
+                                try {
+                                    formDraft = BotJson.parse(editorText)
+                                    editorErrors = emptyList()
+                                    formMode = true
+                                } catch (e: BotJson.ParseException) {
+                                    editorErrors = listOf(e.message ?: "تعريف غير صالح")
+                                }
+                            }
+                        },
+                    ) { Text(if (formMode) "التبديل إلى وضع JSON" else "التبديل إلى النموذج") }
+                    val draft: BotDefinition? = if (formMode) {
+                        val d = formDraft
+                        if (d != null) BotFormEditor(def = d, onChange = { formDraft = it })
+                        d
+                    } else {
+                        OutlinedTextField(
+                            value = editorText,
+                            onValueChange = { editorText = it },
+                            modifier = Modifier.fillMaxWidth().testTag("bots_editor"),
+                            minLines = 8,
+                            maxLines = 14,
+                        )
+                        try { BotJson.parse(editorText) } catch (e: BotJson.ParseException) { null }
+                    }
                     if (draft != null && BotApproval.needsApproval(draft)) {
                         ApprovalSection(checked = approvalChecked, onChange = { approvalChecked = it; approvalTouched = true })
                     }
@@ -229,7 +262,7 @@ fun BotsScreen(onNavigateTo: (String) -> Unit, storeOverride: BotStore? = null) 
                     modifier = Modifier.testTag("bots_save"),
                     onClick = {
                         try {
-                            val parsed = BotJson.parse(editorText)
+                            val parsed = if (formMode) (formDraft ?: throw BotJson.ParseException("لا يوجد تعريف")) else BotJson.parse(editorText)
                             val def = parsed.copy(
                                 unattendedApproved = BotApproval.resolve(
                                     parsed, store.list().firstOrNull { it.id == parsed.id }, approvalChecked, approvalTouched,
