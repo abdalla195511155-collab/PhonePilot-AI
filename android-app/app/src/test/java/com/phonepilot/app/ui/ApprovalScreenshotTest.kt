@@ -9,13 +9,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.test.captureToImage
+import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertIsOff
 import androidx.compose.ui.test.assertIsOn
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -33,13 +31,19 @@ import java.io.File
 @Config(sdk = [34], qualifiers = "ar-rSA-w411dp-h891dp-xxhdpi")
 class ApprovalScreenshotTest {
     @get:Rule
-    val rule = createComposeRule()
+    val rule = createAndroidComposeRule<ComponentActivity>()
 
     private val outDir = File("build/screenshots").apply { mkdirs() }
 
     private fun save(name: String) {
-        val bmp = rule.onRoot().captureToImage().asAndroidBitmap()
-        File(outDir, "$name.png").outputStream().use { bmp.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, it) }
+        rule.waitForIdle()
+        var bmp: android.graphics.Bitmap? = null
+        rule.runOnUiThread {
+            val v = rule.activity.window.decorView
+            bmp = android.graphics.Bitmap.createBitmap(v.width.coerceAtLeast(1), v.height.coerceAtLeast(1), android.graphics.Bitmap.Config.ARGB_8888)
+            v.draw(android.graphics.Canvas(bmp!!))
+        }
+        File(outDir, "$name.png").outputStream().use { bmp!!.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, it) }
     }
 
     @Test
