@@ -37,9 +37,8 @@ object NvidiaCatalog {
 
     /** Explanatory text shown in the UI next to NVIDIA limits. */
     const val LIMITS_NOTE =
-        "حدود NVIDIA تنطبق على نقطة NVIDIA الرسمية وحدها، ولا تُطبَّق على أي وسيط " +
-            "(Harness أو Kilo أو غيرهم). لا توجد قيمة افتراضية مثل 200 طلب/ساعة: " +
-            "تُعرض القيمة فقط إن أعلنها المصدر."
+        "لا يعرض التطبيق حدودًا أو أسعارًا إلا إن أعلنها المزود نفسه. " +
+            "راجع صفحة المزود لمعرفة الحدود والتكلفة."
 
     private fun textEvidence(sourceUrl: String, note: String? = null): CapabilityEvidence =
         CapabilityEvidence(
@@ -140,7 +139,7 @@ object NvidiaCatalog {
 
     fun seedProvider(hasKey: Boolean = false): AiProviderSpec = AiProviderSpec(
         id = PROVIDER_ID,
-        name = "NVIDIA API Catalog (مجاني)",
+        name = "NVIDIA API Catalog",
         kind = ProviderKind.BUILT_IN_NVIDIA,
         baseUrl = BASE_URL,
         protocol = AiProtocol.OPENAI_COMPATIBLE,

@@ -78,7 +78,7 @@ fun AiModelsApiSettingsScreen(onNavigateTo: (String) -> Unit) {
         item {
             ScreenHeader(
                 title = "مزودو الذكاء الاصطناعي",
-                subtitle = "كتالوج NVIDIA المجاني + مزودون مخصصون",
+                subtitle = "أدخل مفتاح API لتفعيل المساعد والوكيل",
             )
         }
 
@@ -274,7 +274,7 @@ private fun ProviderDetails(
                 color = MaterialTheme.colorScheme.onSurface,
             )
             Text(
-                text = if (provider.isBuiltIn) "كتالوج مدمج • OpenAI-compatible" else "مزود مخصص • ${provider.protocol.label()}",
+                text = if (provider.isBuiltIn) "مزود مدمج" else "مزود مخصص • ${provider.protocol.label()}",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -351,7 +351,7 @@ private fun ProviderDetails(
             )
             Text(
                 text = RateLimitFormatter.describe(provider.accountRateLimit)
-                    ?: "لم يُعلن هذا المزود حدًا صريحًا. لا يُفترض أي رقم (مثل 200/ساعة) من تلقاء نفسه.",
+                    ?: "لا توجد حدود معلنة لهذا المزود.",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
