@@ -5,7 +5,7 @@ object BotSummary {
         BotTrigger.Manual -> "يدوي"
         is BotTrigger.EveryMinutes -> "كل ${t.minutes} دقيقة"
         is BotTrigger.DailyAt -> "يوميًا ${"%02d".format(t.hour)}:${"%02d".format(t.minute)}"
-        is BotTrigger.NotificationFrom -> "عند إشعار من ${t.packageName} (غير مفعّل بعد)"
+        is BotTrigger.NotificationFrom -> "عند إشعار من ${t.packageName} (يحتاج إذن الوصول للإشعارات)"
     }
 
     fun hasExternalEffect(def: BotDefinition) = def.steps.any { it.externalEffect }
@@ -17,5 +17,5 @@ object BotSummary {
     }
 
     /** البوتات ذات المحفّز المبني على إشعار لا تعمل حتى يُبنى مستمع الإشعارات. */
-    fun triggerSupported(t: BotTrigger) = t !is BotTrigger.NotificationFrom
+    fun triggerSupported(@Suppress("UNUSED_PARAMETER") t: BotTrigger) = true
 }
