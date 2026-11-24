@@ -1,7 +1,5 @@
 package com.phonepilot.app.database
 
-import android.content.Context
-import androidx.test.core.app.ApplicationProvider
 import com.phonepilot.app.models.EventEntity
 import com.phonepilot.app.models.SkillEntity
 import com.phonepilot.app.models.SkillLifecycleState
@@ -25,8 +23,7 @@ class TaskDatabaseHelperPhase5Test {
 
     @Before
     fun setUp() {
-        val context: Context = ApplicationProvider.getApplicationContext()
-        dbHelper = TaskDatabaseHelper.getInstance(context)
+        dbHelper = com.phonepilot.app.TestDatabase.fresh()
         dbHelper.markInterruptedRecordings()
     }
 
@@ -41,8 +38,8 @@ class TaskDatabaseHelperPhase5Test {
         assertFalse(skills.isEmpty())
         val skill = skills.firstOrNull { it.id == skillId.toString() }
         assertNotNull(skill)
-        assertEquals("تسجيل دخول", skill.title)
-        assertEquals("أساسي", skill.level)
+        assertEquals("تسجيل دخول", skill!!.title)
+        assertEquals("أساسي", skill!!.level)
     }
 
     @Test
@@ -57,8 +54,8 @@ class TaskDatabaseHelperPhase5Test {
         val skills = dbHelper.getAllSkills()
         val skill = skills.firstOrNull { it.id == skillId.toString() }
         assertNotNull(skill)
-        assertEquals("مهمة متقدمة", skill.title)
-        assertEquals("متقن", skill.level)
+        assertEquals("مهمة متقدمة", skill!!.title)
+        assertEquals("متقن", skill!!.level)
     }
 
     @Test
@@ -78,7 +75,7 @@ class TaskDatabaseHelperPhase5Test {
         val skills = dbHelper.getAllSkills()
         val skill = skills.firstOrNull { it.id == skillId.toString() }
         assertNotNull(skill)
-        assertEquals("قابلة للتحديث", skill.title)
+        assertEquals("قابلة للتحديث", skill!!.title)
     }
 
     @Test
@@ -128,7 +125,7 @@ class TaskDatabaseHelperPhase5Test {
 
         val versionByNumber = dbHelper.getSkillVersionByNumber(skillIdStr, 1)
         assertNotNull(versionByNumber)
-        assertEquals("الإصدار الأول", versionByNumber.title)
+        assertEquals("الإصدار الأول", versionByNumber!!.title)
 
         val missing = dbHelper.getSkillVersionByNumber(skillIdStr, 99)
         assertNull(missing)
@@ -230,10 +227,10 @@ class TaskDatabaseHelperPhase5Test {
         assertFalse(skills.isEmpty())
         val skill = skills.firstOrNull { it.id == skillId.toString() }
         assertNotNull(skill)
-        assertEquals("مهارة قديمة", skill.title)
-        assertEquals("أساسي", skill.level)
+        assertEquals("مهارة قديمة", skill!!.title)
+        assertEquals("أساسي", skill!!.level)
         // حالة الموافقة الافتراضية PENDING
-        assertEquals("PENDING", skill.approvalState)
-        assertFalse(skill.approvedByUser)
+        assertEquals("PENDING", skill!!.approvalState)
+        assertFalse(skill!!.approvedByUser)
     }
 }

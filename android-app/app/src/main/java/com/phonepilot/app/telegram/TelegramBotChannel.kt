@@ -1,7 +1,7 @@
 package com.phonepilot.app.telegram
 
 import com.phonepilot.app.agent.AgentCommandResult
-import com.phonepilot.app.agent.AgentOrchestrator
+import com.phonepilot.app.agent.CommandProcessor
 import com.phonepilot.app.agent.UserCommand
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -49,7 +49,7 @@ interface CommandChannel {
 class TelegramBotChannel(
     private val botToken: String,
     private val authorizedUserIds: Set<String> = emptySet(),
-    private val orchestrator: AgentOrchestrator,
+    private val orchestrator: CommandProcessor,
     private val scope: CoroutineScope,
 ) : CommandChannel {
 

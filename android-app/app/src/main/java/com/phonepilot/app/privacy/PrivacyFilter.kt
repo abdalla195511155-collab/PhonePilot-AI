@@ -25,6 +25,9 @@ object PrivacyFilter {
     /** كلمات أنماط حساسة لا يُسجَّل نصها. */
     val sensitiveKeywords = setOf(
         "كلمة مرور",
+        "كلمة المرور",
+        "كلمة السر",
+        "كلمة سر",
         "password",
         "passcode",
         "رمز",
@@ -74,7 +77,8 @@ object PrivacyFilter {
         val pkgSensitive = isSensitivePackage(pkg)
         val textSensitive = pkgSensitive || isSensitiveText(event.text)
         val descSensitive = pkgSensitive || isSensitiveText(event.contentDescription)
-        val inputSensitive = pkgSensitive || isSensitiveText(event.inputText)
+        // text typed into a field whose label/description is sensitive is itself sensitive
+        val inputSensitive = pkgSensitive || textSensitive || descSensitive || isSensitiveText(event.inputText)
 
         if (textSensitive) {
             maskedText = "[MASKED]"

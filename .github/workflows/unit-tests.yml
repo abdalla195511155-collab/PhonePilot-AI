@@ -1,0 +1,67 @@
+name: Unit Tests
+
+on:
+  push:
+    branches: [ main, 'ci/**' ]
+  pull_request:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platforms;android-34 build-tools;34.0.0'
+      - run: chmod +x ./gradlew
+      - name: Run unit tests
+        run: |
+          ./gradlew :app:testDebugUnitTest --no-daemon --continue --stacktrace 2>&1 | tee "$RUNNER_TEMP/gradle.log"
+          exit "${PIPESTATUS[0]}"
+      - name: Summarize results as annotations
+        if: always()
+        working-directory: .
+        run: |
+          python3 - <<'PY'
+          import glob, os, re
+          import xml.etree.ElementTree as ET
+          def enc(s): return s.replace('%','%25').replace('\r','').replace('\n','%0A')
+          log = open(os.environ['RUNNER_TEMP'] + '/gradle.log', errors='replace').read()
+          errs = [l.split('/src/test/java/com/phonepilot/app/')[-1] for l in log.splitlines() if l.startswith('e: ')]
+          if errs:
+              print('::error title=kotlin compile errors (%d)::%s' % (len(errs), enc('\n'.join(errs[:150]))))
+          total = failed = skipped = 0
+          fails = []
+          for f in glob.glob('android-app/app/build/test-results/testDebugUnitTest/*.xml'):
+              r = ET.parse(f).getroot()
+              for tc in r.iter('testcase'):
+                  total += 1
+                  fl = tc.find('failure')
+                  if fl is None: fl = tc.find('error')
+                  if tc.find('skipped') is not None: skipped += 1
+                  if fl is not None:
+                      failed += 1
+                      fails.append('%s.%s: %s' % (tc.get('classname'), tc.get('name'), (fl.get('message') or '')[:300].replace('\n', ' ')))
+          print('::notice title=test summary::%s' % enc('tests=%d failed=%d skipped=%d' % (total, failed, skipped)))
+          if fails:
+              print('::error title=failing tests (%d)::%s' % (len(fails), enc('\n'.join(fails[:100]))))
+          PY
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-reports
+          path: android-app/app/build/reports/tests

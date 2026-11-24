@@ -30,6 +30,7 @@ class VisionFusionEngineTest {
             clickable = true,
             semanticRole = SemanticRole.BUTTON,
             source = ElementSource.ACCESSIBILITY,
+            confidence = 0.8f, // below 1.0 so the OCR confirmation boost is observable
         )
 
         val ocrBlock = OcrTextBlock(
@@ -96,12 +97,16 @@ class VisionFusionEngineTest {
 
         val ocrResult = OcrResult(textBlocks = listOf(ocrBlock), fullText = "Subtitle", engineName = "Test", success = true)
 
-        val fused = fusionEngine.fuse(listOf(accElement), ocrResult, 200, 200)
+        val fused = fusionEngine.fuse(listOf(accElement), ocrResult, 360, 640)
 
         // Should merge into existing element
         assertEquals(1, fused.size)
         val fusedElement = fused[0]
-        assertTrue(fusedElement.text == "Title" || fusedElement.contentDescription == "Subtitle")
+        // fuseOcrIntoElement prefers the longer text, so the OCR text is kept
+        assertEquals("Subtitle", fusedElement.text)
+        assertEquals(ElementSource.FUSED, fusedElement.source)
+        // the element keeps its own accessibility bounds
+        assertEquals(accElement.bounds, fusedElement.bounds)
     }
 
     @Test
@@ -152,7 +157,7 @@ class VisionFusionEngineTest {
     @Test
     fun `resolve conflicting elements`() = runBlocking {
         val element1 = UiElement("1", text = "A", bounds = Bounds(0, 0, 100, 100), confidence = 0.8f)
-        val element2 = UiElement("2", text = "B", bounds = Bounds(10, 10, 110, 110), confidence = 0.7f) // High IoU
+        val element2 = UiElement("2", text = "B", bounds = Bounds(5, 5, 105, 105), confidence = 0.7f) // IoU ~0.82, above the 0.7 merge threshold
         val element3 = UiElement("3", text = "C", bounds = Bounds(200, 200, 300, 300), confidence = 0.9f) // Far away
 
         val resolved = fusionEngine.resolveConflicts(listOf(element1, element2, element3))

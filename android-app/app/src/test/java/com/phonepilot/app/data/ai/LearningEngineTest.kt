@@ -1,7 +1,6 @@
 package com.phonepilot.app.data.ai
 
-import android.content.Context
-import androidx.test.core.app.ApplicationProvider
+import com.phonepilot.app.TestDatabase
 import com.phonepilot.app.database.TaskDatabaseHelper
 import com.phonepilot.app.models.EventEntity
 import org.junit.Assert.assertEquals
@@ -14,6 +13,11 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
+/**
+ * LearningEngine requires at least 5 completed iterations (MIN_ITERATIONS) and
+ * compares steps by position using a semantic key (event type, element id, class).
+ * These tests record 5 iterations per task through the real database helper.
+ */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
 class LearningEngineTest {
@@ -22,147 +26,154 @@ class LearningEngineTest {
 
     @Before
     fun setUp() {
-        val context: Context = ApplicationProvider.getApplicationContext()
-        dbHelper = TaskDatabaseHelper.getInstance(context)
-        dbHelper.markInterruptedRecordings()
+        dbHelper = TestDatabase.fresh()
+    }
+
+    private fun click(recId: Long, seq: Int, viewId: String, text: String) = EventEntity(
+        recordingId = recId, sequenceNumber = seq, eventType = "click",
+        viewId = viewId, text = text, timestamp = seq * 1000L,
+    )
+
+    private fun input(recId: Long, seq: Int, viewId: String, text: String) = EventEntity(
+        recordingId = recId, sequenceNumber = seq, eventType = "input",
+        viewId = viewId, text = text, timestamp = seq * 1000L,
+    )
+
+    /** Records one completed iteration; [events] builds the events for the new recording id. */
+    private fun recordIteration(taskId: Long, iteration: Int, events: (Long) -> List<EventEntity>) {
+        val rec = dbHelper.startRecording(taskId, iteration)
+        val list = events(rec)
+        list.forEach { dbHelper.insertEvent(rec, it) }
+        dbHelper.stopRecording(rec, list.size)
     }
 
     @Test
-    fun `learnTask returns null when fewer than 2 iterations`() {
+    fun `learnTask returns null when fewer than minimum iterations`() {
         val engine = LearningEngine(dbHelper)
-
         val taskId = dbHelper.insertTask("Single Task", null)
-        dbHelper.startRecording(taskId, 1)
+        recordIteration(taskId, 1) { listOf(click(it, 1, "btn", "B")) }
+        assertNull(engine.learnTask(taskId))
 
-        val result = engine.learnTask(taskId)
-        assertNull(result)
+        // Four iterations with identical events are still below the minimum of five.
+        val taskId4 = dbHelper.insertTask("Four Iterations", null)
+        for (i in 1..4) recordIteration(taskId4, i) { listOf(click(it, 1, "btn", "B")) }
+        assertNull(engine.learnTask(taskId4))
     }
 
     @Test
     fun `learnTask returns null when no events`() {
         val engine = LearningEngine(dbHelper)
-
         val taskId = dbHelper.insertTask("Empty Task", null)
-        dbHelper.startRecording(taskId, 1)
-        dbHelper.startRecording(taskId, 2)
-
-        val result = engine.learnTask(taskId)
-        assertNull(result)
+        for (i in 1..5) recordIteration(taskId, i) { emptyList() }
+        assertNull(engine.learnTask(taskId))
     }
 
     @Test
     fun `learnTask extracts common steps across iterations`() {
         val engine = LearningEngine(dbHelper)
-
         val taskId = dbHelper.insertTask("Common Steps Task", null)
-
-        // تكرار 1
-        val rec1 = dbHelper.startRecording(taskId, 1)
-        dbHelper.insertEvent(rec1, EventEntity(recordingId = rec1, sequenceNumber = 1, eventType = "click", viewId = "email_field", text = "Email", timestamp = 1000))
-        dbHelper.insertEvent(rec1, EventEntity(recordingId = rec1, sequenceNumber = 2, eventType = "input", viewId = "email_field", text = "user@test.com", timestamp = 2000))
-        dbHelper.insertEvent(rec1, EventEntity(recordingId = rec1, sequenceNumber = 3, eventType = "click", viewId = "login_btn", text = "Login", timestamp = 3000))
-        dbHelper.stopRecording(rec1, 3)
-
-        // تكرار 2
-        val rec2 = dbHelper.startRecording(taskId, 2)
-        dbHelper.insertEvent(rec2, EventEntity(recordingId = rec2, sequenceNumber = 1, eventType = "click", viewId = "email_field", text = "Email", timestamp = 1000))
-        dbHelper.insertEvent(rec2, EventEntity(recordingId = rec2, sequenceNumber = 2, eventType = "input", viewId = "email_field", text = "other@test.com", timestamp = 2000))
-        dbHelper.insertEvent(rec2, EventEntity(recordingId = rec2, sequenceNumber = 3, eventType = "click", viewId = "login_btn", text = "Login", timestamp = 3000))
-        dbHelper.stopRecording(rec2, 3)
+        for (i in 1..5) {
+            recordIteration(taskId, i) { rec ->
+                listOf(
+                    click(rec, 1, "email_field", "Email"),
+                    input(rec, 2, "email_field", "user$i@test.com"),
+                    click(rec, 3, "login_btn", "Login"),
+                )
+            }
+        }
 
         val result = engine.learnTask(taskId)
 
         assertNotNull(result)
-        assertTrue(result.description.contains("الخطوات المشتركة"))
+        assertTrue(result!!.description.contains("الخطوات المشتركة (3)"))
         assertTrue(result.description.contains("click → email_field"))
+        assertTrue(result.description.contains("input → email_field"))
         assertTrue(result.description.contains("click → login_btn"))
+        // typed text differs per iteration and must not leak into the step description
+        assertTrue(!result.description.contains("@test.com"))
     }
 
     @Test
-    fun `coordinate differences do not affect semantic matching`() {
+    fun `different text with same element id still matches semantically`() {
         val engine = LearningEngine(dbHelper)
-
-        val taskId = dbHelper.insertTask("Coord Task", null)
-
-        // نفس العنصر الدلالي، حتى لو كانت الإحداثيات مختلفة (غير مخزنة في EventEntity)
-        val rec1 = dbHelper.startRecording(taskId, 1)
-        dbHelper.insertEvent(rec1, EventEntity(recordingId = rec1, sequenceNumber = 1, eventType = "click", viewId = "submit_btn", text = "Submit", timestamp = 1000))
-        dbHelper.stopRecording(rec1, 1)
-
-        val rec2 = dbHelper.startRecording(taskId, 2)
-        dbHelper.insertEvent(rec2, EventEntity(recordingId = rec2, sequenceNumber = 1, eventType = "click", viewId = "submit_btn", text = "Submit", timestamp = 2000))
-        dbHelper.stopRecording(rec2, 1)
+        val taskId = dbHelper.insertTask("Semantic Task", null)
+        for (i in 1..5) {
+            // same element id, label text and timestamps differ per iteration
+            recordIteration(taskId, i) { listOf(click(it, 1, "submit_btn", "Submit $i")) }
+        }
 
         val result = engine.learnTask(taskId)
         assertNotNull(result)
-        assertTrue(result.description.contains("submit_btn"))
+        assertTrue(result!!.description.contains("submit_btn"))
+        assertTrue(result.description.contains("الخطوات المشتركة (1)"))
     }
 
     @Test
-    fun `optional steps detected when present in some iterations`() {
+    fun `optional and ambiguous steps detected when iterations diverge at a position`() {
         val engine = LearningEngine(dbHelper)
-
         val taskId = dbHelper.insertTask("Optional Task", null)
-
-        // تكرار 1 يحتوي على btn_a و btn_b
-        val rec1 = dbHelper.startRecording(taskId, 1)
-        dbHelper.insertEvent(rec1, EventEntity(recordingId = rec1, sequenceNumber = 1, eventType = "click", viewId = "btn_a", text = "A", timestamp = 1000))
-        dbHelper.insertEvent(rec1, EventEntity(recordingId = rec1, sequenceNumber = 2, eventType = "click", viewId = "btn_b", text = "B", timestamp = 2000))
-        dbHelper.stopRecording(rec1, 2)
-
-        // تكرار 2 يحتوي على btn_a فقط
-        val rec2 = dbHelper.startRecording(taskId, 2)
-        dbHelper.insertEvent(rec2, EventEntity(recordingId = rec2, sequenceNumber = 1, eventType = "click", viewId = "btn_a", text = "A", timestamp = 1000))
-        dbHelper.stopRecording(rec2, 1)
+        // position 1: btn_a in all iterations (common).
+        // position 2: btn_b in 2 of 5, three different others -> match ratio 0.4 (optional + ambiguous).
+        val second = listOf("btn_b", "btn_b", "btn_c", "btn_d", "btn_e")
+        for (i in 1..5) {
+            recordIteration(taskId, i) {
+                listOf(click(it, 1, "btn_a", "A"), click(it, 2, second[i - 1], "X"))
+            }
+        }
 
         val result = engine.learnTask(taskId)
         assertNotNull(result)
-        assertTrue(result.description.contains("btn_a"))
+        assertTrue(result!!.description.contains("btn_a"))
+        assertTrue(result.description.contains("الخطوات الاختيارية"))
+        assertTrue(result.description.contains("click → btn_b"))
+        assertTrue(result.description.contains("الخطوات الغامضة"))
     }
 
     @Test
-    fun `ambiguous elements detected when multiple patterns at same position`() {
+    fun `fully ambiguous task yields no skill`() {
         val engine = LearningEngine(dbHelper)
-
         val taskId = dbHelper.insertTask("Ambiguous Task", null)
-
-        // نفس الموقع ولكن أهداف مختلفة
-        val rec1 = dbHelper.startRecording(taskId, 1)
-        dbHelper.insertEvent(rec1, EventEntity(recordingId = rec1, sequenceNumber = 1, eventType = "click", viewId = "btn_save", text = "Save", timestamp = 1000))
-        dbHelper.stopRecording(rec1, 1)
-
-        val rec2 = dbHelper.startRecording(taskId, 2)
-        dbHelper.insertEvent(rec2, EventEntity(recordingId = rec2, sequenceNumber = 1, eventType = "click", viewId = "btn_cancel", text = "Cancel", timestamp = 1000))
-        dbHelper.stopRecording(rec2, 1)
-
-        val result = engine.learnTask(taskId)
-        assertNotNull(result)
-        // لا يوجد خطوة مشتركة في نفس الموقع
+        val targets = listOf("btn_save", "btn_cancel", "btn_x", "btn_y", "btn_z")
+        for (i in 1..5) {
+            recordIteration(taskId, i) { listOf(click(it, 1, targets[i - 1], "T")) }
+        }
+        // No common step at the only position and confidence is below the review threshold.
+        assertNull(engine.learnTask(taskId))
     }
 
     @Test
     fun `different step ordering produces position-aware analysis`() {
         val engine = LearningEngine(dbHelper)
-
         val taskId = dbHelper.insertTask("Order Task", null)
-
-        // تكرار 1: A → B → C
-        val rec1 = dbHelper.startRecording(taskId, 1)
-        dbHelper.insertEvent(rec1, EventEntity(recordingId = rec1, sequenceNumber = 1, eventType = "click", viewId = "a", text = "A", timestamp = 1000))
-        dbHelper.insertEvent(rec1, EventEntity(recordingId = rec1, sequenceNumber = 2, eventType = "click", viewId = "b", text = "B", timestamp = 2000))
-        dbHelper.insertEvent(rec1, EventEntity(recordingId = rec1, sequenceNumber = 3, eventType = "click", viewId = "c", text = "C", timestamp = 3000))
-        dbHelper.stopRecording(rec1, 3)
-
-        // تكرار 2: A → C → B (ترتيب مختلف)
-        val rec2 = dbHelper.startRecording(taskId, 2)
-        dbHelper.insertEvent(rec2, EventEntity(recordingId = rec2, sequenceNumber = 1, eventType = "click", viewId = "a", text = "A", timestamp = 1000))
-        dbHelper.insertEvent(rec2, EventEntity(recordingId = rec2, sequenceNumber = 2, eventType = "click", viewId = "c", text = "C", timestamp = 2000))
-        dbHelper.insertEvent(rec2, EventEntity(recordingId = rec2, sequenceNumber = 3, eventType = "click", viewId = "b", text = "B", timestamp = 3000))
-        dbHelper.stopRecording(rec2, 3)
+        // iteration 1: a, b, c ; iterations 2-5: a, c, b
+        recordIteration(taskId, 1) {
+            listOf(click(it, 1, "a", "A"), click(it, 2, "b", "B"), click(it, 3, "c", "C"))
+        }
+        for (i in 2..5) {
+            recordIteration(taskId, i) {
+                listOf(click(it, 1, "a", "A"), click(it, 2, "c", "C"), click(it, 3, "b", "B"))
+            }
+        }
 
         val result = engine.learnTask(taskId)
         assertNotNull(result)
-        //只有 "click → a" مشترك في نفس الموقع (position 1)
-        assertTrue(result.description.contains("click → a"))
+        // dominant order wins at each position
+        val d = result!!.description
+        assertTrue(d.contains("1. click → a"))
+        assertTrue(d.contains("2. click → c"))
+        assertTrue(d.contains("3. click → b"))
+    }
+
+    @Test
+    fun `learned skill is stored with the task`() {
+        val engine = LearningEngine(dbHelper)
+        val taskId = dbHelper.insertTask("Stored Task", null)
+        for (i in 1..5) recordIteration(taskId, i) { listOf(click(it, 1, "ok_btn", "OK")) }
+
+        val result = engine.learnTask(taskId)
+        assertNotNull(result)
+        val stored = dbHelper.getSkillsForTask(taskId)
+        assertEquals(1, stored.size)
+        assertEquals(result!!.id, stored[0].id)
     }
 }

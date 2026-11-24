@@ -44,6 +44,8 @@ android {
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
+            // android.util.Log etc. return defaults instead of throwing in plain JVM unit tests
+            isReturnDefaultValues = true
         }
     }
 }
@@ -74,6 +76,7 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.core)
     testImplementation(libs.lifecycle.runtime.testing)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)

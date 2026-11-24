@@ -1,9 +1,17 @@
 package com.phonepilot.app.telegram
 
+import com.phonepilot.app.agent.AgentCommandResult
+import com.phonepilot.app.agent.CommandProcessor
+import com.phonepilot.app.agent.UserCommand
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+
+private object FakeProcessor : CommandProcessor {
+    override suspend fun processCommand(command: UserCommand) =
+        AgentCommandResult(commandId = command.commandId, success = true, message = "ok")
+}
 
 class TelegramBotChannelTest {
 
@@ -12,7 +20,7 @@ class TelegramBotChannelTest {
         val channel = TelegramBotChannel(
             botToken = "test",
             authorizedUserIds = setOf("user1"),
-            orchestrator = null!!,
+            orchestrator = FakeProcessor,
             scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Unconfined),
         )
         assertFalse(channel.isAuthorizedUser(null))
@@ -23,7 +31,7 @@ class TelegramBotChannelTest {
         val channel = TelegramBotChannel(
             botToken = "test",
             authorizedUserIds = setOf("user1"),
-            orchestrator = null!!,
+            orchestrator = FakeProcessor,
             scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Unconfined),
         )
         assertFalse(channel.isAuthorizedUser("user2"))
@@ -34,22 +42,22 @@ class TelegramBotChannelTest {
         val channel = TelegramBotChannel(
             botToken = "test",
             authorizedUserIds = setOf("user1"),
-            orchestrator = null!!,
+            orchestrator = FakeProcessor,
             scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Unconfined),
         )
         assertTrue(channel.isAuthorizedUser("user1"))
     }
 
     @Test
-    fun `isAuthorizedUserReturnsTrueWhenNoAuthorizedList`() {
+    fun `isAuthorizedUserReturnsFalseWhenNoAuthorizedList`() {
         val channel = TelegramBotChannel(
             botToken = "test",
             authorizedUserIds = emptySet(),
-            orchestrator = null!!,
+            orchestrator = FakeProcessor,
             scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Unconfined),
         )
-        // When no authorized users are specified, all users are allowed (for development)
-        assertTrue(channel.isAuthorizedUser("any-user"))
+        // Secure default: with no authorized users configured nobody is allowed
+        assertFalse(channel.isAuthorizedUser("any-user"))
     }
 
     @Test

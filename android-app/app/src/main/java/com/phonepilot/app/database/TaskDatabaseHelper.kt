@@ -15,6 +15,12 @@ import com.phonepilot.app.models.TaskRecordingEntity
 class TaskDatabaseHelper private constructor(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
+    init {
+        // WAL must be requested through the helper: calling db.enableWriteAheadLogging()
+        // inside onCreate/onUpgrade throws because those run inside a transaction.
+        setWriteAheadLoggingEnabled(true)
+    }
+
     companion object {
         private const val DATABASE_NAME = "phonepilot.db"
         private const val DATABASE_VERSION = 9
@@ -196,7 +202,6 @@ class TaskDatabaseHelper private constructor(context: Context) :
         db.execSQL(CREATE_EXECUTIONS)
         db.execSQL(CREATE_STEP_RESULTS)
         db.execSQL(CREATE_AGENT_MEMORY)
-        db.enableWriteAheadLogging()
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -252,7 +257,6 @@ class TaskDatabaseHelper private constructor(context: Context) :
             // Migration v8 → v9: add agent_memory table (Phase 7 Agent Orchestration)
             db.execSQL(CREATE_AGENT_MEMORY)
         }
-        db.enableWriteAheadLogging()
     }
 
     /** تحديث حالة التسجيلات العالقة إلى INTERRUPTED_FAILED عند بدء التطبيق.
@@ -627,8 +631,8 @@ class TaskDatabaseHelper private constructor(context: Context) :
         val db = writableDatabase
         val values = ContentValues().apply {
             put("approval_state", approvalState)
-            approvedAt?.let { values.put("approved_at", it) }
-            values.put("approved_by_user", if (approvedByUser) 1 else 0)
+            approvedAt?.let { put("approved_at", it) }
+            put("approved_by_user", if (approvedByUser) 1 else 0)
         }
         return db.update("skills", values, "id = ?", arrayOf(id.toString()))
     }
@@ -792,7 +796,8 @@ class TaskDatabaseHelper private constructor(context: Context) :
         return SkillEntity(
             id = cursor.getLong(cursor.getColumnIndexOrThrow("id")).toString(),
             title = cursor.getString(cursor.getColumnIndexOrThrow("title")),
-            description = cursor.getString(cursor.getColumnIndexOrThrow("description")),
+            // description is nullable in the table (insertSkill accepts null) but non-null in SkillEntity
+            description = cursor.getString(cursor.getColumnIndexOrThrow("description")) ?: "",
             level = cursor.getString(cursor.getColumnIndexOrThrow("level")),
             sourceRecordingId = if (cursor.isNull(cursor.getColumnIndexOrThrow("source_recording_id"))) null else cursor.getLong(cursor.getColumnIndexOrThrow("source_recording_id")),
             lifecycleState = SkillLifecycleState.entries.firstOrNull { it.name == cursor.getString(cursor.getColumnIndexOrThrow("lifecycle_state")) } ?: SkillLifecycleState.DRAFT,

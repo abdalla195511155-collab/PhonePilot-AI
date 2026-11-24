@@ -1,7 +1,5 @@
 package com.phonepilot.app.database
 
-import android.content.Context
-import androidx.test.core.app.ApplicationProvider
 import com.phonepilot.app.models.EventEntity
 import com.phonepilot.app.models.TaskEntity
 import com.phonepilot.app.models.TaskRecordingEntity
@@ -23,8 +21,7 @@ class TaskDatabaseHelperTest {
 
     @Before
     fun setUp() {
-        val context: Context = ApplicationProvider.getApplicationContext()
-        dbHelper = TaskDatabaseHelper.getInstance(context)
+        dbHelper = com.phonepilot.app.TestDatabase.fresh()
         dbHelper.markInterruptedRecordings()
     }
 
@@ -154,8 +151,32 @@ class TaskDatabaseHelperTest {
 
         val events = dbHelper.getEventsForRecording(recordingId)
         assertEquals(1, events.size)
+        // insertEvent persists exactly what it is given (including the flag); masking is
+        // done by PrivacyFilter before insertion (see RecordingRepository).
         assertTrue(events[0].isPrivacyMasked)
-        assertEquals("[MASKED]", events[0].text)
+        assertEquals("secret", events[0].text)
+    }
+
+    @Test
+    fun `sensitive package event is masked by PrivacyFilter before insert`() {
+        val taskId = dbHelper.insertTask("Privacy Pipeline Task", null)
+        val recordingId = dbHelper.startRecording(taskId, 1)
+        val raw = EventEntity(
+            recordingId = recordingId,
+            sequenceNumber = 1,
+            eventType = "input",
+            packageName = "com.whatsapp",
+            text = "secret",
+            inputText = "hidden",
+            timestamp = 1000,
+        )
+
+        dbHelper.insertEvent(recordingId, com.phonepilot.app.privacy.PrivacyFilter.maskEventIfNeeded(raw))
+
+        val stored = dbHelper.getEventsForRecording(recordingId).single()
+        assertTrue(stored.isPrivacyMasked)
+        assertEquals("[MASKED]", stored.text)
+        assertEquals("[MASKED]", stored.inputText)
     }
 
     @Test

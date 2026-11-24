@@ -51,7 +51,7 @@ class AgentOrchestrator(
     ),
     private val aiSkillExtractor: AiSkillExtractor = AiSkillExtractor(),
     private val learningEngine: LearningEngine = LearningEngine(taskDatabaseHelper),
-) {
+) : CommandProcessor {
 
     /**
      * يعالج أمر مستخدم من أي قناة.
@@ -67,7 +67,7 @@ class AgentOrchestrator(
      *
      * يعيد AgentCommandResult يحتوي على نتيجة المعالجة.
      */
-    suspend fun processCommand(command: UserCommand): AgentCommandResult {
+    override suspend fun processCommand(command: UserCommand): AgentCommandResult {
         // 1. التحقق من التكرار
         if (!commandRouter.registerCommand(command)) {
             return AgentCommandResult(

@@ -3,6 +3,7 @@ package com.phonepilot.app.data.ai
 import com.phonepilot.app.data.ai.chat.AiChatRepository
 import com.phonepilot.app.data.ai.chat.ChatMessage
 import com.phonepilot.app.data.ai.chat.ChatOutcome
+import com.phonepilot.app.data.ai.chat.ChatSender
 import com.phonepilot.app.data.ai.chat.ChatRole
 import com.phonepilot.app.models.AiSkillExtractionResult
 import com.phonepilot.app.models.AiExtractedStep
@@ -22,7 +23,7 @@ import com.phonepilot.app.privacy.PrivacyFilter
  */
 class AiSkillExtractor(
     private val providerRepository: AiProviderRepository = AiProviderRepository,
-    private val chatRepository: AiChatRepository = AiChatRepository,
+    private val chatRepository: ChatSender = AiChatRepository,
 ) {
 
     /**
