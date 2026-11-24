@@ -36,7 +36,7 @@ import java.io.File
 /** Drives the form editor with real clicks and typing, then saves a full-height PNG. */
 @RunWith(AndroidJUnit4::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
-@Config(sdk = [34], qualifiers = "ar-rSA-w411dp-h3000dp-xxhdpi")
+@Config(sdk = [34], qualifiers = "ar-rSA-w411dp-h4200dp-xxhdpi")
 class BotFormEditorTest {
     @get:Rule
     val rule = createAndroidComposeRule<ComponentActivity>()
@@ -90,12 +90,13 @@ class BotFormEditorTest {
         assertTrue(current.steps.last().externalEffect)
         rule.onNodeWithTag("form_step_${before}_external").assertIsOn()
 
+        rule.onNodeWithTag("form_step_${before}_delete").performClick()
+        assertEquals(before, current.steps.size)
+
         rule.onNodeWithTag("form_add_cond_text").performClick()
         rule.onNodeWithTag("form_cond_0_value").performTextInput("مرحبا")
         assertEquals(1, current.conditions.size)
 
-        rule.onNodeWithTag("form_step_${before}_delete").performClick()
-        assertEquals(before, current.steps.size)
         assertTrue(BotValidator.validate(current.copy(unattendedApproved = true)).isEmpty())
         save("21_form_editor_edited")
     }
