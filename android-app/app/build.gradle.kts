@@ -75,6 +75,8 @@ dependencies {
     implementation(libs.mlkit.text.recognition.korean)
 
     testImplementation(libs.junit)
+    testImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.lifecycle.runtime.testing)
