@@ -1,11 +1,9 @@
 package com.phonepilot.app.ui
 
 import android.graphics.Bitmap
-import androidx.compose.ui.test.captureToImage
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.performClick
-import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.phonepilot.app.ui.navigation.AppRoutes
 import org.junit.Assert.assertTrue
@@ -31,15 +29,27 @@ class ScreenshotTest {
     private fun shot(name: String) {
         try {
             rule.mainClock.advanceTimeBy(1000)
-            val bmp = rule.onNodeWithTag("root").captureToImage().asAndroidBitmap()
-            File(outDir, "$name.png").outputStream().use { bmp.compress(Bitmap.CompressFormat.PNG, 100, it) }
+            var bmp: Bitmap? = null
+            rule.runOnUiThread {
+                val v = rule.activity.window.decorView
+                bmp = Bitmap.createBitmap(v.width.coerceAtLeast(1), v.height.coerceAtLeast(1), Bitmap.Config.ARGB_8888)
+                v.draw(android.graphics.Canvas(bmp!!))
+            }
+            File(outDir, "$name.png").outputStream().use { bmp!!.compress(Bitmap.CompressFormat.PNG, 100, it) }
         } catch (e: Throwable) {
             failures += "shot $name: ${e::class.simpleName} ${e.message?.take(200)}"
         }
     }
 
+    private fun click(tag: String) {
+        val node = rule.onNodeWithTag(tag).fetchSemanticsNode("no node $tag")
+        val action = node.config[SemanticsActions.OnClick].action
+        rule.runOnUiThread { action?.invoke() }
+        rule.mainClock.advanceTimeBy(800)
+    }
+
     private fun step(name: String, block: () -> Unit) {
-        try { block(); rule.mainClock.advanceTimeBy(500) } catch (e: Throwable) {
+        try { block() } catch (e: Throwable) {
             failures += "step $name: ${e::class.simpleName} ${e.message?.take(300)}"
         }
     }
@@ -49,11 +59,11 @@ class ScreenshotTest {
         rule.mainClock.autoAdvance = false
         rule.mainClock.advanceTimeBy(1000)
         shot("01_dashboard")
-        step("skills") { rule.onNodeWithTag("nav_${AppRoutes.SkillLibrary}").performClick() }
+        step("skills") { click("nav_${AppRoutes.SkillLibrary}") }
         shot("02_skills")
-        step("agent") { rule.onNodeWithTag("nav_${AppRoutes.AgentControl}").performClick() }
+        step("agent") { click("nav_${AppRoutes.AgentControl}") }
         shot("03_agent")
-        step("settings") { rule.onNodeWithTag("nav_${AppRoutes.Settings}").performClick() }
+        step("settings") { click("nav_${AppRoutes.Settings}") }
         shot("04_settings")
         val sub = listOf(
             AppRoutes.AiModelsApiSettings to "05_api_keys",
@@ -64,9 +74,9 @@ class ScreenshotTest {
             AppRoutes.LogsHistory to "10_logs",
         )
         for ((route, name) in sub) {
-            step("open $name") { rule.onNodeWithTag("settings_$route").performClick() }
+            step("open $name") { click("settings_$route") }
             shot(name)
-            step("back $name") { rule.onNodeWithTag("back").performClick() }
+            step("back $name") { click("back") }
         }
         File(outDir, "failures.txt").writeText(failures.joinToString("\n"))
         assertTrue("UI walk failures:\n" + failures.joinToString("\n"), failures.isEmpty())
