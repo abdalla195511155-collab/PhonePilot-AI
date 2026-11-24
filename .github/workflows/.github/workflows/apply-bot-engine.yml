@@ -1,0 +1,25 @@
+name: Apply bot engine patch
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [ 'feat/bot-engine' ]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply files from pending.b64
+        run: |
+          test -f pending.b64 || { echo "nothing to apply"; exit 0; }
+          base64 -d pending.b64 | tar xz
+          git rm -q pending.b64
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A android-app
+          git commit -m "Add bot engine: trigger/condition/steps runner, real typing, live accessibility wiring"
+          git push
