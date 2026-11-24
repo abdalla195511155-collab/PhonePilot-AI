@@ -27,6 +27,11 @@ private data class SettingsEntry(val route: String, val title: String, val descr
 
 private val entries = listOf(
     SettingsEntry(
+        AppRoutes.Bots,
+        "البوتات",
+        "محفّز وشروط وخطوات ثابتة: رسائل مجدولة وغيرها",
+    ),
+    SettingsEntry(
         AppRoutes.AiModelsApiSettings,
         "مزودو الذكاء الاصطناعي ومفاتيح API",
         "أضف مفتاح API واختر النموذج واختبر الاتصال",

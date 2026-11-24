@@ -72,6 +72,7 @@ class ScreenshotTest {
             AppRoutes.AiAssistant to "08_assistant",
             AppRoutes.ExecutionMonitor to "09_monitor",
             AppRoutes.LogsHistory to "10_logs",
+            AppRoutes.Bots to "11_bots",
         )
         for ((route, name) in sub) {
             step("open $name") { click("settings_$route") }

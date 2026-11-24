@@ -29,6 +29,7 @@ import androidx.navigation.navArgument
 import androidx.compose.ui.platform.LocalContext
 import com.phonepilot.app.database.TaskDatabaseHelper
 import com.phonepilot.app.ui.screens.AiAssistantScreen
+import com.phonepilot.app.ui.screens.BotsScreen
 import com.phonepilot.app.ui.screens.AiModelsApiSettingsScreen
 import com.phonepilot.app.ui.screens.AgentApprovalScreen
 import com.phonepilot.app.ui.screens.AgentControlScreen
@@ -168,6 +169,9 @@ fun AppNavigation(
                 },
                 onNavigateTo = go,
             )
+        }
+        composable(route = AppRoutes.Bots) {
+            BotsScreen(onNavigateTo = go)
         }
         composable(route = AppRoutes.Settings) {
             SettingsHubScreen(onNavigateTo = go)
