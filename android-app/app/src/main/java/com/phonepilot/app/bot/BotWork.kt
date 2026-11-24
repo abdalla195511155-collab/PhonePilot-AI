@@ -52,8 +52,11 @@ class BotWorker(context: Context, params: WorkerParameters) : CoroutineWorker(co
         val runner = BotRunner(AccessibilityScreenActions { PhonePilotAccessibilityService.instance })
         BotExecution.runOnce(def, store, runner, approvedForThisRun = false)
 
-        // ضبط الموعد التالي بعد التشغيل (حتى لو فشل: السبب في الحالة، ولا نكرر الخطوات تلقائيًا الآن)
-        BotScheduling.reschedule(applicationContext, def, store.state(id))
+        // ضبط الموعد التالي بعد التشغيل (حتى لو فشل: السبب في الحالة، ولا نكرر الخطوات تلقائيًا الآن).
+        // بوتات الإشعارات لا موعد لها: يشغّلها وصول إشعار فقط.
+        if (def.trigger !is BotTrigger.NotificationFrom) {
+            BotScheduling.reschedule(applicationContext, def, store.state(id))
+        }
         return Result.success()
     }
 

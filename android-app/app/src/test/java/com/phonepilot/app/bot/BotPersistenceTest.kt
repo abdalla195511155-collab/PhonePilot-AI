@@ -129,7 +129,7 @@ class BotPersistenceTest {
 
     @Test fun `summary text`() {
         assertEquals("يوميًا 09:05", BotSummary.trigger(BotTrigger.DailyAt(9, 5)))
-        assertFalse(BotSummary.triggerSupported(BotTrigger.NotificationFrom("com.whatsapp")))
+        assertTrue(BotSummary.triggerSupported(BotTrigger.NotificationFrom("com.whatsapp")))
         assertTrue(BotSummary.triggerSupported(BotTrigger.Manual))
         assertEquals("غير مفعّل", BotSummary.status(BotState()))
     }

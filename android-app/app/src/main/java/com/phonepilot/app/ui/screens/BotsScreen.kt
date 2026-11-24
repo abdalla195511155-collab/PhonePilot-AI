@@ -1,5 +1,7 @@
 package com.phonepilot.app.ui.screens
 
+import android.content.Intent
+import android.provider.Settings
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,6 +38,7 @@ import com.phonepilot.app.bot.BotJson
 import com.phonepilot.app.bot.BotRunner
 import com.phonepilot.app.bot.BotScheduling
 import com.phonepilot.app.bot.BotStore
+import com.phonepilot.app.bot.BotTrigger
 import com.phonepilot.app.bot.BotSummary
 import com.phonepilot.app.bot.BotTemplates
 import com.phonepilot.app.bot.BotValidator
@@ -98,6 +101,21 @@ fun BotsScreen(onNavigateTo: (String) -> Unit, storeOverride: BotStore? = null) 
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.testTag("bots_a11y_warning"),
             )
+        }
+        val listenerOn = androidx.core.app.NotificationManagerCompat.getEnabledListenerPackages(context).contains(context.packageName)
+        if (bots.any { it.trigger is BotTrigger.NotificationFrom } && !listenerOn) {
+            Text(
+                text = "بوتات الإشعارات لن تعمل قبل منح PhonePilot إذن الوصول للإشعارات من إعدادات النظام. التطبيق يقرأ اسم التطبيق وعنوان الإشعار فقط للمطابقة، ولا يخزّنهما.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.testTag("bots_listener_warning"),
+            )
+            TextButton(
+                modifier = Modifier.testTag("bots_listener_settings"),
+                onClick = {
+                    context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                },
+            ) { Text("فتح إعدادات الوصول للإشعارات") }
         }
         message?.let { Text(it, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("bots_message")) }
         Row(horizontalArrangement = Arrangement.spacedBy(Space.small)) {
