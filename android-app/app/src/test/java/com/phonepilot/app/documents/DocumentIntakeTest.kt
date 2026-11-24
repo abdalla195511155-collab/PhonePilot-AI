@@ -79,4 +79,63 @@ class DocumentIntakeTest {
         assertTrue(p.endsWith(text))
         assertFalse(p.contains("http"))
     }
+
+    @Test fun `iso dates on a currency line are excluded not summed`() {
+        val f = DocumentIntake.analyze("بتاريخ 2026-11-24 خدمة 100 SAR")
+        assertEquals(BigDecimal("100"), f.totalsByCurrency["SAR"])
+        assertTrue(f.excluded.any { it.reason.contains("تاريخ") })
+    }
+
+    @Test fun `slash dates percentages and long ids are excluded`() {
+        val f = DocumentIntake.analyze("فاتورة 123456789 في 24/11/2026 ضريبة 15% مبلغ 200 SAR")
+        assertEquals(BigDecimal("200"), f.totalsByCurrency["SAR"])
+        assertEquals(5, f.excluded.size)
+    }
+
+    @Test fun `line with two numbers is withheld and reviewed`() {
+        val f = DocumentIntake.analyze("15% ثم 40 SAR و 60 SAR")
+        assertTrue(f.totalsByCurrency.isEmpty())
+        assertEquals(1, f.review.size)
+    }
+
+    @Test fun `small invoice id on a currency line withholds the line`() {
+        val f = DocumentIntake.analyze("فاتورة 12 خدمات 500 SAR\nشحن 30 SAR")
+        assertEquals(BigDecimal("30"), f.totalsByCurrency["SAR"])
+        assertEquals(1, f.review.size)
+        assertEquals(1, f.review[0].line)
+    }
+
+    @Test fun `quantity times price line is withheld`() {
+        val f = DocumentIntake.analyze("3 x 50 SAR")
+        assertTrue(f.totalsByCurrency.isEmpty())
+        assertEquals(1, f.review.size)
+    }
+
+    @Test fun `hyphenated reference is not an amount and not negative`() {
+        val f = DocumentIntake.analyze("INV-12 مبلغ 100 SAR")
+        assertEquals(BigDecimal("100"), f.totalsByCurrency["SAR"])
+        assertTrue(f.excluded.any { it.raw == "12" })
+        val g = DocumentIntake.analyze("A-100 SAR")
+        assertTrue(g.totalsByCurrency.isEmpty())
+    }
+
+    @Test fun `number before and after the currency word is ambiguous`() {
+        val f = DocumentIntake.analyze("بند 7 SAR 100")
+        assertTrue(f.totalsByCurrency.isEmpty())
+        assertEquals(1, f.review.size)
+    }
+
+    @Test fun `number far from currency word is not summed`() {
+        val f = DocumentIntake.analyze("المبلغ 250 المستحق بالريال السعودي SAR")
+        assertTrue(f.totalsByCurrency.isEmpty())
+        assertEquals(1, f.review.size)
+    }
+
+    @Test fun `prompt lists summed line items and the not-an-amount warning`() {
+        val text = "خدمة 100 SAR"
+        val p = DocumentIntake.buildAnalysisPrompt(text, DocumentIntake.analyze(text))
+        assertTrue(p.contains("البنود التي دخلت في المجاميع"))
+        assertTrue(p.contains("سطر 1: 100 SAR"))
+        assertTrue(p.contains("ليس مبلغًا"))
+    }
 }
