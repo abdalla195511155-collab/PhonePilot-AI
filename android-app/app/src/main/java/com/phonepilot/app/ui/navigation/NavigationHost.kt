@@ -156,11 +156,13 @@ fun AppNavigation(
         }
         composable(route = AppRoutes.AgentState) {
             AgentStateScreen(
-                orchestrator = androidx.compose.runtime.remember {
+                orchestrator = androidx.compose.runtime.remember(
+                    com.phonepilot.app.recording.PhonePilotAccessibilityService.instance,
+                ) {
                     AgentOrchestrator(
                         context = context,
                         taskDatabaseHelper = TaskDatabaseHelper.getInstance(context.applicationContext),
-                        accessibilityService = null,
+                        accessibilityService = com.phonepilot.app.recording.PhonePilotAccessibilityService.instance,
                         scope = scope,
                     )
                 },
