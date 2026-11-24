@@ -84,7 +84,7 @@ fun AppNavigation(
         topBar = {
             if (currentRoute !in bottomRoutes) {
                 TopAppBar(
-                    title = { Text(text = AppRoutes.label(currentRoute)) },
+                    title = { },
                     navigationIcon = {
                         IconButton(
                             onClick = { navController.popBackStack() },
