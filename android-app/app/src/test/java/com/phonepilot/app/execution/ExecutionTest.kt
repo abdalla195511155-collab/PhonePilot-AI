@@ -191,7 +191,10 @@ class SkillExecutionEngineTest {
 
     @Test
     fun `executionStateEnumHasExpectedValues`() {
-        assertEquals(7, ExecutionState.values().size)
+        assertEquals(10, ExecutionState.values().size)
+        assertTrue(ExecutionState.PENDING.name == "PENDING")
+        assertTrue(ExecutionState.VERIFYING.name == "VERIFYING")
+        assertTrue(ExecutionState.NEEDS_USER_ACTION.name == "NEEDS_USER_ACTION")
         assertTrue(ExecutionState.IDLE.name == "IDLE")
         assertTrue(ExecutionState.RUNNING.name == "RUNNING")
         assertTrue(ExecutionState.COMPLETED.name == "COMPLETED")

@@ -65,7 +65,7 @@ class ScreenStateDetectorTest {
         val emptyKeywords = setOf("empty", "no data", "لا يوجد", "فارغ", "no results", "لا نتائج", "nothing here")
         val emptyStates = elements.filter { el -> el.hasTextContent && emptyKeywords.any { kw -> el.primaryText?.lowercase()?.contains(kw) == true } }
 
-        assertEquals(2, emptyStates.size)
+        assertEquals(3, emptyStates.size) // "No data", "لا يوجد", "Empty" match; "Some content" does not
     }
 
     @Test

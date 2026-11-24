@@ -39,6 +39,7 @@ class TaskPlanner(
                 steps.add("تأكيد النتيجة وإبلاغ المستخدم")
                 requiredSkills.add("skill_execution_engine")
                 requiresUserApproval = true
+                sensitiveOperations.add("skill_execution")
             }
             "open_app" -> {
                 steps.add("فتح التطبيق المستهدف: ${intent.targetApp ?: "غير محدد"}")

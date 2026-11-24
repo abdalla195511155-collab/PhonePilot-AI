@@ -145,8 +145,8 @@ class VisionModelsTest {
 
         // Should only keep last 3
         assertEquals(3, ctx.recentChanges.size)
-        assertEquals(4000, ctx.currentState?.timestamp)
-        assertEquals(3000, ctx.previousState?.timestamp)
+        assertEquals(4000L, ctx.currentState?.timestamp)
+        assertEquals(3000L, ctx.previousState?.timestamp)
     }
 
     @Test
@@ -156,7 +156,9 @@ class VisionModelsTest {
         assertTrue(config.enableAccessibilityAnalysis)
         assertTrue(config.enableOcr)
         assertTrue(config.enableFusion)
-        assertEquals(listOf("ar", "en"), config.ocrLanguageHints)
+        // Arabic is not supported by the OCR engine, so the default hint is English only
+        assertEquals(listOf("en"), config.ocrLanguageHints)
+        assertFalse(config.isLanguageSupported("ar"))
         assertEquals(1000L, config.captureIntervalMs)
         assertEquals(500, config.maxElementsPerScreen)
         assertEquals(200, config.maxOcrTextBlocks)

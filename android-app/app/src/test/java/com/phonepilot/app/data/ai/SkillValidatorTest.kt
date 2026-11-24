@@ -67,7 +67,9 @@ class SkillValidatorTest {
         assertEquals(SkillLifecycleState.ANALYZING, validator.nextLifecycleState(SkillLifecycleState.LEARNING, validResult))
         assertEquals(SkillLifecycleState.NEEDS_REVIEW, validator.nextLifecycleState(SkillLifecycleState.ANALYZING, validResult))
         assertEquals(SkillLifecycleState.VALIDATING, validator.nextLifecycleState(SkillLifecycleState.NEEDS_REVIEW, validResult))
-        assertEquals(SkillLifecycleState.READY, validator.nextLifecycleState(SkillLifecycleState.VALIDATING, validResult))
+        // READY needs both a passing validation and explicit user approval
+        assertEquals(SkillLifecycleState.READY, validator.nextLifecycleState(SkillLifecycleState.VALIDATING, validResult, userApproved = true))
+        assertTrue(validator.nextLifecycleState(SkillLifecycleState.VALIDATING, validResult, userApproved = false) != SkillLifecycleState.READY)
         assertEquals(SkillLifecycleState.FAILED, validator.nextLifecycleState(SkillLifecycleState.ANALYZING, invalidResult))
         assertEquals(SkillLifecycleState.FAILED, validator.nextLifecycleState(SkillLifecycleState.NEEDS_REVIEW, invalidResult))
         assertEquals(SkillLifecycleState.FAILED, validator.nextLifecycleState(SkillLifecycleState.VALIDATING, invalidResult))

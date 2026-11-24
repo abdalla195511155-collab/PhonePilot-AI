@@ -44,6 +44,8 @@ android {
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
+            // android.util.Log etc. return defaults instead of throwing in plain JVM unit tests
+            isReturnDefaultValues = true
         }
     }
 }

@@ -15,6 +15,12 @@ import com.phonepilot.app.models.TaskRecordingEntity
 class TaskDatabaseHelper private constructor(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
+    init {
+        // WAL must be requested through the helper: calling db.enableWriteAheadLogging()
+        // inside onCreate/onUpgrade throws because those run inside a transaction.
+        setWriteAheadLoggingEnabled(true)
+    }
+
     companion object {
         private const val DATABASE_NAME = "phonepilot.db"
         private const val DATABASE_VERSION = 9
@@ -196,7 +202,6 @@ class TaskDatabaseHelper private constructor(context: Context) :
         db.execSQL(CREATE_EXECUTIONS)
         db.execSQL(CREATE_STEP_RESULTS)
         db.execSQL(CREATE_AGENT_MEMORY)
-        db.enableWriteAheadLogging()
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -252,7 +257,6 @@ class TaskDatabaseHelper private constructor(context: Context) :
             // Migration v8 → v9: add agent_memory table (Phase 7 Agent Orchestration)
             db.execSQL(CREATE_AGENT_MEMORY)
         }
-        db.enableWriteAheadLogging()
     }
 
     /** تحديث حالة التسجيلات العالقة إلى INTERRUPTED_FAILED عند بدء التطبيق.

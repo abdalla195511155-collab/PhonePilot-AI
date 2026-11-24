@@ -52,17 +52,17 @@ class VisionRepositoryTest {
             significance = Significance.MINOR,
         )
 
-        // Build summary manually (replicating VisionRepository logic)
-        val summary = buildTestVisionSummary(state, change)
+        // Uses the production summary builder (internal top-level function in VisionRepository.kt)
+        val summary = buildVisionSummary(state, change)
 
         assertTrue(summary.contains("com.example.app"))
         assertTrue(summary.contains("LoginActivity"))
         assertTrue(summary.contains("Login"))
         assertTrue(summary.contains("Username"))
-        assertTrue(summary.contains("PROGRESS_BAR"))
+        assertTrue(summary.contains(SemanticRole.PROGRESS_BAR.label()))
         assertTrue(summary.contains("OCR"))
         assertTrue(summary.contains("ELEMENT_ADDED"))
-        assertTrue(summary.contains("New Button"))
+        assertTrue(summary.contains("مضاف: 1")) // one added element is reported
     }
 
     @Test
@@ -94,50 +94,6 @@ class VisionRepositoryTest {
         assertTrue(prompt.contains("العربية"))
         assertTrue(prompt.contains("إجراء مقترح"))
     }
-}
-
-private fun buildTestVisionSummary(state: ScreenState, change: ScreenChange?): String {
-    val builder = StringBuilder()
-    builder.append("=== تحليل الشاشة الحالية ===\n")
-    builder.append("التطبيق: ${state.packageName}\n")
-    builder.append("الشاشة: ${state.activityName}\n")
-    builder.append("الأبعاد: ${state.screenWidth}x${state.screenHeight}\n")
-    builder.append("الثقة: ${String.format("%.1f", state.confidence * 100)}%\n\n")
-
-    builder.append("--- العناصر التفاعلية (${state.interactiveElements.size}) ---\n")
-    for (element in state.interactiveElements.take(20)) {
-        val text = element.primaryText?.takeIf { it.isNotBlank() } ?: "[بدون نص]"
-        val role = element.semanticRole.label()
-        val bounds = element.bounds?.let { "[${it.left},${it.top},${it.right},${it.bottom}]" } ?: ""
-        builder.append("• [$role] $text $bounds\n")
-    }
-
-    state.ocrResult?.let { ocr ->
-        builder.append("\n--- نص OCR (${ocr.textBlocks.size} كتلة) ---\n")
-        builder.append(ocr.fullText.take(500))
-    }
-
-    change?.let { ch ->
-        builder.append("\n--- التغييرات منذ آخر تحليل ---\n")
-        builder.append("النوع: ${ch.changeType}\n")
-        builder.append("الأهمية: ${ch.significance}\n")
-        if (ch.addedElements.isNotEmpty()) builder.append("مضاف: ${ch.addedElements.size}\n")
-    }
-    return builder.toString()
-}
-
-private fun buildDefaultVisionPrompt(visionSummary: String): String {
-    return """
-        حلل محتوى الشاشة التالي وقدم ملخصاً مفيداً:
-        
-        $visionSummary
-        
-        الرجاء الإجابة بالعربية وتغطية:
-        1. ما هي الشاشة/الصفحة الحالية؟
-        2. ما هي العناصر الرئيسية القابلة للتفاعل؟
-        3. هل هناك أي أخطاء أو مشاكل ظاهرة؟
-        4. ما الإجراء المقترح التالي؟
-    """.trimIndent()
 }
 
 class AccessibilityTreeAnalyzerTest {

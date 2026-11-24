@@ -49,15 +49,15 @@ class TelegramBotChannelTest {
     }
 
     @Test
-    fun `isAuthorizedUserReturnsTrueWhenNoAuthorizedList`() {
+    fun `isAuthorizedUserReturnsFalseWhenNoAuthorizedList`() {
         val channel = TelegramBotChannel(
             botToken = "test",
             authorizedUserIds = emptySet(),
             orchestrator = FakeProcessor,
             scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Unconfined),
         )
-        // When no authorized users are specified, all users are allowed (for development)
-        assertTrue(channel.isAuthorizedUser("any-user"))
+        // Secure default: with no authorized users configured nobody is allowed
+        assertFalse(channel.isAuthorizedUser("any-user"))
     }
 
     @Test

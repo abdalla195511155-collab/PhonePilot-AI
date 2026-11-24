@@ -161,98 +161,6 @@ class VisionRepository(
     }
 
     /**
-     * Build a comprehensive vision summary for AI consumption.
-     */
-    private fun buildVisionSummary(state: ScreenState, change: ScreenChange?): String {
-        val builder = StringBuilder()
-
-        builder.append("=== تحليل الشاشة الحالية ===\n")
-        builder.append("التطبيق: ${state.packageName}\n")
-        builder.append("الشاشة: ${state.activityName}\n")
-        builder.append("الأبعاد: ${state.screenWidth}x${state.screenHeight}\n")
-        builder.append("الثقة: ${String.format("%.1f", state.confidence * 100)}%\n\n")
-
-        builder.append("--- العناصر التفاعلية (${state.interactiveElements.size}) ---\n")
-        for (element in state.interactiveElements.take(20)) {
-            val text = element.primaryText?.takeIf { it.isNotBlank() } ?: "[بدون نص]"
-            val role = element.semanticRole.label()
-            val bounds = element.bounds?.let { "[${it.left},${it.top},${it.right},${it.bottom}]" } ?: ""
-            builder.append("• [$role] $text $bounds\n")
-        }
-
-        if (state.textElements.size > state.interactiveElements.size) {
-            builder.append("\n--- العناصر النصية الإضافية ---\n")
-            for (element in state.textElements.filterNot { it in state.interactiveElements }.take(10)) {
-                val text = element.primaryText?.takeIf { it.isNotBlank() } ?: ""
-                if (text.isNotBlank()) {
-                    builder.append("• $text\n")
-                }
-            }
-        }
-
-        if (state.loadingIndicators.isNotEmpty()) {
-            builder.append("\n--- مؤشرات التحميل ---\n")
-            for (indicator in state.loadingIndicators) {
-                builder.append("• ${indicator.semanticRole.label()} ${indicator.primaryText ?: ""}\n")
-            }
-        }
-
-        if (state.errorMessages.isNotEmpty()) {
-            builder.append("\n--- رسائل الخطأ ---\n")
-            for (error in state.errorMessages) {
-                builder.append("• $error\n")
-            }
-        }
-
-        if (state.emptyStates.isNotEmpty()) {
-            builder.append("\n--- حالات فارغة ---\n")
-            for (empty in state.emptyStates) {
-                builder.append("• ${empty.primaryText ?: ""}\n")
-            }
-        }
-
-        if (state.hasDialog) builder.append("\n⚠ يوجد حوار مفتوح\n")
-        if (state.hasKeyboard) builder.append("\n⌨ لوحة المفاتيح ظاهرة\n")
-
-        // OCR info
-        state.ocrResult?.let { ocr ->
-            builder.append("\n--- نص OCR (${ocr.textBlocks.size} كتلة) ---\n")
-            builder.append(ocr.fullText.take(500))
-            if (ocr.fullText.length > 500) builder.append("...")
-            builder.append("\n")
-        }
-
-        // Change info
-        change?.let { ch ->
-            builder.append("\n--- التغييرات منذ آخر تحليل ---\n")
-            builder.append("النوع: ${ch.changeType}\n")
-            builder.append("الأهمية: ${ch.significance}\n")
-            if (ch.addedElements.isNotEmpty()) builder.append("مضاف: ${ch.addedElements.size}\n")
-            if (ch.removedElements.isNotEmpty()) builder.append("محذوف: ${ch.removedElements.size}\n")
-            if (ch.changedElements.isNotEmpty()) builder.append("متغير: ${ch.changedElements.size}\n")
-        }
-
-        return builder.toString()
-    }
-
-    /**
-     * Build default prompt for vision analysis.
-     */
-    private fun buildDefaultVisionPrompt(visionSummary: String): String {
-        return """
-            حلل محتوى الشاشة التالي وقدم ملخصاً مفيداً:
-            
-            $visionSummary
-            
-            الرجاء الإجابة بالعربية وتغطية:
-            1. ما هي الشاشة/الصفحة الحالية؟
-            2. ما هي العناصر الرئيسية القابلة للتفاعل؟
-            3. هل هناك أي أخطاء أو مشاكل ظاهرة؟
-            4. ما الإجراء المقترح التالي؟
-        """.trimIndent()
-    }
-
-    /**
      * Ask a specific question about the current screen.
      */
     suspend fun askAboutScreen(question: String): VisionAnalysisResult {
@@ -316,3 +224,95 @@ data class VisionAnalysisResult(
     val success: Boolean,
     val errorMessage: String? = null,
 )
+
+/**
+ * Build a comprehensive vision summary for AI consumption.
+ */
+internal fun buildVisionSummary(state: ScreenState, change: ScreenChange?): String {
+    val builder = StringBuilder()
+
+    builder.append("=== تحليل الشاشة الحالية ===\n")
+    builder.append("التطبيق: ${state.packageName}\n")
+    builder.append("الشاشة: ${state.activityName}\n")
+    builder.append("الأبعاد: ${state.screenWidth}x${state.screenHeight}\n")
+    builder.append("الثقة: ${String.format("%.1f", state.confidence * 100)}%\n\n")
+
+    builder.append("--- العناصر التفاعلية (${state.interactiveElements.size}) ---\n")
+    for (element in state.interactiveElements.take(20)) {
+        val text = element.primaryText?.takeIf { it.isNotBlank() } ?: "[بدون نص]"
+        val role = element.semanticRole.label()
+        val bounds = element.bounds?.let { "[${it.left},${it.top},${it.right},${it.bottom}]" } ?: ""
+        builder.append("• [$role] $text $bounds\n")
+    }
+
+    if (state.textElements.size > state.interactiveElements.size) {
+        builder.append("\n--- العناصر النصية الإضافية ---\n")
+        for (element in state.textElements.filterNot { it in state.interactiveElements }.take(10)) {
+            val text = element.primaryText?.takeIf { it.isNotBlank() } ?: ""
+            if (text.isNotBlank()) {
+                builder.append("• $text\n")
+            }
+        }
+    }
+
+    if (state.loadingIndicators.isNotEmpty()) {
+        builder.append("\n--- مؤشرات التحميل ---\n")
+        for (indicator in state.loadingIndicators) {
+            builder.append("• ${indicator.semanticRole.label()} ${indicator.primaryText ?: ""}\n")
+        }
+    }
+
+    if (state.errorMessages.isNotEmpty()) {
+        builder.append("\n--- رسائل الخطأ ---\n")
+        for (error in state.errorMessages) {
+            builder.append("• $error\n")
+        }
+    }
+
+    if (state.emptyStates.isNotEmpty()) {
+        builder.append("\n--- حالات فارغة ---\n")
+        for (empty in state.emptyStates) {
+            builder.append("• ${empty.primaryText ?: ""}\n")
+        }
+    }
+
+    if (state.hasDialog) builder.append("\n⚠ يوجد حوار مفتوح\n")
+    if (state.hasKeyboard) builder.append("\n⌨ لوحة المفاتيح ظاهرة\n")
+
+    // OCR info
+    state.ocrResult?.let { ocr ->
+        builder.append("\n--- نص OCR (${ocr.textBlocks.size} كتلة) ---\n")
+        builder.append(ocr.fullText.take(500))
+        if (ocr.fullText.length > 500) builder.append("...")
+        builder.append("\n")
+    }
+
+    // Change info
+    change?.let { ch ->
+        builder.append("\n--- التغييرات منذ آخر تحليل ---\n")
+        builder.append("النوع: ${ch.changeType}\n")
+        builder.append("الأهمية: ${ch.significance}\n")
+        if (ch.addedElements.isNotEmpty()) builder.append("مضاف: ${ch.addedElements.size}\n")
+        if (ch.removedElements.isNotEmpty()) builder.append("محذوف: ${ch.removedElements.size}\n")
+        if (ch.changedElements.isNotEmpty()) builder.append("متغير: ${ch.changedElements.size}\n")
+    }
+
+    return builder.toString()
+}
+
+/**
+ * Build default prompt for vision analysis.
+ */
+internal fun buildDefaultVisionPrompt(visionSummary: String): String {
+    return """
+        حلل محتوى الشاشة التالي وقدم ملخصاً مفيداً:
+
+        $visionSummary
+
+        الرجاء الإجابة بالعربية وتغطية:
+        1. ما هي الشاشة/الصفحة الحالية؟
+        2. ما هي العناصر الرئيسية القابلة للتفاعل؟
+        3. هل هناك أي أخطاء أو مشاكل ظاهرة؟
+        4. ما الإجراء المقترح التالي؟
+    """.trimIndent()
+}

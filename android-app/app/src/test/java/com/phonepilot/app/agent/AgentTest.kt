@@ -20,7 +20,10 @@ class AgentModelsTest {
 
     @Test
     fun `agentExecutionStateEnumHasExpectedValues`() {
-        assertEquals(8, AgentExecutionState.values().size)
+        assertEquals(9, AgentExecutionState.values().size)
+        assertTrue(AgentExecutionState.INTERPRETING_INTENT.name == "INTERPRETING_INTENT")
+        assertTrue(AgentExecutionState.PLANNING_TASK.name == "PLANNING_TASK")
+        assertTrue(AgentExecutionState.SELECTING_SKILL.name == "SELECTING_SKILL")
         assertTrue(AgentExecutionState.IDLE.name == "IDLE")
         assertTrue(AgentExecutionState.EXECUTING.name == "EXECUTING")
         assertTrue(AgentExecutionState.COMPLETED.name == "COMPLETED")
